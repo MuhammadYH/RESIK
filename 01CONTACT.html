@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <!-- Satu file CSS eksternal untuk semua halaman -->
+  <link rel="stylesheet" href="resik-main.css">
+  <title>Bantuan &amp; Kontak — RESIK</title>
+  <script src="resik-supabase.js" defer></script>
+</head>
+<body>
+
+<!-- ════════════════ NAV ════════════════ -->
+<nav id="navbar">
+  <div class="nav-wrap">
+    <!-- FIX: Hapus RESIK</span>'"> yang tersesat di dalam tag <a> -->
+    <a href="01RESIK.html" class="nav-logo-wrap">
+      <img src="image_0.png" alt="RESIK Logo" class="nav-logo-img">
+    </a>
+    <ul class="nav-links">
+      <li><a href="01RESIK.html">Beranda</a></li>
+          <li><a href="01TENTANGKAMI.html">Tentang Kami</a></li>
+      <li><a href="01SOLUSI.html">Solusi</a></li>
+      <li><a href="01CONTACT.html" class="active">Kontak Kami</a></li>
+    </ul>
+    <a href="01login_register.html" class="nav-btn">Masuk</a>
+  </div>
+</nav>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section class="page-hero">
+  <div class="hero-bg">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-blob hero-blob-3"></div>
+    <div class="hero-dots"></div>
+    <div class="hero-dots-left"></div>
+  </div>
+
+  <div class="section-pill fu fu-1">
+    <span class="section-pill-dot"></span>
+    Bantuan &amp; Kontak
+  </div>
+  <h1 class="fu fu-2">Ada yang bisa<br>kami <em>bantu?</em></h1>
+  <!-- FIX: "ReFood" diganti "RESIK" agar konsisten brand -->
+  <p class="hero-sub fu fu-3">Tim RESIK siap membantu 7 hari seminggu. Temukan jawaban di FAQ atau hubungi kami langsung.</p>
+
+  <div class="hero-search fu fu-4">
+    <input type="text" placeholder="Cari pertanyaan atau topik bantuan..." id="searchInput" oninput="searchFAQ(this.value)">
+    <button class="hero-search-btn">Cari</button>
+  </div>
+</section>
+
+<!-- ════════════════ QUICK CARDS ════════════════ -->
+<div class="quick-cards">
+  <a href="#form-section" class="quick-card fu fu-2">
+    <div class="qc-icon-wrap">💬</div>
+    <div class="qc-title">Kirim Pesan</div>
+    <p class="qc-desc">Isi formulir dan kami balas dalam waktu singkat</p>
+    <div class="qc-footer">
+      <span class="qc-badge">Respon &lt; 24 jam</span>
+      <span class="qc-arrow">→</span>
+    </div>
+  </a>
+  <a href="mailto:admin@resik.id" class="quick-card fu fu-3">
+    <div class="qc-icon-wrap">📧</div>
+    <div class="qc-title">Email Langsung</div>
+    <p class="qc-desc">Untuk pertanyaan lebih detail dan pengiriman dokumen</p>
+    <div class="qc-footer">
+      <span class="qc-badge qc-badge-blue">admin@resik.id</span>
+      <span class="qc-arrow">→</span>
+    </div>
+  </a>
+  <a href="https://wa.me/6281234567890" class="quick-card fu fu-4">
+    <div class="qc-icon-wrap">📱</div>
+    <div class="qc-title">WhatsApp Admin</div>
+    <p class="qc-desc">Chat langsung untuk urusan mendesak dan prioritas</p>
+    <div class="qc-footer">
+      <span class="qc-badge qc-badge-amber">⚡ Prioritas</span>
+      <span class="qc-arrow">→</span>
+    </div>
+  </a>
+</div>
+
+<!-- ════════════════ MAIN GRID: FAQ + FORM ════════════════ -->
+<div class="main-grid" id="form-section">
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <div class="faq-header">
+      <h2 class="faq-section-title">Pertanyaan yang<br><em>sering ditanya</em></h2>
+      <p class="faq-sub">Cari berdasarkan kategori atau ketik di kolom pencarian atas.</p>
+    </div>
+
+    <div class="faq-tabs">
+      <button class="faq-tab active" onclick="filterFAQ('semua', this)">Semua</button>
+      <button class="faq-tab" onclick="filterFAQ('akun', this)">Akun &amp; Daftar</button>
+      <button class="faq-tab" onclick="filterFAQ('provider', this)">Food Provider</button>
+      <button class="faq-tab" onclick="filterFAQ('pengelola', this)">Pengelola</button>
+      <button class="faq-tab" onclick="filterFAQ('pickup', this)">Pickup &amp; Sistem</button>
+      <button class="faq-tab" onclick="filterFAQ('keamanan', this)">Keamanan Pangan</button>
+    </div>
+
+    <div class="faq-list" id="faqList">
+
+      <!-- AKUN -->
+      <div class="faq-item" data-cat="akun">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Bagaimana cara mendaftar di RESIK?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Klik tombol "Daftar Gratis" di halaman utama, pilih peranmu (Food Provider atau Pengelola), lalu isi data dasar dan verifikasi email. Proses pendaftaran hanya membutuhkan 2–3 menit. Kamu juga bisa mendaftar menggunakan akun Google.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="akun">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Apakah RESIK gratis digunakan?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Ya, RESIK sepenuhnya gratis untuk pengguna perorangan (rumah tangga) dan organisasi nirlaba. Untuk bisnis seperti restoran dan kantin, tersedia fitur lanjutan dengan paket Pro yang memiliki analitik lebih mendalam dan dukungan prioritas.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="akun">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Bisakah satu akun menjadi Provider sekaligus Pengelola?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Saat ini satu akun hanya bisa memiliki satu peran utama. Namun kamu bisa mengajukan perubahan peran melalui halaman pengaturan akun atau menghubungi admin untuk membahas kebutuhan khususmu.
+        </div>
+      </div>
+
+      <!-- PROVIDER -->
+      <div class="faq-item" data-cat="provider">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Makanan apa saja yang bisa diupload sebagai food waste?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Kamu bisa mengupload makanan layak konsumsi (masih dalam kondisi baik), makanan mendekati expired namun masih aman, bahan mentah berlebih, hingga sisa organik untuk kompos. Setiap kategori memiliki alur distribusi yang berbeda agar tepat sasaran.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="provider">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Berapa lama listing saya aktif?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Listing aktif selama 24 jam sejak diupload, atau hingga diklaim oleh pengelola — mana yang lebih dulu. Kamu bisa memperpanjang atau menghapus listing kapan saja dari dasbor. Listing yang melewati waktu expired otomatis dihapus oleh sistem.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="provider">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Apa itu badge Eco Contributor dan bagaimana mendapatkannya?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Badge diberikan berdasarkan jumlah donasi sukses dan total kilogram makanan yang diselamatkan. Mulai dari Green Beginner (donasi pertama), Eco Helper (10+ donasi), hingga Waste Warrior (50+ donasi). Badge ditampilkan di profil publik dan dapat dibagikan ke media sosial.
+        </div>
+      </div>
+
+      <!-- PENGELOLA -->
+      <div class="faq-item" data-cat="pengelola">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Bagaimana cara mengklaim food waste sebagai Pengelola?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Buka peta food waste di dashboard, temukan listing terdekat, klik "Klaim", lalu tentukan jadwal pickup. Setelah diklaim, provider mendapat notifikasi dan kamu bisa memulai koordinasi. Sistem akan otomatis memandu langkah selanjutnya.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="pengelola">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Apakah pengelola perlu verifikasi khusus?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Ya. Untuk menjaga kepercayaan ekosistem, akun Pengelola memerlukan verifikasi dokumen organisasi (akta pendirian, surat izin, atau KTP untuk individu). Proses verifikasi biasanya membutuhkan 1–2 hari kerja oleh tim admin RESIK.
+        </div>
+      </div>
+
+      <!-- PICKUP -->
+      <div class="faq-item" data-cat="pickup">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Apa yang terjadi jika pengelola tidak datang saat pickup?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Jika pengelola tidak datang dalam window waktu yang disepakati, sistem otomatis membuka kembali listing untuk diklaim oleh pengelola lain. Pengelola yang sering membatalkan pickup akan mendapat peringatan dari admin dan bisa dinonaktifkan sementara.
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="pickup">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Bagaimana cara melacak status pickup saya?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Dari dashboard utama, masuk ke menu "Aktivitas" atau "Riwayat". Setiap listing memiliki status real-time: Waiting → Accepted → On the Way → Completed → Processed. Notifikasi dikirim ke email dan push notification di setiap perubahan status.
+        </div>
+      </div>
+
+      <!-- KEAMANAN -->
+      <div class="faq-item" data-cat="keamanan">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Bagaimana RESIK memastikan keamanan pangan?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Setiap listing melewati proses verifikasi berbasis AI yang menganalisis foto dan data input untuk mendeteksi makanan tidak layak. Selain itu, admin dapat melakukan review manual. Pengguna juga bisa melaporkan makanan yang mencurigakan menggunakan fitur "Report Listing".
+        </div>
+      </div>
+
+      <div class="faq-item" data-cat="keamanan">
+        <button class="faq-question" onclick="toggleFAQ(this)">
+          Apa yang harus dilakukan jika menemukan listing makanan berbahaya?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">
+          Klik ikon bendera (🚩) di pojok listing untuk melaporkannya. Pilih kategori masalah (sudah busuk, terlihat berbahaya, info tidak akurat, dll.) dan tambahkan deskripsi. Admin akan meninjau laporan dalam waktu kurang dari 2 jam dan mengambil tindakan yang diperlukan.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty state -->
+    <div id="faqEmpty" style="display:none; text-align:center; padding:3rem 1rem; color:var(--ink-soft);">
+      <div style="font-size:2.5rem; margin-bottom:.8rem;">🔍</div>
+      <div style="font-family:var(--font-heading); font-size:1.1rem; color:var(--g800); margin-bottom:.4rem;">Tidak ditemukan</div>
+      <div style="font-size:.85rem; font-weight:300;">Coba kata kunci lain atau <a href="#form-section" style="color:var(--g600);text-decoration:underline;">hubungi kami langsung</a>.</div>
+    </div>
+  </div>
+
+  <!-- CONTACT FORM -->
+  <div class="contact-form-wrap">
+    <div class="form-card">
+      <div id="formContent">
+        <div class="form-card-header">
+          <div class="form-title">Hubungi <em>Kami</em></div>
+          <p class="form-subtitle">Ceritakan masalahmu — kami akan balas secepatnya.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nama Lengkap <span class="label-req">*</span></label>
+          <input type="text" class="form-input" placeholder="Nama kamu" id="inputNama">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email <span class="label-req">*</span></label>
+            <input type="email" class="form-input" placeholder="email@kamu.com" id="inputEmail">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Peran Kamu</label>
+            <div class="form-select-wrap">
+              <select class="form-select" id="inputPeran">
+                <option value="">Pilih...</option>
+                <option>Food Provider</option>
+                <option>Pengelola</option>
+                <option>Belum Daftar</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Kategori Masalah <span class="label-req">*</span></label>
+          <div class="form-select-wrap">
+            <select class="form-select" id="inputKategori">
+              <option value="">Pilih kategori...</option>
+              <option>Akun &amp; Login</option>
+              <option>Upload Food Waste</option>
+              <option>Sistem Pickup</option>
+              <option>Verifikasi Pengelola</option>
+              <option>Keamanan Pangan</option>
+              <option>Bug / Error</option>
+              <option>Pertanyaan Umum</option>
+              <option>Lainnya</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pesan <span class="label-req">*</span></label>
+          <textarea class="form-textarea" placeholder="Jelaskan masalah atau pertanyaanmu secara detail..." id="inputPesan"></textarea>
+        </div>
+
+        <button class="btn-submit" onclick="submitForm()" id="submitBtn">
+          <span>Kirim Pesan</span>
+          <span>🌿</span>
+        </button>
+
+        <p class="form-privacy">🔒 Datamu aman dan tidak dibagikan ke pihak ketiga</p>
+      </div>
+
+      <div class="form-success" id="formSuccess">
+        <div class="success-ring">✅</div>
+        <div class="success-title">Pesan Terkirim!</div>
+        <p class="success-desc">Terima kasih sudah menghubungi kami. Tim RESIK akan membalas ke email kamu dalam waktu kurang dari 24 jam.</p>
+        <button class="btn-reset" onclick="resetForm()">← Kirim pesan lain</button>
+      </div>
+    </div>
+
+    <div class="response-info">
+      <div class="response-info-title">⏱ Waktu Respons Rata-rata</div>
+      <div class="response-row">
+        <span class="response-label">Formulir / Email</span>
+        <span class="response-val">&lt; 24 jam</span>
+      </div>
+      <div class="response-row">
+        <span class="response-label">WhatsApp Admin</span>
+        <span class="response-val">&lt; 2 jam</span>
+      </div>
+      <div class="response-row">
+        <span class="response-label">Laporan darurat</span>
+        <span class="response-val">&lt; 1 jam</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════ ADMIN SECTION ════════════════ -->
+<div class="admin-section">
+  <div class="admin-section-header">
+    <div>
+      <h2 class="admin-section-title">Hubungi <em>Tim Admin</em> Langsung</h2>
+      <p class="admin-desc">Untuk verifikasi, pelanggaran, atau masalah teknis serius — hubungi tim kami langsung.</p>
+    </div>
+  </div>
+
+  <div class="admin-grid">
+    <div class="admin-card">
+      <div class="admin-icon-wrap">🛡️</div>
+      <div>
+        <div class="admin-role">Moderasi &amp; Keamanan</div>
+        <div class="admin-name">Tim Moderasi</div>
+        <a href="mailto:moderasi@resik.id" class="admin-contact">📧 moderasi@resik.id</a>
+      </div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-icon-wrap">✅</div>
+      <div>
+        <div class="admin-role">Verifikasi Pengelola</div>
+        <div class="admin-name">Tim Verifikasi</div>
+        <a href="mailto:verifikasi@resik.id" class="admin-contact">📧 verifikasi@resik.id</a>
+      </div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-icon-wrap">⚙️</div>
+      <div>
+        <div class="admin-role">Teknis &amp; Bug</div>
+        <div class="admin-name">Tim Teknis</div>
+        <a href="mailto:teknis@resik.id" class="admin-contact">📧 teknis@resik.id</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ FOOTER — FIX: Satu footer bersih, tidak ada duplikat ════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand fade-in">
+        <!-- FIX: Tag <a> dibersihkan dari RESIK</span>'"> yang tersesat -->
+        <a href="01RESIK.html" class="footer-logo-wrap">
+          <img src="image_0.png" alt="RESIK Logo" class="footer-logo-img">
+        </a>
+        <p>Startup climate-tech yang fokus pada infrastruktur food waste cerdas dan operasional perkotaan yang berkelanjutan.</p>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.1s">
+        <h5>Produk</h5>
+        <ul>
+          <li><a href="#">RESIK Lite 20L</a></li>
+          <li><a href="#">RESIK Pro 40L</a></li>
+          <li><a href="#">RESIK Enterprise 60L</a></li>
+          <li><a href="#">Bandingkan Semua</a></li>
+        </ul>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.2s">
+        <h5>Perusahaan</h5>
+        <ul>
+          <li><a href="01RESIK.html">Beranda</a></li>
+          <li><a href="01TENTANGKAMI.html">Tentang Kami</a></li>
+          <li><a href="01SOLUSI.html">Solusi</a></li>
+          <li><a href="#">Teknologi</a></li>
+          <li><a href="#">Laporan ESG</a></li>
+          <li><a href="#">Karier</a></li>
+        </ul>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.3s">
+        <h5>Dukungan</h5>
+        <ul>
+          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="01CONTACT.html">Hubungi Kami</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Garansi</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 RESIK — Rekayasa Efisiensi Sistem Industri Kepariwisataan. Seluruh hak dilindungi.</p>
+      <div class="social-links">
+        <button class="social-btn" aria-label="Twitter/X">𝕏</button>
+        <button class="social-btn" aria-label="LinkedIn">in</button>
+        <button class="social-btn" aria-label="YouTube">▶</button>
+        <button class="social-btn" aria-label="Instagram">ig</button>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- FIX: div .footer-bottom ReFood yang mengambang di luar <footer> dan tanpa parent sudah DIHAPUS -->
+
+<!-- ════════════════ SCROLL TO TOP ════════════════ -->
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll ke atas">↑</button>
+
+<!-- ════════════════ SCRIPTS ════════════════ -->
+<!-- FIX: Semua JS digabung dalam satu <script> tag di akhir body (bukan dibuang di luar tag apapun) -->
+<script>
+  // ── Nav scroll shadow + scroll-to-top visibility ──
+  // FIX: Satu listener untuk dua nav id (asli ada 'mainNav' dan 'navbar') → disatukan ke 'navbar'
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    const st  = document.getElementById('scrollTop');
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
+    if (st)  st.classList.toggle('show',      window.scrollY > 400);
+  });
+
+  // ── Scroll reveal ditangani oleh resik-shared.js ──
+
+  // ── FAQ toggle ──
+  function toggleFAQ(btn) {
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+
+  // ── FAQ filter ──
+  function filterFAQ(cat, tabEl) {
+    document.querySelectorAll('.faq-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+    document.getElementById('searchInput').value = '';
+    let visible = 0;
+    document.querySelectorAll('.faq-item').forEach(item => {
+      const show = cat === 'semua' || item.dataset.cat === cat;
+      item.style.display = show ? '' : 'none';
+      if (!show) item.classList.remove('open');
+      if (show)  visible++;
+    });
+    document.getElementById('faqEmpty').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  // ── FAQ search ──
+  function searchFAQ(q) {
+    const query = q.toLowerCase().trim();
+    document.querySelectorAll('.faq-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.faq-tab').classList.add('active');
+    let visible = 0;
+    document.querySelectorAll('.faq-item').forEach(item => {
+      const show = !query || item.textContent.toLowerCase().includes(query);
+      item.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    document.getElementById('faqEmpty').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  // ── Form submit (Supabase) ──
+  async function submitForm() {
+    const nama     = document.getElementById('inputNama').value.trim();
+    const email    = document.getElementById('inputEmail').value.trim();
+    const peran    = document.getElementById('inputPeran').value;
+    const kategori = document.getElementById('inputKategori').value;
+    const pesan    = document.getElementById('inputPesan').value.trim();
+    const btn      = document.getElementById('submitBtn');
+
+    if (!nama || !email || !pesan || !kategori) {
+      btn.style.animation = 'none';
+      btn.offsetHeight;
+      btn.style.animation = 'shake .4s ease';
+      const prev = btn.innerHTML;
+      btn.innerHTML = '<span>\u26A0\uFE0F Lengkapi nama, email, kategori &amp; pesan</span>';
+      btn.style.background = '#c0392b';
+      setTimeout(() => {
+        btn.innerHTML = prev;
+        btn.style.background = '';
+        btn.style.animation = '';
+      }, 2500);
+      return;
+    }
+
+    btn.innerHTML = '<span>Mengirim</span><span style="display:inline-block;animation:spin .8s linear infinite">\u27F3</span>';
+    btn.disabled = true;
+
+    try {
+      if (typeof RESIK_CONTACT !== 'undefined') {
+        await RESIK_CONTACT.submit({ nama, email, peran, kategori, pesan });
+      }
+    } catch (e) {
+      console.warn('Contact submit warning (tetap lanjut):', e.message);
+    }
+
+    document.getElementById('formContent').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  }
+
+  // ── Form reset ──
+  function resetForm() {
+    document.getElementById('formContent').style.display = 'block';
+    document.getElementById('formSuccess').style.display = 'none';
+    ['inputNama','inputEmail','inputPeran','inputKategori','inputPesan'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<span>Kirim Pesan</span><span>🌿</span>';
+    btn.disabled = false;
+    btn.style.background = '';
+  }
+</script>
+<script src="resik-shared.js"></script>
+</body>
+</html>

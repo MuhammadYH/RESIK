@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <!-- Satu file CSS eksternal untuk semua halaman -->
+  <link rel="stylesheet" href="resik-main.css">
+  <script src="resik-supabase.js" defer></script>
+  <style>
+    /* ── Overview section fix ── */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+    @media (max-width: 900px) { .overview-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .overview-grid { grid-template-columns: 1fr; } }
+
+    .overview-card {
+      background: #f4f9f6;
+      border-radius: 16px;
+      padding: 2rem 1.5rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .overview-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(20,56,42,.1); }
+
+    .ov-illustration { display: flex; justify-content: center; }
+    .ov-icon-wrap {
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e6f3ec;
+      border-radius: 50%;
+    }
+    .ov-icon-wrap svg { width: 72px; height: 72px; }
+
+    .ov-body h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .4rem; color: #0f2d1e; }
+    .ov-body p  { font-size: .875rem; line-height: 1.6; color: #4a6358; margin: 0; }
+  </style>
+  <title>RESIK — From Plate To Planet</title>
+</head>
+<body>
+
+<!-- ════════════════════ NAV ════════════════════ -->
+<nav id="navbar">
+  <div class="nav-wrap">
+    <a href="01RESIK.html" class="nav-logo-wrap">
+      <img src="image_0.png" alt="RESIK Logo" class="nav-logo-img">
+    </a>
+    <ul class="nav-links">
+      <li><a href="01RESIK.html">Beranda</a></li>
+      <li><a href="01TENTANGKAMI.html">Tentang Kami</a></li>
+      <li><a href="01SOLUSI.html" class="active">Solusi</a></li>
+      <li><a href="01CONTACT.html">Kontak Kami</a></li>
+    </ul>
+    <a href="01login_register.html" class="nav-btn">Masuk</a>
+  </div>
+</nav>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero" id="beranda">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="fade-in">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Circular Food Waste Ecosystem
+        </div>
+
+        <h1>
+          <span class="accent-word">From Plate</span><br>
+          To Planet
+        </h1>
+
+        <p class="hero-desc">
+          RESIK mengubah limbah makanan sektor pariwisata menjadi sumber daya ekonomi melalui ekosistem digital berbasis IoT — menghubungkan penghasil limbah, pengelola, dan pembeli dalam satu platform terintegrasi.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#solusi" class="btn btn-primary">Lihat Solusi</a>
+          <a href="#tentang" class="btn btn-outline">Tentang Kami</a>
+        </div>
+      </div>
+
+      <div class="hero-visual fade-in" style="transition-delay:.15s">
+        <div class="hero-main-img">
+          <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=1400&auto=format&fit=crop" alt="Keberlanjutan Lingkungan">
+        </div>
+
+        <div class="float-card analytics-card">
+          <h4>Efisiensi Pengumpulan</h4>
+          <div class="mini-bars">
+            <span style="height:32%"></span>
+            <span style="height:55%"></span>
+            <span style="height:72%"></span>
+            <span style="height:46%"></span>
+            <span style="height:91%"></span>
+          </div>
+        </div>
+
+        <div class="float-card stats-card">
+          <div class="big-num">30%</div>
+          <p>Rata-rata pengurangan biaya operasional pada pilot project kami.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ TRUST STRIP ════════════════════ -->
+<div class="trust">
+  <div class="container">
+    <div class="trust-inner fade-in">
+      <span class="trust-label">Dirancang untuk</span>
+      <div class="trust-logos">
+        <span class="trust-pill">Hotel & Villa</span>
+        <span class="trust-pill">Restoran</span>
+        <span class="trust-pill">Destinasi Wisata</span>
+        <span class="trust-pill">Katering</span>
+        <span class="trust-pill">Pujasera</span>
+        <span class="trust-pill">Kawasan Wisata</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PRODUCT OVERVIEW ════════════════════ -->
+<section class="overview-section" id="tentang">
+  <div class="container">
+    <div class="section-hd fade-in">
+      <span class="label">Gambaran Produk</span>
+      <h2>Satu Ekosistem, Tiga Komponen Utama</h2>
+      <p>Platform digital terintegrasi yang mengubah food waste dari beban menjadi sumber daya ekonomi bernilai tinggi.</p>
+    </div>
+    <div class="overview-grid">
+
+      <!-- Card 1: Smart Bin -->
+      <div class="overview-card fade-in">
+        <div class="ov-illustration">
+          <div class="ov-icon-wrap">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Bin body -->
+              <rect x="18" y="34" width="44" height="38" rx="5" stroke="#1e6b43" stroke-width="4"/>
+              <!-- Bin lid -->
+              <rect x="12" y="26" width="56" height="10" rx="4" stroke="#1e6b43" stroke-width="4"/>
+              <!-- Handle -->
+              <path d="M30 26V20a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6" stroke="#1e6b43" stroke-width="4" stroke-linecap="round"/>
+              <!-- Stripes on bin -->
+              <line x1="31" y1="42" x2="31" y2="66" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" opacity=".5"/>
+              <line x1="49" y1="42" x2="49" y2="66" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" opacity=".5"/>
+              <!-- WiFi signal -->
+              <circle cx="40" cy="11" r="2.5" fill="#1e6b43"/>
+              <path d="M34 17a8.5 8.5 0 0 1 12 0" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+              <path d="M29 22a15 15 0 0 1 22 0" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".35"/>
+            </svg>
+          </div>
+        </div>
+        <div class="ov-body">
+          <h3>Adaptive Smart Bin</h3>
+          <p>Sensor IoT otomatis mendeteksi kapasitas limbah dan mengirim notifikasi real-time kepada pengelola limbah.</p>
+        </div>
+      </div>
+
+      <!-- Card 2: Platform Digital -->
+      <div class="overview-card fade-in" style="transition-delay:.08s">
+        <div class="ov-illustration">
+          <div class="ov-icon-wrap">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Monitor frame -->
+              <rect x="8" y="12" width="64" height="44" rx="5" stroke="#1e6b43" stroke-width="4"/>
+              <!-- Stand -->
+              <line x1="40" y1="56" x2="40" y2="68" stroke="#1e6b43" stroke-width="4" stroke-linecap="round"/>
+              <!-- Base -->
+              <line x1="27" y1="68" x2="53" y2="68" stroke="#1e6b43" stroke-width="4" stroke-linecap="round"/>
+              <!-- Chart line -->
+              <polyline points="18,48 28,34 38,40 50,24 62,30" stroke="#1e6b43" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Dot on peak -->
+              <circle cx="50" cy="24" r="4.5" fill="#1e6b43"/>
+            </svg>
+          </div>
+        </div>
+        <div class="ov-body">
+          <h3>Platform Digital RESIK</h3>
+          <p>Dashboard monitoring terpusat untuk penghasil limbah, pengelola, dan pembeli produk hasil olahan limbah.</p>
+        </div>
+      </div>
+
+      <!-- Card 3: Circular Marketplace -->
+      <div class="overview-card fade-in" style="transition-delay:.16s">
+        <div class="ov-illustration">
+          <div class="ov-icon-wrap">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Arrow 1: top arc -->
+              <path d="M40 14 Q62 14 62 40" stroke="#1e6b43" stroke-width="4" stroke-linecap="round" fill="none"/>
+              <polyline points="54,8 62,14 56,22" stroke="#1e6b43" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <!-- Arrow 2: bottom-right arc -->
+              <path d="M62 40 Q62 66 40 66" stroke="#1e6b43" stroke-width="4" stroke-linecap="round" fill="none"/>
+              <polyline points="46,72 40,66 48,58" stroke="#1e6b43" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <!-- Arrow 3: left arc back -->
+              <path d="M40 66 Q18 66 18 40 Q18 14 40 14" stroke="#1e6b43" stroke-width="4" stroke-linecap="round" fill="none"/>
+              <polyline points="34,8 40,14 32,22" stroke="#1e6b43" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+        </div>
+        <div class="ov-body">
+          <h3>Circular Marketplace</h3>
+          <p>Marketplace digital untuk memasarkan kompos, maggot BSF, eco enzyme, dan produk organik hasil olahan limbah.</p>
+        </div>
+      </div>
+
+      <!-- Card 4: ESG Report -->
+      <div class="overview-card fade-in" style="transition-delay:.24s">
+        <div class="ov-illustration">
+          <div class="ov-icon-wrap">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Document body -->
+              <path d="M16 10h32l16 16v46a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2V12a2 2 0 0 1 2-2z" stroke="#1e6b43" stroke-width="4" stroke-linejoin="round"/>
+              <!-- Folded corner -->
+              <polyline points="48,10 48,26 64,26" stroke="#1e6b43" stroke-width="4" stroke-linejoin="round"/>
+              <!-- Lines on doc -->
+              <line x1="26" y1="38" x2="54" y2="38" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" opacity=".6"/>
+              <line x1="26" y1="48" x2="44" y2="48" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" opacity=".6"/>
+              <!-- Checkmark badge -->
+              <circle cx="56" cy="60" r="12" fill="#e8f5ee" stroke="#1e6b43" stroke-width="4"/>
+              <polyline points="50,60 54,64 62,55" stroke="#1e6b43" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="ov-body">
+          <h3>Laporan ESG Otomatis</h3>
+          <p>Generate laporan keberlanjutan selaras GRI, SASB, dan CDP untuk kepatuhan korporasi dan pemerintahan.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ DASHBOARD ════════════════════ -->
+<section class="dashboard-section" id="solusi">
+  <div class="container">
+    <div class="dash-grid">
+      <div class="dash-left fade-in">
+        <span class="label label-dark">Dashboard Monitoring</span>
+        <h2>Platform Monitoring Real-time</h2>
+        <p>Pantau setiap smart bin dari satu dashboard terpusat dengan analitik langsung dan wawasan prediktif.</p>
+
+        <div class="dash-list">
+          <div class="dash-item">
+            <h4>Pelacakan Kapasitas Langsung</h4>
+            <p>Pantau tingkat pengisian limbah di seluruh fasilitas secara real-time menggunakan sensor IoT terhubung cloud.</p>
+          </div>
+          <div class="dash-item">
+            <h4>Notifikasi Otomatis</h4>
+            <p>Terima pemberitahuan instan ketika smart bin hampir penuh atau memerlukan perhatian dari tim pengelola.</p>
+          </div>
+          <div class="dash-item">
+            <h4>Analitik Operasional</h4>
+            <p>Analisis performa pengangkutan, dampak lingkungan, dan efisiensi operasional jangka panjang berbasis data.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-panels fade-in" style="transition-delay:.15s">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="dot" style="background:#ef4444"></div>
+            <div class="dot" style="background:#f59e0b"></div>
+            <div class="dot" style="background:#22c55e"></div>
+            <span class="panel-title">Dashboard Multi-bin</span>
+          </div>
+          <div class="panel-body">
+            <div class="panel-lbl">Tingkat Isian — 7 Hari Terakhir</div>
+            <div class="bar-chart">
+              <div class="bar" style="height:45%"></div>
+              <div class="bar" style="height:62%"></div>
+              <div class="bar" style="height:38%"></div>
+              <div class="bar" style="height:80%"></div>
+              <div class="bar" style="height:55%"></div>
+              <div class="bar" style="height:92%;background:var(--primary)"></div>
+              <div class="bar" style="height:70%"></div>
+            </div>
+            <div class="mini-stats-grid">
+              <div class="mini-stat"><div class="mini-stat-v">12</div><div class="mini-stat-k">Bin Aktif</div></div>
+              <div class="mini-stat"><div class="mini-stat-v">87%</div><div class="mini-stat-k">Efisiensi</div></div>
+              <div class="mini-stat"><div class="mini-stat-v">3</div><div class="mini-stat-k">Notifikasi</div></div>
+              <div class="mini-stat"><div class="mini-stat-v">99%</div><div class="mini-stat-k">Uptime</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="dot" style="background:#ef4444"></div>
+            <div class="dot" style="background:#f59e0b"></div>
+            <div class="dot" style="background:#22c55e"></div>
+            <span class="panel-title">Aplikasi Mobile — Live</span>
+          </div>
+          <div class="panel-body mobile-panel">
+            <div class="mob-header">
+              <span>Aplikasi RESIK</span>
+              <strong>● LIVE</strong>
+            </div>
+            <div class="mob-stat"><span class="mob-stat-k">Bin A – Lobby</span><span class="mob-stat-v">78% Penuh</span></div>
+            <div class="mob-stat"><span class="mob-stat-k">Bin B – Lantai 2</span><span class="mob-stat-v">34% Penuh</span></div>
+            <div class="mob-stat"><span class="mob-stat-k">Bin C – Kantin</span><span class="mob-stat-v">91% Penuh</span></div>
+            <div class="mob-alert">Bin C membutuhkan pengangkutan segera</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ SPECS ════════════════════ -->
+<section class="specs-section">
+  <div class="container">
+    <div class="section-hd fade-in">
+      <span class="label label-dark">Spesifikasi Teknis</span>
+      <h2>Spesifikasi Lengkap Smart Bin</h2>
+      <p>Spesifikasi hardware dan konektivitas lengkap untuk keperluan pengadaan dan perencanaan integrasi sistem.</p>
+    </div>
+    <div class="specs-grid">
+      <div class="specs-table fade-in">
+        <div class="specs-table-hd">Hardware & Fisik</div>
+        <div class="spec-row"><span>Model</span><span>RESIK Smart Bin</span></div>
+        <div class="spec-row"><span>Material</span><span>Impact-resistant Polymer</span></div>
+        <div class="spec-row"><span>Kapasitas</span><span>20L / 40L / 60L</span></div>
+        <div class="spec-row"><span>Dimensi (40L)</span><span>38 × 38 × 63 cm</span></div>
+        <div class="spec-row"><span>Bobot (40L)</span><span>8 kg</span></div>
+        <div class="spec-row"><span>Tipe Sensor</span><span>Ultrasonik + Load Cell</span></div>
+        <div class="spec-row"><span>Rating IP</span><span>IP67 Waterproof</span></div>
+      </div>
+      <div class="specs-table fade-in" style="transition-delay:.1s">
+        <div class="specs-table-hd">Konektivitas & Daya</div>
+        <div class="spec-row"><span>Konektivitas</span><span>Wi-Fi / 4G / NB-IoT</span></div>
+        <div class="spec-row"><span>Mikrokontroler</span><span>ESP32 Dev Kit</span></div>
+        <div class="spec-row"><span>Waktu Pengisian</span><span>3 Jam</span></div>
+        <div class="spec-row"><span>Masa Baterai</span><span>Hingga 5 Hari</span></div>
+        <div class="spec-row"><span>Suhu Operasional</span><span>0°C – 50°C</span></div>
+        <div class="spec-row"><span>Akurasi Data</span><span>±2 cm tingkat isian</span></div>
+        <div class="spec-row"><span>Enkripsi</span><span>AES-256 / TLS 1.3</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ PRODUCTS ════════════════════ -->
+<section class="products-section">
+  <div class="container">
+    <div class="section-hd fade-in">
+      <span class="label">Produk Kami</span>
+      <h2>Pilih Smart Bin yang Tepat</h2>
+      <p>Tiga varian kapasitas yang disesuaikan dengan skala produksi food waste di berbagai jenis fasilitas pariwisata.</p>
+    </div>
+    <div class="products-grid">
+      <div class="product-card fade-in">
+        <div class="product-img">
+          <img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?q=80&w=800&auto=format&fit=crop" alt="RESIK Lite 20L">
+        </div>
+        <div class="product-body">
+          <h3>RESIK Lite — 20L</h3>
+          <p>Ideal untuk kafe kecil, warung makan, dan stasiun pemilahan food waste indoor dengan volume limbah rendah.</p>
+          <div class="product-specs">
+            <div class="product-spec-item"><span>Kapasitas</span><span>20L</span></div>
+            <div class="product-spec-item"><span>Koneksi</span><span>Wi-Fi</span></div>
+            <div class="product-spec-item"><span>Penempatan</span><span>Indoor</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card featured fade-in" style="transition-delay:.1s">
+        <div class="product-img">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&auto=format&fit=crop" alt="RESIK Pro 40L">
+          <span class="product-badge">Paling Populer</span>
+        </div>
+        <div class="product-body">
+          <h3>RESIK Pro — 40L</h3>
+          <p>Solusi seimbang untuk food court, sekolah, restoran menengah, dan fasilitas yang membutuhkan keandalan tinggi.</p>
+          <div class="product-specs">
+            <div class="product-spec-item"><span>Kapasitas</span><span>40L</span></div>
+            <div class="product-spec-item"><span>Koneksi</span><span>NB-IoT</span></div>
+            <div class="product-spec-item"><span>Penempatan</span><span>Hybrid</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card fade-in" style="transition-delay:.2s">
+        <div class="product-img">
+          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop" alt="RESIK Enterprise 60L">
+        </div>
+        <div class="product-body">
+          <h3>RESIK Enterprise — 60L</h3>
+          <p>Untuk hotel, buffet, katering besar, dan kawasan wisata dengan volume produksi food waste tinggi.</p>
+          <div class="product-specs">
+            <div class="product-spec-item"><span>Kapasitas</span><span>60L</span></div>
+            <div class="product-spec-item"><span>Koneksi</span><span>Cloud Sync</span></div>
+            <div class="product-spec-item"><span>Penempatan</span><span>Outdoor</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ FEATURES ════════════════════ -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-hd fade-in">
+      <span class="label">Fitur Unggulan</span>
+      <h2>Kecerdasan di Balik Setiap Bin</h2>
+      <p>Hardware dan software yang dirancang untuk mengoptimalkan efisiensi pengumpulan dan pelaporan keberlanjutan.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feat-img">
+          <img src="https://images.unsplash.com/photo-1504608524841-42584120d24a?q=80&w=800&auto=format&fit=crop" alt="Monitoring Real-time">
+        </div>
+        <div class="feat-body">
+          <h3>Monitoring Real-time</h3>
+          <p>Sensor ultrasonik secara terus-menerus memantau tingkat limbah dan menyinkronkan data langsung ke dashboard cloud — dengan presisi ±2 cm.</p>
+        </div>
+      </div>
+      <div class="feature-card fade-in" style="transition-delay:.1s">
+        <div class="feat-img">
+          <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop" alt="Operasi Nirsemtuh">
+        </div>
+        <div class="feat-body">
+          <h3>Operasi Nirsemtuh</h3>
+          <p>Sensor gerak touchless menciptakan pengalaman pembuangan food waste yang lebih bersih, higienis, dan aman tanpa kontak fisik.</p>
+        </div>
+      </div>
+      <div class="feature-card fade-in" style="transition-delay:.2s">
+        <div class="feat-img">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop" alt="Analitik Prediktif">
+        </div>
+        <div class="feat-body">
+          <h3>Analitik Prediktif</h3>
+          <p>Data historis pengumpulan membantu mengoptimalkan rute pengangkutan dan mengurangi inefisiensi operasional sebelum terjadi.</p>
+        </div>
+      </div>
+      <div class="feature-card fade-in" style="transition-delay:.3s">
+        <div class="feat-img">
+          <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=800&auto=format&fit=crop" alt="Laporan ESG">
+        </div>
+        <div class="feat-body">
+          <h3>Laporan ESG Otomatis</h3>
+          <p>Generate metrik keberlanjutan dan laporan dampak lingkungan secara otomatis sesuai standar GRI, SASB, dan CDP.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ CTA ════════════════════ -->
+<div class="cta-wrap" id="kontak">
+  <div class="container">
+    <div class="cta-box fade-in">
+      <h2>Bangun Ekosistem Wisata<br>yang Lebih Berkelanjutan</h2>
+      <p>Modernisasi pengelolaan food waste menggunakan monitoring IoT, analitik operasional, dan kecerdasan keberlanjutan. Bergabunglah bersama ratusan fasilitas wisata yang telah bertransformasi.</p>
+      <div class="cta-btns">
+        <a href="01CONTACT.html" class="btn btn-accent">Hubungi Kami</a>
+        <a href="#solusi" class="btn btn-ghost-white">Jelajahi Solusi</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ FAQ ════════════════════ -->
+<section class="faq-section">
+  <div class="container">
+    <div class="section-hd fade-in">
+      <span class="label">FAQ</span>
+      <h2>Pertanyaan yang Sering Diajukan</h2>
+      <p>Semua yang perlu Anda ketahui tentang kemampuan, pemeliharaan, dan integrasi RESIK Smart Bin.</p>
+    </div>
+
+    <div class="faq-grid">
+      <div class="faq-item fade-in">
+        <button class="faq-q" onclick="toggleFaq(this)">Seberapa sering sensor perlu dikalibrasi? <span class="faq-arrow">▾</span></button>
+        <div class="faq-ans"><div class="faq-ans-inner">Sensor bersifat self-calibrating dan biasanya hanya memerlukan kalibrasi manual sekali setahun dalam kondisi operasional normal. Sistem akan memberi notifikasi jika intervensi manual diperlukan.</div></div>
+      </div>
+      <div class="faq-item fade-in" style="transition-delay:.07s">
+        <button class="faq-q" onclick="toggleFaq(this)">Berapa lama umur material smart bin? <span class="faq-arrow">▾</span></button>
+        <div class="faq-ans"><div class="faq-ans-inner">Konstruksi polymer tahan benturan dan aluminium diperkuat dirating untuk penggunaan outdoor 10+ tahun, diuji terhadap paparan UV, siklus termal, dan tekanan mekanis.</div></div>
+      </div>
+      <div class="faq-item fade-in" style="transition-delay:.14s">
+        <button class="faq-q" onclick="toggleFaq(this)">Apa yang terjadi jika Wi-Fi terputus? <span class="faq-arrow">▾</span></button>
+        <div class="faq-ans"><div class="faq-ans-inner">Bin secara otomatis beralih ke NB-IoT atau konektivitas 4G cadangan. Data juga di-cache secara lokal hingga 72 jam dan disinkronkan ketika koneksi pulih.</div></div>
+      </div>
+      <div class="faq-item fade-in" style="transition-delay:.21s">
+        <button class="faq-q" onclick="toggleFaq(this)">Apakah pelaporan dapat dikustomisasi? <span class="faq-arrow">▾</span></button>
+        <div class="faq-ans"><div class="faq-ans-inner">Ya. Dashboard mendukung template laporan yang sepenuhnya dapat dikustomisasi, ekspor terjadwal (PDF/CSV/Excel), dan integrasi API dengan sistem ERP atau manajemen fasilitas Anda.</div></div>
+      </div>
+      <div class="faq-item fade-in" style="transition-delay:.28s">
+        <button class="faq-q" onclick="toggleFaq(this)">Bagaimana keamanan data dijamin? <span class="faq-arrow">▾</span></button>
+        <div class="faq-ans"><div class="faq-ans-inner">Semua data dienkripsi end-to-end menggunakan AES-256. Infrastruktur cloud mematuhi ISO 27001, dan semua transfer data menggunakan protokol aman TLS 1.3.</div></div>
+      </div>
+      <div class="faq-item fade-in" style="transition-delay:.35s">
+        <button class="faq-q" onclick="toggleFaq(this)">Standar ESG apa saja yang didukung? <span class="faq-arrow">▾</span></button>
+        <div class="faq-ans"><div class="faq-ans-inner">RESIK mendukung Standar GRI, SASB, dan CDP secara langsung. Pemetaan kerangka kerja kustom tersedia untuk klien enterprise dengan persyaratan regulasi khusus.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand fade-in">
+        <a href="01RESIK.html" class="footer-logo-wrap">
+      <img src="image_0.png" alt="RESIK Logo" class="footer-logo-img">
+    </a>
+        <p>Startup climate-tech yang fokus pada infrastruktur food waste cerdas dan operasional perkotaan yang berkelanjutan.</p>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.1s">
+        <h5>Produk</h5>
+        <ul>
+          <li><a href="#">RESIK Lite 20L</a></li>
+          <li><a href="#">RESIK Pro 40L</a></li>
+          <li><a href="#">RESIK Enterprise 60L</a></li>
+          <li><a href="#">Bandingkan Semua</a></li>
+        </ul>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.2s">
+        <h5>Perusahaan</h5>
+        <ul>
+          <li><a href="01RESIK.html">Beranda</a></li>
+          <li><a href="01TENTANGKAMI.html">Tentang Kami</a></li>
+          <li><a href="01SOLUSI.html">Solusi</a></li>
+          <li><a href="#">Teknologi</a></li>
+          <li><a href="#">Laporan ESG</a></li>
+          <li><a href="#">Karier</a></li>
+        </ul>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.3s">
+        <h5>Dukungan</h5>
+        <ul>
+          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="01CONTACT.html">Hubungi Kami</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Garansi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 RESIK — Rekayasa Efisiensi Sistem Industri Kepariwisataan. Seluruh hak dilindungi.</p>
+      <div class="social-links">
+        <button class="social-btn">𝕏</button>
+        <button class="social-btn">in</button>
+        <button class="social-btn">▶</button>
+        <button class="social-btn">ig</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+/* Nav scroll */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 400);
+});
+
+/* Active nav link */
+const sections = document.querySelectorAll('section[id], div[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+
+/* FAQ toggle */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* Scroll-triggered fade-in ditangani oleh resik-shared.js */
+</script>
+<script src="resik-shared.js"></script>
+</body>
+</html>
