@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 /* ════════════════════════════════════════════════════════
    resik-main.css — RESIK Unified Stylesheet
    Menggabungkan: navbar.css + resik-shared.css + inline styles 01RESIK.html
@@ -17,6 +19,7 @@
   --border:         #dde8e2;
   --font-heading:   'Syne', sans-serif;
   --font-body:      'DM Sans', sans-serif;
+  --font-number:    'Inter', sans-serif;
   --r-sm:           12px;
   --shadow:         0 20px 60px rgba(20,56,42,.1);
 
@@ -736,7 +739,7 @@ footer {
 .app-bar-title  { color: rgba(255,255,255,.75); font-size: .78rem; margin-bottom: 2px; }
 .app-bar-brand  { color: white; font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; }
 .app-bar-stat   { text-align: right; }
-.app-bar-stat strong { color: white; font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; display: block; line-height: 1; }
+.app-bar-stat strong { color: white; font-family: var(--font-number); font-size: 1.35rem; font-weight: 900; display: block; line-height: 1; }
 .app-bar-stat span   { color: rgba(255,255,255,.55); font-size: .7rem; }
 
 .app-body { padding: 18px 20px 20px; background: #fff; }
@@ -763,7 +766,7 @@ footer {
 
 .app-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .app-stat { background: var(--leaf-light); border-radius: 10px; padding: 12px; text-align: center; }
-.app-stat strong { display: block; font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: var(--leaf); line-height: 1; margin-bottom: 3px; }
+.app-stat strong { display: block; font-family: var(--font-number); font-size: 1.05rem; font-weight: 900; color: var(--leaf); line-height: 1; margin-bottom: 3px; }
 .app-stat span    { font-size: .68rem; color: var(--leaf-mid); }
 
 /* Floating Cards */
@@ -794,7 +797,7 @@ footer {
   display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;
 }
 .eco-circle svg { width: 22px; height: 22px; stroke: var(--leaf); stroke-width: 2; fill: none; stroke-linecap: round; }
-.eco-num   { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--leaf); line-height: 1; }
+.eco-num   { font-family: var(--font-number); font-size: 1.3rem; font-weight: 900; color: var(--leaf); line-height: 1; }
 .eco-label { font-size: .68rem; color: var(--muted); margin-top: 3px; }
 
 
@@ -858,9 +861,9 @@ footer {
 .stat-item:last-child  { border-right: none; }
 .stat-item:hover       { transform: translateY(-3px); }
 .stat-n {
-  font-family: var(--font-heading);
-  font-size: clamp(1.8rem, 2.8vw, 2.5rem);
-  font-weight: 800;
+  font-family: var(--font-number);
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  font-weight: 900;
   color: #6adb98;
   line-height: 1;
   margin-bottom: 8px;
@@ -923,7 +926,7 @@ footer {
 }
 .masalah-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
 .m-stat { background: var(--cream); border-radius: 14px; padding: 16px; border: 1px solid var(--border); }
-.m-stat-n { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.m-stat-n { font-family: var(--font-number); font-size: 1.25rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
 .m-stat-n.red   { color: #c0392b; }
 .m-stat-n.amber { color: var(--amber); }
 .m-stat-n.teal  { color: var(--teal); }
@@ -959,9 +962,9 @@ footer {
 .timeline-step:hover { background: var(--leaf-pale); }
 
 .timeline-num {
-  font-family: var(--font-heading);
-  font-size: 4rem;
-  font-weight: 800;
+  font-family: var(--font-number);
+  font-size: 3.6rem;
+  font-weight: 900;
   color: var(--leaf-light);
   line-height: 1;
   margin-bottom: 24px;
@@ -1112,9 +1115,9 @@ footer {
   background: var(--leaf-pale);
 }
 .impact-num {
-  font-family: var(--font-heading);
-  font-size: clamp(2.2rem, 3vw, 3rem);
-  font-weight: 800;
+  font-family: var(--font-number);
+  font-size: clamp(2rem, 2.7vw, 2.7rem);
+  font-weight: 900;
   color: var(--leaf);
   line-height: 1;
   margin-bottom: 14px;
@@ -1201,7 +1204,7 @@ footer {
 
 .app-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
 .app-metric { background: var(--leaf-pale); border-radius: 10px; padding: 10px; text-align: center; }
-.app-metric .amn { font-size: 1.15rem; font-weight: 800; color: var(--leaf); font-family: var(--font-heading); }
+.app-metric .amn { font-size: 1.05rem; font-weight: 900; color: var(--leaf); font-family: var(--font-number); }
 .app-metric .aml { font-size: .65rem; color: var(--muted); margin-top: 2px; }
 
 .chart-label { font-size: .65rem; font-weight: 600; color: var(--muted); letter-spacing: .5px; margin-bottom: 8px; text-transform: uppercase; }
@@ -2088,7 +2091,7 @@ footer {
 .mini-bars span { flex: 1; border-radius: 6px 6px 0 0; background: linear-gradient(to top, var(--primary), var(--accent)); }
 
 .stats-card { left: -28px; bottom: 36px; width: 220px; }
-.stats-card .big-num { font-family: var(--font-heading); font-size: 2.8rem; font-weight: 800; color: var(--primary); letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
+.stats-card .big-num { font-family: var(--font-number); font-size: 2.5rem; font-weight: 900; color: var(--primary); letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
 .stats-card p { font-size: .85rem; color: var(--muted); }
 
 /* ── Trust Strip ── */
@@ -2375,7 +2378,7 @@ footer {
 .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 1.2rem; }
 .stat-box { border: 1.5px solid var(--border); border-radius: 16px; padding: 1.1rem; text-align: center; background: var(--green-bg); transition: transform .2s, box-shadow .2s; }
 .stat-box:hover { transform: translateY(-3px); box-shadow: 0 6px 20px var(--shadow-sm); }
-.stat-num { font-family: var(--font-heading); font-size: 1.75rem; font-weight: 700; color: var(--green-mid); line-height: 1; }
+.stat-num { font-family: var(--font-number); font-size: 1.6rem; font-weight: 900; color: var(--green-mid); line-height: 1; }
 .stat-lbl { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
 
 /* Visi Misi Full */
