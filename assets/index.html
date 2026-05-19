@@ -1,0 +1,3294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RESIK Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════
+       RESIK Dashboard — Full Page CSS
+    ═══════════════════════════════════════════════ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --eco-dark:    #1a3a2a;
+      --eco-mid:     #2d6a4f;
+      --eco-soft:    #52b788;
+      --eco-pale:    #b7e4c7;
+      --eco-cream:   #f0f7f4;
+      --glass-bg:    rgba(255,255,255,0.72);
+      --glass-border:rgba(82,183,136,0.22);
+      --hover-bg:    rgba(82,183,136,0.10);
+      --active-bg:   rgba(45,106,79,0.13);
+      --active-border:rgba(45,106,79,0.30);
+      --glow-soft:   rgba(82,183,136,0.18);
+      --font-main:   'DM Sans', system-ui, sans-serif;
+      --font-mono:   'DM Mono', monospace;
+      --ease-fluid:  cubic-bezier(.22,.68,0,1);
+      --dur-main:    300ms;
+      --dur-fast:    220ms;
+      --nav-height:  58px;
+      --nav-radius:  18px;
+      --pill-radius: 40px;
+    }
+
+    html, body { height: 100%; font-family: var(--font-main); -webkit-font-smoothing: antialiased; }
+
+    body {
+      background-color: var(--eco-cream);
+      background-image:
+        radial-gradient(ellipse 65% 40% at 25% 0%, rgba(45,106,79,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 45% 35% at 80% 95%, rgba(82,183,136,0.09) 0%, transparent 55%),
+        linear-gradient(155deg, #eaf7f0 0%, #f5fbf8 55%, #e8f5ee 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    /* ─── HEADER ─── */
+    .rn-header { position: sticky; top: 0; z-index: 200; padding: 14px 24px 0; transition: padding var(--dur-main) var(--ease-fluid); }
+
+    .rn-top {
+      height: var(--nav-height);
+      background: var(--glass-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--nav-radius);
+      box-shadow: 0 4px 30px rgba(26,58,42,0.08), 0 1px 4px rgba(26,58,42,0.05);
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .rn-logo { display: flex; align-items: center; gap: 9px; padding: 5px 9px; border-radius: 12px; text-decoration: none; cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-fluid); }
+    .rn-logo:hover { background: var(--hover-bg); }
+    .rn-logo-icon { width: 30px; height: 30px; flex-shrink: 0; border-radius: 9px; background: linear-gradient(135deg, var(--eco-mid), var(--eco-soft)); display: flex; align-items: center; justify-content: center; color: #fff; }
+    .rn-logo-icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .rn-logo-text { font-size: 15px; font-weight: 700; letter-spacing: .045em; color: var(--eco-dark); }
+
+    .rn-center { display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+    .rn-item { display: inline-flex; align-items: center; gap: 0; height: 38px; padding: 0 11px; border-radius: var(--pill-radius); border: 1px solid transparent; background: transparent; cursor: pointer; user-select: none; overflow: hidden; white-space: nowrap; flex-shrink: 0; transition: background var(--dur-main) var(--ease-fluid), border-color var(--dur-main) var(--ease-fluid), box-shadow var(--dur-main) var(--ease-fluid); }
+    .rn-item:hover { background: var(--hover-bg); border-color: var(--glass-border); box-shadow: 0 0 0 3px var(--glow-soft); }
+    .rn-item.active { background: var(--active-bg); border-color: var(--active-border); }
+    .rn-icon { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex-shrink: 0; position: relative; }
+    .rn-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--eco-dark); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; opacity: .65; transition: stroke var(--dur-main) var(--ease-fluid), opacity var(--dur-fast) var(--ease-fluid); }
+    .rn-item:hover .rn-icon svg, .rn-item.active .rn-icon svg { opacity: 1; stroke: var(--eco-mid); }
+    .rn-label { font-size: 13px; font-weight: 500; color: var(--eco-dark); max-width: 0; overflow: hidden; opacity: 0; margin-left: 0; pointer-events: none; transition: max-width var(--dur-main) var(--ease-fluid), opacity var(--dur-fast) var(--ease-fluid), margin-left var(--dur-main) var(--ease-fluid); }
+    .rn-item:hover .rn-label, .rn-item.active .rn-label { max-width: 80px; opacity: 1; margin-left: 7px; }
+
+    /* Notif badge */
+    .rn-badge { position: absolute; top: -2px; right: -2px; width: 7px; height: 7px; border-radius: 50%; background: #e74c3c; border: 1.5px solid var(--eco-cream); }
+
+    .rn-profile { display: flex; align-items: center; gap: 8px; padding: 5px 10px 5px 6px; border-radius: var(--pill-radius); border: 1px solid transparent; cursor: pointer; user-select: none; transition: background var(--dur-main) var(--ease-fluid), border-color var(--dur-main) var(--ease-fluid), box-shadow var(--dur-main) var(--ease-fluid); }
+    .rn-profile:hover { background: var(--hover-bg); border-color: var(--glass-border); box-shadow: 0 0 0 3px var(--glow-soft); }
+    .rn-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--eco-mid), #74c69d); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; letter-spacing: .02em; }
+    .rn-uname { font-size: 13px; font-weight: 500; color: var(--eco-dark); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rn-chev svg { width: 13px; height: 13px; fill: none; stroke: var(--eco-mid); stroke-width: 2.2; stroke-linecap: round; transition: transform var(--dur-fast) var(--ease-fluid); }
+    .rn-profile:hover .rn-chev svg { transform: translateY(1px); }
+
+    /* ─── MAIN CONTENT ─── */
+    .rn-main { min-height: calc(100vh - var(--nav-height) - 40px); padding: 28px 24px 80px; }
+
+    /* ─── DASHBOARD LAYOUT ─── */
+    .dash-wrap { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+
+    /* ─── GREETING ─── */
+    .dash-greeting { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .greeting-text {}
+    .greeting-sub { font-size: 12px; font-weight: 500; color: var(--eco-soft); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+    .greeting-title { font-size: 22px; font-weight: 700; color: var(--eco-dark); line-height: 1.2; }
+    .greeting-title span { color: var(--eco-mid); }
+    .greeting-date { font-size: 13px; color: var(--eco-mid); opacity: .65; margin-top: 3px; }
+    .greeting-status { display: flex; align-items: center; gap: 8px; background: rgba(82,183,136,0.10); border: 1px solid rgba(82,183,136,0.22); border-radius: 40px; padding: 8px 14px; flex-shrink: 0; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 0 3px rgba(46,204,113,0.25); animation: pulse-dot 2.4s ease-in-out infinite; }
+    @keyframes pulse-dot { 0%,100% { box-shadow: 0 0 0 3px rgba(46,204,113,0.25); } 50% { box-shadow: 0 0 0 5px rgba(46,204,113,0.12); } }
+    .status-text { font-size: 12px; font-weight: 500; color: var(--eco-mid); }
+
+    /* ─── HERO METRICS ─── */
+    .hero-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    .metric-card {
+      background: rgba(255,255,255,0.68);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(82,183,136,0.18);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(26,58,42,0.07);
+      padding: 20px;
+      cursor: default;
+      transition: transform var(--dur-main) var(--ease-fluid), box-shadow var(--dur-main) var(--ease-fluid), border-color var(--dur-main) var(--ease-fluid);
+      animation: card-in var(--dur-main) var(--ease-fluid) both;
+    }
+    .metric-card:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(26,58,42,0.11); border-color: rgba(82,183,136,0.32); }
+    .metric-card:nth-child(1) { animation-delay: 60ms; }
+    .metric-card:nth-child(2) { animation-delay: 120ms; }
+    .metric-card:nth-child(3) { animation-delay: 180ms; }
+    @keyframes card-in { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+    .metric-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .metric-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .metric-icon svg { width: 18px; height: 18px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .metric-icon.green { background: rgba(82,183,136,0.12); }
+    .metric-icon.green svg { stroke: var(--eco-mid); }
+    .metric-icon.teal { background: rgba(45,106,79,0.10); }
+    .metric-icon.teal svg { stroke: var(--eco-soft); }
+    .metric-icon.gold { background: rgba(241,196,15,0.12); }
+    .metric-icon.gold svg { stroke: #d4a017; }
+
+    .metric-badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; letter-spacing: .03em; }
+    .badge-up { background: rgba(46,204,113,0.12); color: #1e8449; }
+    .badge-warn { background: rgba(241,196,15,0.12); color: #b7950b; }
+    .badge-info { background: rgba(82,183,136,0.12); color: var(--eco-mid); }
+
+    .metric-value { font-size: 32px; font-weight: 700; color: var(--eco-dark); line-height: 1; margin-bottom: 4px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+    .metric-value-unit { font-size: 15px; font-weight: 500; margin-left: 2px; opacity: .6; }
+    .metric-label { font-size: 13px; color: var(--eco-mid); opacity: .75; margin-bottom: 14px; }
+    .metric-footer { display: flex; align-items: center; justify-content: space-between; }
+    .metric-meta { font-size: 11px; color: var(--eco-dark); opacity: .45; font-family: var(--font-mono); }
+
+    /* Progress bar */
+    .metric-bar { height: 4px; background: rgba(82,183,136,0.12); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+    .metric-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--eco-mid), var(--eco-soft)); transition: width 1s cubic-bezier(.22,.68,0,1); }
+
+    /* ─── TIER 2: ACTIONS + NOTIF ─── */
+    .mid-grid { display: grid; grid-template-columns: 1fr 340px; gap: 16px; align-items: start; }
+
+    /* Quick Actions */
+    .section-card {
+      background: rgba(255,255,255,0.68);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(82,183,136,0.18);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(26,58,42,0.07);
+      overflow: hidden;
+    }
+    .section-header { padding: 18px 20px 0; display: flex; align-items: center; justify-content: space-between; }
+    .section-title { font-size: 14px; font-weight: 700; color: var(--eco-dark); letter-spacing: .02em; }
+    .section-link { font-size: 12px; color: var(--eco-soft); font-weight: 500; cursor: pointer; text-decoration: none; opacity: .8; transition: opacity .2s; }
+    .section-link:hover { opacity: 1; }
+    .section-body { padding: 14px 20px 20px; }
+
+    .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .qa-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px;
+      border-radius: 14px; border: 1px solid rgba(82,183,136,0.16); background: rgba(82,183,136,0.04);
+      cursor: pointer; user-select: none;
+      transition: background var(--dur-fast) var(--ease-fluid), transform var(--dur-fast) var(--ease-fluid), border-color var(--dur-fast) var(--ease-fluid), box-shadow var(--dur-fast) var(--ease-fluid);
+    }
+    .qa-btn:hover { background: rgba(82,183,136,0.10); border-color: rgba(82,183,136,0.30); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,58,42,0.07); }
+    .qa-btn:active { transform: scale(.97); }
+    .qa-icon-wrap { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+    .qa-icon-wrap svg { width: 20px; height: 20px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .qa-icon-wrap.green { background: rgba(45,106,79,0.10); }
+    .qa-icon-wrap.green svg { stroke: var(--eco-mid); }
+    .qa-icon-wrap.teal { background: rgba(82,183,136,0.12); }
+    .qa-icon-wrap.teal svg { stroke: var(--eco-soft); }
+    .qa-icon-wrap.gold { background: rgba(241,196,15,0.10); }
+    .qa-icon-wrap.gold svg { stroke: #c9990d; }
+    .qa-label { font-size: 12px; font-weight: 600; color: var(--eco-dark); text-align: center; line-height: 1.3; }
+
+    /* Status pickup panel */
+    .pickup-panel { margin-top: 14px; background: rgba(45,106,79,0.06); border: 1px solid rgba(45,106,79,0.14); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+    .pickup-icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; background: rgba(45,106,79,0.12); display: flex; align-items: center; justify-content: center; }
+    .pickup-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--eco-mid); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .pickup-info { flex: 1; min-width: 0; }
+    .pickup-title { font-size: 13px; font-weight: 600; color: var(--eco-dark); margin-bottom: 2px; }
+    .pickup-sub { font-size: 12px; color: var(--eco-mid); opacity: .7; }
+    .pickup-action { font-size: 12px; font-weight: 600; color: var(--eco-mid); white-space: nowrap; cursor: pointer; padding: 6px 12px; border-radius: 20px; background: rgba(82,183,136,0.12); border: none; transition: background .2s; }
+    .pickup-action:hover { background: rgba(82,183,136,0.22); }
+
+    /* ─── NOTIF PANEL ─── */
+    .notif-list { display: flex; flex-direction: column; gap: 0; }
+    .notif-item { display: flex; align-items: flex-start; gap: 10px; padding: 13px 20px; border-bottom: 1px solid rgba(82,183,136,0.07); cursor: pointer; transition: background .2s; }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: var(--hover-bg); }
+    .notif-item.unread { background: rgba(82,183,136,0.04); }
+    .notif-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--eco-soft); flex-shrink: 0; margin-top: 5px; }
+    .notif-dot.read { background: transparent; border: 1.5px solid rgba(82,183,136,0.30); }
+    .notif-content { flex: 1; min-width: 0; }
+    .notif-msg { font-size: 12.5px; color: var(--eco-dark); line-height: 1.45; font-weight: 500; }
+    .notif-time { font-size: 11px; color: var(--eco-mid); opacity: .55; margin-top: 3px; font-family: var(--font-mono); }
+
+    /* ─── TIER 3: CHART + ACTIVITY ─── */
+    .bottom-grid { display: grid; grid-template-columns: 1fr 320px; gap: 16px; align-items: start; }
+
+    /* Chart */
+    .chart-wrap { position: relative; padding-top: 12px; }
+    .chart-legend { display: flex; gap: 16px; margin-bottom: 16px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--eco-dark); opacity: .65; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .chart-area { position: relative; height: 160px; }
+    .chart-svg { width: 100%; height: 100%; overflow: visible; }
+
+    /* Grid lines */
+    .chart-grid line { stroke: rgba(45,106,79,0.08); stroke-dasharray: 4 4; }
+    .chart-grid text { font-size: 10px; fill: rgba(26,58,42,0.35); font-family: var(--font-mono); }
+
+    /* Chart paths */
+    .line-kg { fill: none; stroke: var(--eco-mid); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .area-kg { fill: url(#grad-kg); }
+    .line-pts { fill: none; stroke: var(--eco-soft); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 5 3; }
+
+    .chart-dot { fill: #fff; stroke: var(--eco-mid); stroke-width: 2; cursor: pointer; transition: r .2s; }
+    .chart-dot:hover { r: 5; }
+
+    /* X-axis labels */
+    .chart-xlabel { font-size: 10px; fill: rgba(26,58,42,0.40); font-family: var(--font-mono); text-anchor: middle; }
+
+    /* ─── ACTIVITY FEED ─── */
+    .activity-list { display: flex; flex-direction: column; }
+    .act-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 20px; border-bottom: 1px solid rgba(82,183,136,0.07); }
+    .act-item:last-child { border-bottom: none; }
+    .act-avatar { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; font-size: 11px; font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: center; }
+    .act-avatar.a1 { background: linear-gradient(135deg, #2d6a4f, #52b788); }
+    .act-avatar.a2 { background: linear-gradient(135deg, #1a5276, #2980b9); }
+    .act-avatar.a3 { background: linear-gradient(135deg, #6c3483, #8e44ad); }
+    .act-avatar.a4 { background: linear-gradient(135deg, #784212, #ca6f1e); }
+    .act-content { flex: 1; min-width: 0; }
+    .act-msg { font-size: 12.5px; color: var(--eco-dark); line-height: 1.4; }
+    .act-msg b { font-weight: 600; }
+    .act-time { font-size: 11px; color: var(--eco-mid); opacity: .5; margin-top: 2px; font-family: var(--font-mono); }
+    .act-tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; margin-top: 4px; }
+    .act-tag.green { background: rgba(46,204,113,0.12); color: #1e8449; }
+    .act-tag.blue { background: rgba(41,128,185,0.12); color: #1a5276; }
+    .act-tag.purple { background: rgba(142,68,173,0.12); color: #6c3483; }
+    .act-tag.gold { background: rgba(212,160,23,0.12); color: #7d6608; }
+
+    /* ─── REWARD CARD ─── */
+    .reward-card {
+      background: linear-gradient(135deg, rgba(45,106,79,0.88), rgba(26,58,42,0.92));
+      border-radius: 16px;
+      padding: 20px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .reward-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(82,183,136,0.15); }
+    .reward-card::after { content: ''; position: absolute; bottom: -30px; left: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(82,183,136,0.08); }
+    .reward-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; position: relative; z-index: 1; }
+    .reward-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
+    .reward-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; }
+    .reward-icon svg { width: 16px; height: 16px; fill: none; stroke: #b7e4c7; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .reward-points { font-size: 38px; font-weight: 700; letter-spacing: -.02em; line-height: 1; position: relative; z-index: 1; margin-bottom: 4px; }
+    .reward-pts-label { font-size: 12px; opacity: .6; position: relative; z-index: 1; margin-bottom: 16px; }
+    .reward-progress-label { display: flex; justify-content: space-between; font-size: 11px; opacity: .6; margin-bottom: 6px; position: relative; z-index: 1; }
+    .reward-bar { height: 5px; background: rgba(255,255,255,0.15); border-radius: 5px; overflow: hidden; margin-bottom: 12px; position: relative; z-index: 1; }
+    .reward-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, #74c69d, #b7e4c7); width: 72%; }
+    .reward-next { font-size: 12px; opacity: .65; position: relative; z-index: 1; }
+    .reward-next span { font-weight: 600; color: #b7e4c7; }
+
+    /* ─── BOTTOM DOCK (mobile) ─── */
+    .rn-dock-wrap { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 300; padding-bottom: max(20px, env(safe-area-inset-bottom)); justify-content: center; pointer-events: none; }
+    .rn-dock { display: inline-flex; align-items: center; gap: 6px; padding: 10px 14px; background: rgba(255,255,255,0.76); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(82,183,136,0.20); border-radius: 40px; box-shadow: 0 12px 40px rgba(26,58,42,0.11), 0 2px 8px rgba(26,58,42,0.07), inset 0 1px 0 rgba(255,255,255,0.90); pointer-events: all; }
+    .dock-sep { width: 1px; height: 22px; background: rgba(82,183,136,0.18); border-radius: 1px; flex-shrink: 0; }
+    .dock-item { position: relative; display: flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 22px; border: none; background: transparent; cursor: pointer; user-select: none; flex-shrink: 0; -webkit-tap-highlight-color: transparent; transition: transform .35s cubic-bezier(.22,.68,0,1), background .35s cubic-bezier(.22,.68,0,1), box-shadow .35s cubic-bezier(.22,.68,0,1); }
+    .dock-item:hover { background: rgba(82,183,136,0.09); }
+    .dock-item:active { transform: scale(.90); }
+    .dock-item.active { background: rgba(45,106,79,0.12); transform: translateY(-3px) scale(1.08); box-shadow: 0 6px 18px rgba(45,106,79,0.16), 0 0 0 1px rgba(82,183,136,0.25); }
+    .dock-item.active::after { content: ''; position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; border-radius: 50%; background: var(--eco-soft); opacity: .85; }
+    .dock-icon svg { width: 22px; height: 22px; fill: none; stroke: rgba(26,58,42,0.45); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; transition: stroke .35s cubic-bezier(.22,.68,0,1); }
+    .dock-item.active .dock-icon svg { stroke: var(--eco-mid); }
+    .dock-item:hover:not(.active) .dock-icon svg { stroke: rgba(26,58,42,0.70); }
+    .dock-tip { pointer-events: none; position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(4px); background: rgba(26,58,42,0.88); color: #e8f5ee; font-size: 11px; font-weight: 500; padding: 4px 9px; border-radius: 8px; white-space: nowrap; opacity: 0; letter-spacing: .02em; transition: opacity .2s ease, transform .2s ease; }
+    .dock-tip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: rgba(26,58,42,0.88); }
+    .dock-item:hover .dock-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .dock-label { display: none; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1100px) {
+      :root { --nav-height: 54px; --nav-radius: 16px; }
+      .rn-header { padding: 12px 18px 0; }
+      .rn-top { padding: 0 16px; gap: 10px; }
+      .rn-logo { padding: 4px 7px; gap: 7px; }
+      .rn-logo-icon { width: 27px; height: 27px; border-radius: 8px; }
+      .rn-logo-text { font-size: 14px; }
+      .rn-center { gap: 2px; }
+      .rn-item { height: 34px; padding: 0 9px; }
+      .rn-icon svg { width: 16px; height: 16px; }
+      .rn-uname { font-size: 12px; max-width: 90px; }
+      .hero-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-grid .metric-card:last-child { display: none; }
+      .mid-grid { grid-template-columns: 1fr; }
+      .bottom-grid { grid-template-columns: 1fr; }
+      .quick-actions { grid-template-columns: repeat(3,1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .rn-header { display: none; }
+      .rn-dock-wrap { display: flex; }
+      .rn-main { min-height: 100vh; padding: 20px 16px 140px; }
+      .dash-wrap { gap: 18px; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-grid .metric-card:last-child { display: flex; }
+      .mid-grid, .bottom-grid { grid-template-columns: 1fr; }
+      .quick-actions { grid-template-columns: repeat(3,1fr); }
+      .greeting-title { font-size: 18px; }
+      .metric-value { font-size: 28px; }
+    }
+
+    @media (max-width: 420px) {
+      .rn-dock { gap: 2px; padding: 7px 8px; }
+      .dock-item { width: 48px; min-height: 50px; border-radius: 15px; }
+      .dock-icon svg { width: 20px; height: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+
+    .rn-item:focus-visible, .rn-logo:focus-visible, .rn-profile:focus-visible, .dock-item:focus-visible { outline: 2px solid var(--eco-soft); outline-offset: 2px; }
+
+
+    /* ═══════════════════════════════════════════════
+       SPA PAGE SYSTEM
+       Setiap halaman dibungkus .resik-page
+       Hanya satu yang visible sekaligus.
+    ═══════════════════════════════════════════════ */
+    .resik-page {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition:
+        opacity  280ms cubic-bezier(.22,.68,0,1),
+        transform 280ms cubic-bezier(.22,.68,0,1);
+    }
+
+    .resik-page.page-active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Animasi masuk */
+    .resik-page.page-enter {
+      animation: page-fade-in 300ms cubic-bezier(.22,.68,0,1) both;
+    }
+
+    @keyframes page-fade-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* rn-main harus flex-col untuk menampung semua page */
+    .rn-main {
+      display: block !important;
+      align-items: unset !important;
+      justify-content: unset !important;
+    }
+
+
+    /* ═══════════════════════════════════════════════
+       HALAMAN SAMPAH — CSS (namespace rw-*)
+    ═══════════════════════════════════════════════ */
+    :root {
+      --rw-fresh:        #2d9e6b;
+      --rw-fresh-bg:     rgba(45,158,107,0.10);
+      --rw-warn:         #b07d1a;
+      --rw-warn-bg:      rgba(176,125,26,0.10);
+      --rw-urgent:       #c0392b;
+      --rw-urgent-bg:    rgba(192,57,43,0.09);
+      --rw-maggot:       #5a8a3c;
+      --font-mono:       'DM Mono', ui-monospace, monospace;
+    }
+
+    /* ── Layout ── */
+    #page-sampah { padding: 28px 24px 100px; }
+    .rw-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; }
+
+    /* ── Page Header ── */
+    .rw-page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+    .rw-page-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .10em; text-transform: uppercase; color: var(--eco-soft); margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+    .rw-page-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--eco-soft); opacity: .7; }
+    .rw-page-title { font-size: 24px; font-weight: 700; color: var(--eco-dark); line-height: 1.15; letter-spacing: -.01em; }
+    .rw-page-title em { font-style: normal; color: var(--eco-mid); }
+    .rw-page-sub { font-size: 13px; color: var(--eco-mid); opacity: .6; margin-top: 4px; }
+    .rw-date-chip { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.65); border: 1px solid var(--glass-border); border-radius: 40px; padding: 7px 14px; font-size: 12px; font-weight: 500; color: var(--eco-mid); white-space: nowrap; flex-shrink: 0; }
+    .rw-date-chip svg { width: 13px; height: 13px; fill: none; stroke: var(--eco-soft); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── Metric cards ── */
+    .rw-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .rw-metric { background: rgba(255,255,255,0.68); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(82,183,136,0.16); border-radius: 16px; padding: 18px 18px 16px; cursor: default; transition: transform var(--dur-main) var(--ease-fluid), box-shadow var(--dur-main) var(--ease-fluid), border-color var(--dur-main) var(--ease-fluid); }
+    .rw-metric:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(26,58,42,0.10); border-color: rgba(82,183,136,0.30); }
+    .rw-metric-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .rw-metric-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .rw-metric-icon svg { width: 16px; height: 16px; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .rw-metric-icon.green { background: rgba(82,183,136,0.12); } .rw-metric-icon.green svg { stroke: var(--eco-mid); }
+    .rw-metric-icon.amber { background: rgba(176,125,26,0.10); } .rw-metric-icon.amber svg { stroke: var(--rw-warn); }
+    .rw-metric-icon.teal  { background: rgba(45,106,79,0.10);  } .rw-metric-icon.teal svg  { stroke: var(--eco-soft); }
+    .rw-metric-icon.leaf  { background: rgba(90,138,60,0.10);  } .rw-metric-icon.leaf svg  { stroke: var(--rw-maggot); }
+    .rw-metric-delta { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; padding: 3px 7px; border-radius: 20px; }
+    .rw-metric-delta.up   { background: rgba(45,158,107,0.10); color: var(--rw-fresh); }
+    .rw-metric-delta.down { background: rgba(192,57,43,0.09);  color: var(--rw-urgent); }
+    .rw-metric-value { font-size: 26px; font-weight: 700; color: var(--eco-dark); letter-spacing: -.02em; line-height: 1; margin-bottom: 4px; }
+    .rw-metric-unit { font-size: 13px; font-weight: 500; color: var(--eco-mid); opacity: .65; }
+    .rw-metric-label { font-size: 12px; color: var(--eco-mid); opacity: .55; margin-top: 2px; }
+
+    /* ── Quick actions ── */
+    .rw-section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .rw-section-title { font-size: 13.5px; font-weight: 700; color: var(--eco-dark); letter-spacing: .01em; }
+    .rw-section-count { font-size: 11px; font-weight: 600; color: var(--eco-mid); opacity: .55; background: rgba(45,106,79,0.07); padding: 3px 9px; border-radius: 20px; }
+    .rw-actions-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+    .rw-action { display: flex; flex-direction: column; align-items: center; gap: 9px; padding: 16px 12px 14px; background: rgba(255,255,255,0.60); border: 1px solid rgba(82,183,136,0.15); border-radius: 14px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; transition: background var(--dur-fast) var(--ease-fluid), border-color var(--dur-fast) var(--ease-fluid), transform var(--dur-fast) var(--ease-fluid), box-shadow var(--dur-fast) var(--ease-fluid); }
+    .rw-action:hover { background: rgba(255,255,255,0.82); border-color: rgba(82,183,136,0.28); box-shadow: 0 4px 20px rgba(45,106,79,0.08); transform: translateY(-1px); }
+    .rw-action:active { transform: scale(.96); }
+    .rw-action-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(82,183,136,0.10); display: flex; align-items: center; justify-content: center; transition: background var(--dur-fast) var(--ease-fluid); }
+    .rw-action:hover .rw-action-icon { background: rgba(82,183,136,0.18); }
+    .rw-action-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--eco-mid); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .rw-action-label { font-size: 11.5px; font-weight: 600; color: var(--eco-dark); text-align: center; }
+
+    /* ── Smart Bin Fleet ── */
+    .rw-bin-summary { display: flex; align-items: center; gap: 20px; margin-bottom: 16px; flex-wrap: wrap; }
+    .rw-bin-stat { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 500; color: var(--eco-dark); }
+    .rw-bin-stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .rw-bin-stat-dot.green { background: var(--rw-fresh); } .rw-bin-stat-dot.yellow { background: #d4a017; } .rw-bin-stat-dot.red { background: var(--rw-urgent); }
+    .rw-bin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; }
+    .rw-bin-card { background: rgba(255,255,255,0.62); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1.5px solid rgba(82,183,136,0.16); border-radius: 14px; padding: 14px 14px 12px; cursor: default; position: relative; overflow: hidden; transition: transform var(--dur-main) var(--ease-fluid), box-shadow var(--dur-main) var(--ease-fluid); }
+    .rw-bin-card:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(26,58,42,0.10); }
+    .rw-bin-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 14px 14px 0 0; }
+    .rw-bin-card.green  { border-color: rgba(45,158,107,0.22); } .rw-bin-card.green::before  { background: linear-gradient(90deg, var(--rw-fresh), #74c69d); }
+    .rw-bin-card.yellow { border-color: rgba(176,125,26,0.28);  } .rw-bin-card.yellow::before { background: linear-gradient(90deg, #b07d1a, #e0a832); }
+    .rw-bin-card.red    { border-color: rgba(192,57,43,0.28);   } .rw-bin-card.red::before    { background: linear-gradient(90deg, var(--rw-urgent), #e74c3c); }
+    .rw-bin-card.offline { opacity: .55; border-color: rgba(100,100,100,0.15); } .rw-bin-card.offline::before { background: rgba(120,120,120,0.25); }
+    .rw-bin-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .rw-bin-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+    .rw-bin-card.green  .rw-bin-icon { background: var(--rw-fresh-bg); }
+    .rw-bin-card.yellow .rw-bin-icon { background: var(--rw-warn-bg);  }
+    .rw-bin-card.red    .rw-bin-icon { background: var(--rw-urgent-bg);}
+    .rw-bin-card.offline .rw-bin-icon { background: rgba(100,100,100,0.07); }
+    .rw-bin-badge { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; letter-spacing: .04em; padding: 2px 8px; border-radius: 20px; }
+    .rw-bin-badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .rw-bin-card.green  .rw-bin-badge { background: var(--rw-fresh-bg);  color: var(--rw-fresh);  } .rw-bin-card.green  .rw-bin-badge-dot { background: var(--rw-fresh); }
+    .rw-bin-card.yellow .rw-bin-badge { background: var(--rw-warn-bg);   color: var(--rw-warn);   } .rw-bin-card.yellow .rw-bin-badge-dot { background: #d4a017; animation: rw-pulse-warn 2s ease infinite; }
+    .rw-bin-card.red    .rw-bin-badge { background: var(--rw-urgent-bg); color: var(--rw-urgent); } .rw-bin-card.red    .rw-bin-badge-dot { background: var(--rw-urgent); animation: rw-pulse-urgent 1.4s ease infinite; }
+    .rw-bin-card.offline .rw-bin-badge { background: rgba(100,100,100,0.09); color: #888; } .rw-bin-card.offline .rw-bin-badge-dot { background: #aaa; }
+    .rw-bin-name { font-size: 12.5px; font-weight: 700; color: var(--eco-dark); margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rw-bin-location { font-size: 10.5px; color: var(--eco-mid); opacity: .55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 10px; }
+    .rw-bin-gauge-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .rw-bin-gauge-bar { flex: 1; height: 6px; background: rgba(82,183,136,0.10); border-radius: 6px; overflow: hidden; }
+    .rw-bin-gauge-fill { height: 100%; border-radius: 6px; transition: width 700ms var(--ease-fluid); }
+    .rw-bin-card.green  .rw-bin-gauge-fill { background: linear-gradient(90deg, var(--rw-fresh), #74c69d); }
+    .rw-bin-card.yellow .rw-bin-gauge-fill { background: linear-gradient(90deg, #b07d1a, #e0a832); }
+    .rw-bin-card.red    .rw-bin-gauge-fill { background: linear-gradient(90deg, var(--rw-urgent), #e74c3c); }
+    .rw-bin-pct { font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; flex-shrink: 0; }
+    .rw-bin-card.green  .rw-bin-pct { color: var(--rw-fresh);  }
+    .rw-bin-card.yellow .rw-bin-pct { color: var(--rw-warn);   }
+    .rw-bin-card.red    .rw-bin-pct { color: var(--rw-urgent); }
+    .rw-bin-sync { font-size: 10px; color: var(--eco-mid); opacity: .40; display: flex; align-items: center; gap: 4px; }
+    .rw-bin-sync svg { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: .7; }
+    @keyframes rw-pulse-warn    { 0%,100%{opacity:1}50%{opacity:.4} }
+    @keyframes rw-pulse-urgent  { 0%,100%{opacity:1}50%{opacity:.3} }
+
+    /* ── Body Grid ── */
+    .rw-body-grid { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
+
+    /* ── Filters ── */
+    .rw-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .rw-filter { font-size: 11.5px; font-weight: 500; color: var(--eco-mid); background: rgba(255,255,255,0.55); border: 1px solid rgba(82,183,136,0.18); border-radius: 20px; padding: 5px 12px; cursor: pointer; user-select: none; transition: background var(--dur-fast) var(--ease-fluid), border-color var(--dur-fast) var(--ease-fluid); }
+    .rw-filter:hover { background: rgba(82,183,136,0.10); border-color: rgba(82,183,136,0.30); }
+    .rw-filter.active { background: var(--active-bg); border-color: var(--active-border); color: var(--eco-dark); font-weight: 600; }
+
+    /* ── Waste list cards ── */
+    .rw-list { display: flex; flex-direction: column; gap: 10px; }
+    .rw-card { background: rgba(255,255,255,0.65); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(82,183,136,0.16); border-radius: 14px; padding: 16px; cursor: pointer; transition: transform var(--dur-main) var(--ease-fluid), box-shadow var(--dur-main) var(--ease-fluid), border-color var(--dur-main) var(--ease-fluid), background var(--dur-main) var(--ease-fluid); }
+    .rw-card:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(26,58,42,0.09); border-color: rgba(82,183,136,0.28); background: rgba(255,255,255,0.80); }
+    .rw-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .rw-card-left { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .rw-card-emoji { width: 38px; height: 38px; border-radius: 11px; background: rgba(82,183,136,0.09); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .rw-card-name { font-size: 14px; font-weight: 600; color: var(--eco-dark); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rw-card-meta { font-size: 11.5px; color: var(--eco-mid); opacity: .6; }
+    .rw-card-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+    .rw-fresh-badge { display: flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 600; letter-spacing: .03em; padding: 3px 9px 3px 7px; border-radius: 20px; white-space: nowrap; }
+    .rw-fresh-badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .rw-fresh-badge.fresh  { background: var(--rw-fresh-bg);  color: var(--rw-fresh);  } .rw-fresh-badge.fresh  .rw-fresh-badge-dot { background: var(--rw-fresh); }
+    .rw-fresh-badge.warn   { background: var(--rw-warn-bg);   color: var(--rw-warn);   } .rw-fresh-badge.warn   .rw-fresh-badge-dot { background: var(--rw-warn); }
+    .rw-fresh-badge.urgent { background: var(--rw-urgent-bg); color: var(--rw-urgent); } .rw-fresh-badge.urgent .rw-fresh-badge-dot { background: var(--rw-urgent); animation: rw-pulse-urgent 1.6s ease infinite; }
+    .rw-pickup-chip { font-size: 10px; font-weight: 600; letter-spacing: .03em; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; }
+    .rw-pickup-chip.waiting   { background: rgba(176,125,26,0.10); color: var(--rw-warn);   }
+    .rw-pickup-chip.scheduled { background: rgba(45,106,79,0.10);  color: var(--eco-mid);  }
+    .rw-pickup-chip.done      { background: rgba(82,183,136,0.12); color: var(--rw-fresh); }
+    .rw-card-expand-icon { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(82,183,136,0.08); flex-shrink: 0; transition: background var(--dur-fast) var(--ease-fluid); }
+    .rw-card-expand-icon svg { width: 11px; height: 11px; fill: none; stroke: var(--eco-mid); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--dur-main) var(--ease-fluid); }
+    .rw-card.expanded .rw-card-expand-icon svg { transform: rotate(180deg); }
+    .rw-card.expanded .rw-card-expand-icon { background: rgba(82,183,136,0.14); }
+    .rw-card-footer { display: flex; align-items: center; gap: 10px; }
+    .rw-card-weight { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--eco-dark); flex-shrink: 0; }
+    .rw-progress-wrap { flex: 1; height: 4px; background: rgba(82,183,136,0.12); border-radius: 4px; overflow: hidden; }
+    .rw-progress-fill { height: 100%; border-radius: 4px; transition: width 600ms var(--ease-fluid); }
+    .rw-progress-fill.fresh  { background: linear-gradient(90deg, var(--rw-fresh), #74c69d); }
+    .rw-progress-fill.warn   { background: linear-gradient(90deg, var(--rw-warn), #e0a832); }
+    .rw-progress-fill.urgent { background: linear-gradient(90deg, var(--rw-urgent), #e74c3c); }
+    .rw-card-time { font-size: 11px; color: var(--eco-mid); opacity: .50; flex-shrink: 0; }
+
+    /* ── Card expand detail ── */
+    .rw-card-detail { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 380ms var(--ease-fluid), opacity 280ms var(--ease-fluid); }
+    .rw-card.expanded .rw-card-detail { max-height: 320px; opacity: 1; }
+    .rw-card-detail-inner { padding-top: 14px; margin-top: 14px; border-top: 1px solid rgba(82,183,136,0.12); display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+    .rw-detail-row { display: flex; flex-direction: column; gap: 2px; }
+    .rw-detail-label { font-size: 10.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--eco-mid); opacity: .55; }
+    .rw-detail-val { font-size: 13px; font-weight: 500; color: var(--eco-dark); }
+    .rw-detail-val.mono { font-family: var(--font-mono); }
+    .rw-card-detail-actions { grid-column: 1/-1; display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+    .rw-detail-btn { flex: 1; min-width: 100px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.55); font-size: 12px; font-weight: 600; color: var(--eco-mid); cursor: pointer; text-align: center; transition: background var(--dur-fast) var(--ease-fluid), border-color var(--dur-fast) var(--ease-fluid); }
+    .rw-detail-btn:hover { background: var(--active-bg); border-color: var(--active-border); color: var(--eco-dark); }
+    .rw-detail-btn.primary { background: rgba(45,106,79,0.10); border-color: rgba(45,106,79,0.22); }
+    .rw-detail-btn.primary:hover { background: rgba(45,106,79,0.18); }
+
+    /* ── Sidebar panels ── */
+    .rw-sidebar { display: flex; flex-direction: column; gap: 16px; }
+    .rw-panel { background: rgba(255,255,255,0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(82,183,136,0.16); border-radius: 16px; padding: 18px; }
+    .rw-panel-title { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--eco-mid); opacity: .7; margin-bottom: 14px; }
+    .rw-pickup-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(82,183,136,0.10); }
+    .rw-pickup-row:last-child { border-bottom: none; padding-bottom: 0; } .rw-pickup-row:first-child { padding-top: 0; }
+    .rw-pickup-row-label { font-size: 11.5px; color: var(--eco-mid); opacity: .60; }
+    .rw-pickup-row-val { font-size: 13px; font-weight: 600; color: var(--eco-dark); }
+    .rw-time-big { font-family: var(--font-mono); font-size: 22px; font-weight: 500; color: var(--eco-dark); letter-spacing: .02em; margin-bottom: 4px; }
+    .rw-time-label { font-size: 11px; color: var(--eco-mid); opacity: .55; margin-bottom: 14px; }
+    .rw-status-chip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+    .rw-status-chip.en-route { background: rgba(45,106,79,0.10); color: var(--eco-mid); border: 1px solid rgba(45,106,79,0.18); }
+    .rw-status-pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--eco-soft); box-shadow: 0 0 0 3px rgba(82,183,136,0.22); animation: rw-pulse-live 2.2s ease-in-out infinite; }
+    @keyframes rw-pulse-live { 0%,100%{box-shadow:0 0 0 3px rgba(82,183,136,0.22)}50%{box-shadow:0 0 0 6px rgba(82,183,136,0.08)} }
+    .rw-courier-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(82,183,136,0.10); }
+    .rw-courier-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--eco-mid), #74c69d); display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .rw-courier-name { font-size: 13px; font-weight: 600; color: var(--eco-dark); }
+    .rw-courier-sub { font-size: 11px; color: var(--eco-mid); opacity: .55; }
+    .rw-impact-item { display: flex; flex-direction: column; gap: 7px; padding: 10px 0; border-bottom: 1px solid rgba(82,183,136,0.09); }
+    .rw-impact-item:last-child { border-bottom: none; padding-bottom: 0; } .rw-impact-item:first-child { padding-top: 0; }
+    .rw-impact-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .rw-impact-info { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .rw-impact-icon { font-size: 15px; flex-shrink: 0; line-height: 1; }
+    .rw-impact-label { font-size: 12px; font-weight: 500; color: var(--eco-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rw-impact-val { font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; color: var(--eco-mid); flex-shrink: 0; }
+    .rw-impact-bar-wrap { width: 100%; height: 4px; background: rgba(82,183,136,0.10); border-radius: 4px; overflow: hidden; }
+    .rw-impact-bar { height: 100%; border-radius: 4px; transition: width 700ms var(--ease-fluid); }
+    .rw-impact-bar.landfill { background: linear-gradient(90deg, var(--eco-mid), var(--eco-soft)); }
+    .rw-impact-bar.maggot   { background: linear-gradient(90deg, var(--rw-maggot), #8ab868); }
+    .rw-impact-bar.organic  { background: linear-gradient(90deg, #2980b9, #5dade2); }
+    .rw-impact-sub { font-size: 10.5px; color: var(--eco-mid); opacity: .50; }
+
+    /* ── Maggot callout ── */
+    .rw-maggot-callout { display: flex; align-items: center; gap: 14px; background: rgba(90,138,60,0.07); border: 1px solid rgba(90,138,60,0.18); border-radius: 14px; padding: 14px 16px; transition: background var(--dur-main) var(--ease-fluid), border-color var(--dur-main) var(--ease-fluid); }
+    .rw-maggot-callout:hover { background: rgba(90,138,60,0.11); border-color: rgba(90,138,60,0.28); }
+    .rw-maggot-emoji { font-size: 26px; flex-shrink: 0; line-height: 1; }
+    .rw-maggot-title { font-size: 13px; font-weight: 700; color: var(--rw-maggot); margin-bottom: 2px; }
+    .rw-maggot-desc { font-size: 11.5px; color: var(--eco-mid); opacity: .70; line-height: 1.5; }
+    .rw-maggot-badge { margin-left: auto; flex-shrink: 0; background: rgba(90,138,60,0.12); border: 1px solid rgba(90,138,60,0.20); border-radius: 20px; padding: 4px 11px; font-size: 11px; font-weight: 700; color: var(--rw-maggot); font-family: var(--font-mono); }
+
+    /* ── Responsive Sampah ── */
+    @media (max-width: 1100px) {
+      .rw-metrics { grid-template-columns: repeat(2,1fr); }
+      .rw-body-grid { grid-template-columns: 1fr; }
+      .rw-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .rw-actions-grid { grid-template-columns: repeat(4,1fr); }
+    }
+    @media (max-width: 700px) {
+      #page-sampah { padding: 20px 16px 140px; }
+      .rw-page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .rw-metrics { grid-template-columns: repeat(2,1fr); gap: 10px; }
+      .rw-actions-grid { grid-template-columns: repeat(2,1fr); }
+      .rw-body-grid { grid-template-columns: 1fr; }
+      .rw-sidebar { display: flex; flex-direction: column; gap: 14px; }
+      .rw-bin-grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
+      .rw-maggot-callout { flex-wrap: wrap; gap: 10px; }
+      .rw-maggot-badge { margin-left: 0; }
+      .rw-card-detail-inner { grid-template-columns: 1fr; }
+    }
+
+    .rw-action:focus-visible, .rw-filter:focus-visible, .rw-card:focus-visible { outline: 2px solid var(--eco-soft); outline-offset: 2px; }
+
+
+    /* ═══ STATISTIK PAGE CSS (scoped) ═══ */
+
+#page-statistik /* ══════════════════════════════════════════
+       ROOT VARIABLES & RESET
+    ══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+      /* Eco Palette — inherits from navbar.css */
+      --eco-dark:     #1a3a2a;
+      --eco-mid:      #2d6a4f;
+      --eco-soft:     #52b788;
+      --eco-pale:     #b7e4c7;
+      --eco-cream:    #f0f7f4;
+      --eco-accent:   #40916c;
+
+      /* Extended palette */
+      --teal-glow:    #74c69d;
+      --amber:        #e9c46a;
+      --amber-dark:   #c49a1d;
+      --coral:        #e76f51;
+      --coral-dark:   #c1440e;
+      --sky:          #90e0ef;
+      --sky-dark:     #0096c7;
+      --violet:       #c77dff;
+      --violet-dark:  #7b2d8b;
+
+      /* Surface */
+      --surface-0:    #ffffff;
+      --surface-1:    #f8fcf9;
+      --surface-2:    #eef7f2;
+      --border-light: rgba(82, 183, 136, 0.18);
+      --border-mid:   rgba(45, 106, 79, 0.22);
+      --shadow-sm:    0 2px 12px rgba(26,58,42,0.07);
+      --shadow-md:    0 6px 28px rgba(26,58,42,0.10);
+      --shadow-lg:    0 16px 48px rgba(26,58,42,0.13);
+      --glow:         0 0 0 3px rgba(82,183,136,0.18);
+
+      /* Glass */
+      --glass-bg:     rgba(255,255,255,0.72);
+      --glass-border: rgba(82,183,136,0.22);
+
+      /* Text */
+      --text-1:       #1a3a2a;
+      --text-2:       #2d5a3e;
+      --text-3:       #5a7a68;
+      --text-4:       #8aab98;
+
+      /* Animation */
+      --ease-fluid:   cubic-bezier(.22,.68,0,1);
+      --dur-main:     300ms;
+      --dur-fast:     200ms;
+      --dur-slow:     500ms;
+
+      /* Layout */
+      --nav-height:   58px;
+      --sidebar-w:    0px;
+      --page-pad:     28px;
+      --card-r:       18px;
+      --font-main:    'DM Sans', system-ui, sans-serif;
+      --font-mono:    'DM Mono', monospace;
+    }
+#page-statistik /* ══════════════════════════════════════════
+       BASE
+    ══════════════════════════════════════════ */
+    html, body {
+      height: 100%;
+      font-family: var(--font-main);
+      font-size: 15px;
+      background-color: var(--eco-cream);
+      background-image:
+        radial-gradient(ellipse 70% 45% at 20% -5%, rgba(45,106,79,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 85% 100%, rgba(82,183,136,.09) 0%, transparent 55%),
+        linear-gradient(155deg, #eaf7f0 0%, #f5fbf8 50%, #e8f5ee 100%);
+      background-attachment: fixed;
+      color: var(--text-1);
+      -webkit-font-smoothing: antialiased;
+    }
+#page-statistik /* ══════════════════════════════════════════
+       LAYOUT WRAPPER
+    ══════════════════════════════════════════ */
+    .page-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px var(--page-pad) 120px;
+    }
+#page-statistik /* ══════════════════════════════════════════
+       PAGE HEADER
+    ══════════════════════════════════════════ */
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+#page-statistik .page-header__left {}
+#page-statistik .page-header__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--eco-soft);
+      margin-bottom: 6px;
+    }
+#page-statistik .page-header__eyebrow svg {
+      width: 12px; height: 12px;
+      fill: none; stroke: currentColor;
+      stroke-width: 2.2; stroke-linecap: round;
+    }
+#page-statistik .page-header__title {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 700;
+      color: var(--eco-dark);
+      letter-spacing: -.03em;
+      line-height: 1.15;
+    }
+#page-statistik .page-header__sub {
+      font-size: 13px;
+      color: var(--text-3);
+      margin-top: 5px;
+      font-weight: 400;
+    }
+#page-statistik .page-header__actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+#page-statistik /* Date Range Selector */
+    .date-range {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+#page-statistik .date-range__btn {
+      padding: 9px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-main);
+      color: var(--text-3);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all var(--dur-fast) var(--ease-fluid);
+      border-right: 1px solid var(--border-light);
+      white-space: nowrap;
+    }
+#page-statistik .date-range__btn:last-child { border-right: none; }
+#page-statistik .date-range__btn:hover { color: var(--eco-mid); background: var(--hover-bg, rgba(82,183,136,.08)); }
+#page-statistik .date-range__btn.active {
+      background: var(--eco-mid);
+      color: #fff;
+    }
+#page-statistik /* Export Button */
+    .btn-export {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      background: var(--eco-dark);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-main);
+      cursor: pointer;
+      transition: all var(--dur-fast) var(--ease-fluid);
+      box-shadow: 0 4px 14px rgba(26,58,42,.25);
+      letter-spacing: .02em;
+    }
+#page-statistik .btn-export svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+#page-statistik .btn-export:hover { background: var(--eco-mid); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,58,42,.30); }
+#page-statistik /* ══════════════════════════════════════════
+       SECTION HEADINGS
+    ══════════════════════════════════════════ */
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+#page-statistik .section-heading__title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--eco-dark);
+      letter-spacing: -.02em;
+    }
+#page-statistik .section-heading__sub {
+      font-size: 12px;
+      color: var(--text-4);
+      margin-top: 2px;
+    }
+#page-statistik .section-heading__link {
+      font-size: 12px;
+      color: var(--eco-soft);
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: color var(--dur-fast);
+    }
+#page-statistik .section-heading__link:hover { color: var(--eco-mid); }
+#page-statistik .section-heading__link svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.5; }
+#page-statistik .section { margin-bottom: 40px; }
+#page-statistik /* ══════════════════════════════════════════
+       SUMMARY STAT CARDS
+    ══════════════════════════════════════════ */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+#page-statistik .stat-card {
+      background: var(--surface-0);
+      border: 1px solid var(--border-light);
+      border-radius: var(--card-r);
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      cursor: default;
+      transition:
+        transform   var(--dur-main) var(--ease-fluid),
+        box-shadow  var(--dur-main) var(--ease-fluid),
+        border-color var(--dur-main) var(--ease-fluid);
+      position: relative;
+      overflow: hidden;
+    }
+#page-statistik .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: var(--card-r) var(--card-r) 0 0;
+      background: linear-gradient(90deg, var(--card-accent-a), var(--card-accent-b));
+      opacity: 0;
+      transition: opacity var(--dur-fast);
+    }
+#page-statistik .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md), var(--glow);
+      border-color: var(--border-mid);
+    }
+#page-statistik .stat-card:hover::before { opacity: 1; }
+#page-statistik /* Card accent colors */
+    .stat-card--green { --card-accent-a: #52b788; --card-accent-b: #40916c; }
+#page-statistik .stat-card--teal { --card-accent-a: #74c69d; --card-accent-b: #52b788; }
+#page-statistik .stat-card--amber { --card-accent-a: #e9c46a; --card-accent-b: #f4a261; }
+#page-statistik .stat-card--sky { --card-accent-a: #90e0ef; --card-accent-b: #0096c7; }
+#page-statistik .stat-card--violet { --card-accent-a: #c77dff; --card-accent-b: #7b2d8b; }
+#page-statistik .stat-card--coral { --card-accent-a: #f4a261; --card-accent-b: #e76f51; }
+#page-statistik .stat-card__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+#page-statistik .stat-card__icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+#page-statistik .stat-card__icon svg {
+      width: 18px; height: 18px;
+      fill: none; stroke: currentColor;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+#page-statistik /* Icon colors per card type */
+    .stat-card--green  .stat-card__icon { background: rgba(82,183,136,.12); color: var(--eco-mid); }
+#page-statistik .stat-card--teal   .stat-card__icon { background: rgba(116,198,157,.12); color: #2d7a55; }
+#page-statistik .stat-card--amber  .stat-card__icon { background: rgba(233,196,106,.15); color: #c49a1d; }
+#page-statistik .stat-card--sky    .stat-card__icon { background: rgba(144,224,239,.15); color: #0096c7; }
+#page-statistik .stat-card--violet .stat-card__icon { background: rgba(199,125,255,.12); color: #7b2d8b; }
+#page-statistik .stat-card--coral  .stat-card__icon { background: rgba(244,162,97,.12); color: #c1440e; }
+#page-statistik .stat-card__badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      letter-spacing: .04em;
+    }
+#page-statistik .badge--up { background: rgba(82,183,136,.12); color: var(--eco-mid); }
+#page-statistik .badge--down { background: rgba(231,111,81,.10); color: #c1440e; }
+#page-statistik .badge--flat { background: rgba(90,122,104,.08); color: var(--text-3); }
+#page-statistik .stat-card__body {}
+#page-statistik .stat-card__value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--eco-dark);
+      letter-spacing: -.04em;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+#page-statistik .stat-card__label {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 3px;
+      font-weight: 400;
+    }
+#page-statistik .stat-card__trend {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      color: var(--text-4);
+      margin-top: 10px;
+    }
+#page-statistik .stat-card__trend-val {
+      font-weight: 600;
+      font-size: 12px;
+    }
+#page-statistik .stat-card__trend-val--up { color: var(--eco-soft); }
+#page-statistik .stat-card__trend-val--down { color: #e76f51; }
+#page-statistik .stat-card__sparkline {
+      height: 36px;
+      margin-top: 8px;
+    }
+#page-statistik /* ══════════════════════════════════════════
+       CHART CARDS
+    ══════════════════════════════════════════ */
+    .chart-card {
+      background: var(--surface-0);
+      border: 1px solid var(--border-light);
+      border-radius: var(--card-r);
+      padding: 24px 24px 20px;
+      box-shadow: var(--shadow-sm);
+    }
+#page-statistik .chart-area {
+      position: relative;
+      width: 100%;
+    }
+#page-statistik /* Chart Filter Tabs */
+    .chart-tabs {
+      display: inline-flex;
+      background: var(--surface-2);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 2px;
+    }
+#page-statistik .chart-tab {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-3);
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-main);
+      transition: all var(--dur-fast) var(--ease-fluid);
+    }
+#page-statistik .chart-tab.active {
+      background: var(--eco-mid);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(45,106,79,.25);
+    }
+#page-statistik .chart-tab:hover:not(.active) { color: var(--eco-mid); background: rgba(82,183,136,.08); }
+#page-statistik /* Two-col chart layout */
+    .chart-duo {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 16px;
+    }
+#page-statistik /* ══════════════════════════════════════════
+       DONUT LEGEND
+    ══════════════════════════════════════════ */
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+#page-statistik .donut-canvas-wrap {
+      flex: 0 0 auto;
+      position: relative;
+      width: 180px;
+      height: 180px;
+    }
+#page-statistik .donut-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+#page-statistik .donut-center__val {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--eco-dark);
+      letter-spacing: -.04em;
+      line-height: 1;
+    }
+#page-statistik .donut-center__label {
+      font-size: 10px;
+      color: var(--text-4);
+      margin-top: 3px;
+    }
+#page-statistik .donut-legend {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      min-width: 140px;
+    }
+#page-statistik .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 12.5px;
+      color: var(--text-2);
+    }
+#page-statistik .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+#page-statistik .legend-item__pct {
+      margin-left: auto;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-1);
+    }
+#page-statistik /* ══════════════════════════════════════════
+       ECO IMPACT SECTION
+    ══════════════════════════════════════════ */
+    .eco-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+#page-statistik .eco-card {
+      background: linear-gradient(140deg, var(--eco-card-from), var(--eco-card-to));
+      border-radius: var(--card-r);
+      padding: 24px 22px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--dur-main) var(--ease-fluid), box-shadow var(--dur-main) var(--ease-fluid);
+    }
+#page-statistik .eco-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(0,0,0,.18);
+    }
+#page-statistik .eco-card::after {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.07);
+    }
+#page-statistik .eco-card--landfill { --eco-card-from: #2d6a4f; --eco-card-to: #40916c; }
+#page-statistik .eco-card--co2 { --eco-card-from: #1b4332; --eco-card-to: #2d6a4f; }
+#page-statistik .eco-card--trees { --eco-card-from: #52b788; --eco-card-to: #74c69d; }
+#page-statistik .eco-card__icon {
+      font-size: 32px;
+      margin-bottom: 14px;
+    }
+#page-statistik .eco-card__value {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -.05em;
+      line-height: 1;
+    }
+#page-statistik .eco-card__unit {
+      font-size: 14px;
+      font-weight: 400;
+      opacity: .75;
+      margin-left: 3px;
+    }
+#page-statistik .eco-card__label {
+      font-size: 12.5px;
+      opacity: .75;
+      margin-top: 5px;
+    }
+#page-statistik .eco-card__detail {
+      font-size: 11px;
+      opacity: .55;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+#page-statistik /* ══════════════════════════════════════════
+       ACTIVITY FEED
+    ══════════════════════════════════════════ */
+    .activity-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+#page-statistik .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+      transition: background var(--dur-fast);
+    }
+#page-statistik .activity-item:first-child { padding-top: 4px; }
+#page-statistik .activity-item:last-child { border-bottom: none; }
+#page-statistik .activity-item__icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+#page-statistik .activity-item__icon svg {
+      width: 16px; height: 16px;
+      fill: none; stroke: currentColor;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+#page-statistik .act--pickup { background: rgba(82,183,136,.12); color: var(--eco-mid); }
+#page-statistik .act--submit { background: rgba(116,198,157,.12); color: #2d7a55; }
+#page-statistik .act--accept { background: rgba(144,224,239,.15); color: #0096c7; }
+#page-statistik .act--reward { background: rgba(233,196,106,.15); color: #c49a1d; }
+#page-statistik .act--reject { background: rgba(231,111,81,.10); color: #c1440e; }
+#page-statistik .activity-item__body { flex: 1; min-width: 0; }
+#page-statistik .activity-item__title {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--eco-dark);
+      line-height: 1.4;
+    }
+#page-statistik .activity-item__sub {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 2px;
+    }
+#page-statistik .activity-item__time {
+      font-size: 11px;
+      color: var(--text-4);
+      white-space: nowrap;
+      font-family: var(--font-mono);
+    }
+#page-statistik /* ══════════════════════════════════════════
+       TABLE
+    ══════════════════════════════════════════ */
+    .table-card {
+      background: var(--surface-0);
+      border: 1px solid var(--border-light);
+      border-radius: var(--card-r);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+#page-statistik .table-toolbar {
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-light);
+      flex-wrap: wrap;
+    }
+#page-statistik .table-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 8px 13px;
+      flex: 1;
+      min-width: 180px;
+      max-width: 300px;
+      transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+    }
+#page-statistik .table-search:focus-within {
+      border-color: var(--eco-soft);
+      box-shadow: 0 0 0 3px rgba(82,183,136,.12);
+    }
+#page-statistik .table-search svg {
+      width: 14px; height: 14px;
+      fill: none; stroke: var(--text-4);
+      stroke-width: 2; stroke-linecap: round;
+      flex-shrink: 0;
+    }
+#page-statistik .table-search input {
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      font-family: var(--font-main);
+      color: var(--text-1);
+      width: 100%;
+      outline: none;
+    }
+#page-statistik .table-search input::placeholder { color: var(--text-4); }
+#page-statistik .table-filter-select {
+      padding: 8px 12px;
+      font-size: 12.5px;
+      font-family: var(--font-main);
+      color: var(--text-2);
+      background: var(--surface-2);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      cursor: pointer;
+      outline: none;
+      transition: border-color var(--dur-fast);
+    }
+#page-statistik .table-filter-select:focus { border-color: var(--eco-soft); }
+#page-statistik .table-scroll { overflow-x: auto; }
+#page-statistik table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 620px;
+    }
+#page-statistik thead tr {
+      background: var(--surface-1);
+      border-bottom: 1px solid var(--border-light);
+    }
+#page-statistik th {
+      padding: 12px 18px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-4);
+      white-space: nowrap;
+    }
+#page-statistik tbody tr {
+      border-bottom: 1px solid var(--border-light);
+      transition: background var(--dur-fast);
+    }
+#page-statistik tbody tr:last-child { border-bottom: none; }
+#page-statistik tbody tr:hover { background: var(--surface-1); }
+#page-statistik td {
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--text-2);
+      vertical-align: middle;
+    }
+#page-statistik .td-date {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-3);
+    }
+#page-statistik .td-weight {
+      font-weight: 600;
+      color: var(--eco-dark);
+      font-family: var(--font-mono);
+    }
+#page-statistik /* Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+#page-statistik .status-badge::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+#page-statistik .status--done { background: rgba(82,183,136,.12);  color: var(--eco-mid); }
+#page-statistik .status--pending { background: rgba(233,196,106,.15); color: #c49a1d; }
+#page-statistik .status--pickup { background: rgba(144,224,239,.15); color: #0096c7; }
+#page-statistik .status--cancelled { background: rgba(231,111,81,.10);  color: #c1440e; }
+#page-statistik .table-empty {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-4);
+      font-size: 13px;
+    }
+#page-statistik /* ══════════════════════════════════════════
+       BOTTOM DOCK SPACING (mobile nav from navbar.css)
+    ══════════════════════════════════════════ */
+    /* imported from navbar.css — ensure page-wrap has bottom padding for dock */
+
+    /* ══════════════════════════════════════════
+       SKELETON / LOADING
+    ══════════════════════════════════════════ */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+#page-statistik .skeleton {
+      background: linear-gradient(90deg, var(--surface-2) 25%, rgba(82,183,136,.06) 50%, var(--surface-2) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+#page-statistik /* ══════════════════════════════════════════
+       RESPONSIVE — TABLET (≤1100px)
+    ══════════════════════════════════════════ */
+    @media (max-width: 1100px) {
+      :root { --page-pad: 20px; }
+
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .chart-duo { grid-template-columns: 1fr; }
+
+      .eco-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .donut-canvas-wrap { width: 160px; height: 160px; }
+    }
+#page-statistik /* ══════════════════════════════════════════
+       RESPONSIVE — MOBILE (≤700px)
+    ══════════════════════════════════════════ */
+    @media (max-width: 700px) {
+      :root { --page-pad: 14px; }
+
+      .page-wrap { padding-top: 20px; padding-bottom: 140px; }
+
+      .page-header { flex-direction: column; }
+      .page-header__actions { width: 100%; justify-content: flex-start; }
+
+      .stat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-card { padding: 16px 16px; }
+      .stat-card__value { font-size: 22px; }
+
+      .eco-grid { grid-template-columns: 1fr; }
+
+      .chart-tabs { width: 100%; }
+      .chart-tab { flex: 1; text-align: center; }
+
+      .donut-wrap { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .donut-canvas-wrap { align-self: center; }
+
+      .table-toolbar { padding: 14px 16px; }
+
+      th, td { padding: 11px 14px; }
+    }
+@media (max-width: 420px) {
+#page-statistik .stat-grid { grid-template-columns: 1fr; }
+    }
+#page-statistik /* ══════════════════════════════════════════
+       ANIMATE-IN
+    ══════════════════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+#page-statistik .anim-in {
+      opacity: 0;
+      animation: fadeUp .5s var(--ease-fluid) forwards;
+    }
+#page-statistik .anim-delay-1 { animation-delay: .07s; }
+#page-statistik .anim-delay-2 { animation-delay: .14s; }
+#page-statistik .anim-delay-3 { animation-delay: .21s; }
+#page-statistik .anim-delay-4 { animation-delay: .28s; }
+#page-statistik .anim-delay-5 { animation-delay: .35s; }
+#page-statistik .anim-delay-6 { animation-delay: .42s; }
+#page-statistik /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+      }
+    }
+  
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ═══ TOP NAVBAR ═══ -->
+  <header class="rn-header" role="banner">
+    <nav class="rn-top" role="navigation" aria-label="Navigasi utama RESIK">
+
+      <a class="rn-logo" href="#" aria-label="RESIK beranda">
+        <span class="rn-logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L4 7v10l8 5 8-5V7z"/>
+            <path d="M12 12v8M12 12L4 7M12 12l8-5"/>
+          </svg>
+        </span>
+        <span class="rn-logo-text">RESIK</span>
+      </a>
+
+      <div class="rn-center" role="menubar" aria-label="Menu utama">
+        <button class="rn-item active" role="menuitem" data-page="dashboard" aria-current="page" aria-label="Dashboard">
+          <span class="rn-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </span>
+          <span class="rn-label" aria-hidden="true">Dashboard</span>
+        </button>
+
+        <button class="rn-item" role="menuitem" data-page="sampah" aria-label="Sampah">
+          <span class="rn-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+          </span>
+          <span class="rn-label" aria-hidden="true">Sampah</span>
+        </button>
+
+        <button class="rn-item" role="menuitem" data-page="statistik" aria-label="Statistik">
+          <span class="rn-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </span>
+          <span class="rn-label" aria-hidden="true">Statistik</span>
+        </button>
+
+        <button class="rn-item" role="menuitem" data-page="notifikasi" aria-label="Notifikasi">
+          <span class="rn-icon" aria-hidden="true">
+            <span class="rn-badge" aria-label="3 notifikasi baru"></span>
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </span>
+          <span class="rn-label" aria-hidden="true">Notifikasi</span>
+        </button>
+
+        <button class="rn-item" role="menuitem" data-page="search" aria-label="Cari">
+          <span class="rn-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <span class="rn-label" aria-hidden="true">Cari</span>
+        </button>
+      </div>
+
+      <div class="rn-profile" role="button" tabindex="0" aria-label="Menu profil pengguna" aria-haspopup="true">
+        <div class="rn-avatar" aria-hidden="true">MR</div>
+        <span class="rn-uname">Muhammad R.</span>
+        <span class="rn-chev" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="rn-main" id="main-content">
+
+    <!-- ══════════════════════════════════════
+         PAGE: DASHBOARD
+    ══════════════════════════════════════ -->
+    <div class="resik-page page-active" id="page-dashboard" role="region" aria-label="Dashboard">
+    <div class="dash-wrap">
+
+      <!-- ── TIER 1: GREETING ── -->
+      <div class="dash-greeting">
+        <div class="greeting-text">
+          <p class="greeting-sub">Selamat pagi</p>
+          <h1 class="greeting-title">Halo, <span>Muhammad</span> 👋</h1>
+          <p class="greeting-date" id="greeting-date">Senin, 18 Mei 2026</p>
+        </div>
+        <div class="greeting-status">
+          <span class="status-dot"></span>
+          <span class="status-text">Pickup dijadwalkan hari ini</span>
+        </div>
+      </div>
+
+      <!-- ── TIER 1: HERO METRICS ── -->
+      <div class="hero-grid" role="region" aria-label="Ringkasan metrik utama">
+
+        <!-- Metric 1: Sampah Terkumpul -->
+        <div class="metric-card" role="article" aria-label="Total sampah terkumpul">
+          <div class="metric-header">
+            <div class="metric-icon green">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            </div>
+            <span class="metric-badge badge-up">↑ 12%</span>
+          </div>
+          <div class="metric-value">48<span class="metric-value-unit">kg</span></div>
+          <p class="metric-label">Sampah terkumpul bulan ini</p>
+          <div class="metric-bar"><div class="metric-bar-fill" style="width:68%"></div></div>
+          <div class="metric-footer">
+            <span class="metric-meta">Target: 70 kg</span>
+            <span class="metric-meta">68%</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Status Pickup -->
+        <div class="metric-card" role="article" aria-label="Status pickup hari ini">
+          <div class="metric-header">
+            <div class="metric-icon teal">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <span class="metric-badge badge-info">Hari ini</span>
+          </div>
+          <div class="metric-value" style="font-size:24px;letter-spacing:-.01em">09:00</div>
+          <p class="metric-label">Jadwal pickup berikutnya</p>
+          <div class="metric-bar"><div class="metric-bar-fill" style="width:0%;background: linear-gradient(90deg,#52b788,#b7e4c7)"></div></div>
+          <div class="metric-footer">
+            <span class="metric-meta">Jl. Raya Sidoarjo No.12</span>
+            <span class="metric-meta">~45 menit lagi</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Reward Points -->
+        <div class="metric-card" role="article" aria-label="Reward points">
+          <div class="metric-header">
+            <div class="metric-icon gold">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="metric-badge badge-up">↑ 230 pts</span>
+          </div>
+          <div class="metric-value">3,<span style="font-size:28px">640</span></div>
+          <p class="metric-label">Total poin reward</p>
+          <div class="metric-bar"><div class="metric-bar-fill" style="width:72%;background:linear-gradient(90deg,#c9990d,#f0c040)"></div></div>
+          <div class="metric-footer">
+            <span class="metric-meta">Level: Ranger Hijau</span>
+            <span class="metric-meta">360 pts menuju Gold</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TIER 2: QUICK ACTIONS + NOTIF ── -->
+      <div class="mid-grid">
+
+        <!-- Quick Actions Panel -->
+        <div class="section-card" role="region" aria-label="Aksi cepat">
+          <div class="section-header">
+            <span class="section-title">Aksi Cepat</span>
+          </div>
+          <div class="section-body">
+            <div class="quick-actions" role="group" aria-label="Pilihan aksi">
+              <button class="qa-btn" aria-label="Lapor sampah">
+                <div class="qa-icon-wrap green">
+                  <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+                </div>
+                <span class="qa-label">Lapor Sampah</span>
+              </button>
+              <button class="qa-btn" aria-label="Jadwalkan pickup">
+                <div class="qa-icon-wrap teal">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <span class="qa-label">Jadwalkan</span>
+              </button>
+              <button class="qa-btn" aria-label="Lihat rute pickup">
+                <div class="qa-icon-wrap gold">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 00-8 8c0 5.25 8 13 8 13s8-7.75 8-13a8 8 0 00-8-8z"/></svg>
+                </div>
+                <span class="qa-label">Lihat Rute</span>
+              </button>
+            </div>
+
+            <!-- Pickup status strip -->
+            <div class="pickup-panel" aria-label="Status pickup hari ini">
+              <div class="pickup-icon">
+                <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              </div>
+              <div class="pickup-info">
+                <p class="pickup-title">Truk RESIK-07 dalam perjalanan</p>
+                <p class="pickup-sub">Estimasi tiba pukul 09:00 · 3 titik sebelum kamu</p>
+              </div>
+              <button class="pickup-action" aria-label="Lacak truk">Lacak</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifikasi Panel -->
+        <div class="section-card" role="region" aria-label="Notifikasi terbaru">
+          <div class="section-header">
+            <span class="section-title">Notifikasi</span>
+            <a class="section-link" href="#" aria-label="Lihat semua notifikasi">Lihat semua</a>
+          </div>
+          <div class="notif-list" role="list" aria-label="Daftar notifikasi">
+            <div class="notif-item unread" role="listitem">
+              <span class="notif-dot" aria-label="Belum dibaca"></span>
+              <div class="notif-content">
+                <p class="notif-msg">Truk pickup akan tiba dalam 45 menit di lokasi kamu.</p>
+                <p class="notif-time">Baru saja</p>
+              </div>
+            </div>
+            <div class="notif-item unread" role="listitem">
+              <span class="notif-dot" aria-label="Belum dibaca"></span>
+              <div class="notif-content">
+                <p class="notif-msg">🎉 Kamu naik ke level <strong>Ranger Hijau</strong>! +200 poin bonus.</p>
+                <p class="notif-time">2 jam lalu</p>
+              </div>
+            </div>
+            <div class="notif-item unread" role="listitem">
+              <span class="notif-dot" aria-label="Belum dibaca"></span>
+              <div class="notif-content">
+                <p class="notif-msg">Pickup minggu lalu berhasil: 12,5 kg organik tercatat.</p>
+                <p class="notif-time">Kemarin</p>
+              </div>
+            </div>
+            <div class="notif-item" role="listitem">
+              <span class="notif-dot read" aria-label="Sudah dibaca"></span>
+              <div class="notif-content">
+                <p class="notif-msg">Jadwal pickup Selasa, 19 Mei dikonfirmasi pukul 08:30.</p>
+                <p class="notif-time">2 hari lalu</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TIER 3: CHART + ACTIVITY ── -->
+      <div class="bottom-grid">
+
+        <!-- Trend Chart -->
+        <div class="section-card" role="region" aria-label="Grafik tren sampah">
+          <div class="section-header">
+            <span class="section-title">Tren Pengumpulan</span>
+            <a class="section-link" href="#" aria-label="Lihat statistik lengkap">Detail →</a>
+          </div>
+          <div class="section-body chart-wrap">
+            <div class="chart-legend" aria-hidden="true">
+              <span class="legend-item"><span class="legend-dot" style="background:var(--eco-mid)"></span>Berat (kg)</span>
+              <span class="legend-item"><span class="legend-dot" style="background:var(--eco-soft)"></span>Poin</span>
+            </div>
+            <div class="chart-area" aria-label="Grafik bar tren pengumpulan sampah 6 bulan terakhir">
+              <svg class="chart-svg" viewBox="0 0 540 160" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="grad-kg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2d6a4f" stop-opacity="0.18"/>
+                    <stop offset="100%" stop-color="#2d6a4f" stop-opacity="0.01"/>
+                  </linearGradient>
+                </defs>
+                <!-- Grid lines -->
+                <g class="chart-grid">
+                  <line x1="40" y1="20" x2="520" y2="20"/><text x="32" y="24" text-anchor="end">60</text>
+                  <line x1="40" y1="60" x2="520" y2="60"/><text x="32" y="64" text-anchor="end">40</text>
+                  <line x1="40" y1="100" x2="520" y2="100"/><text x="32" y="104" text-anchor="end">20</text>
+                  <line x1="40" y1="140" x2="520" y2="140"/><text x="32" y="144" text-anchor="end">0</text>
+                </g>
+
+                <!-- Area fill -->
+                <path class="area-kg" d="M72,108 L152,88 L232,68 L312,52 L392,48 L472,28 L472,140 L392,140 L312,140 L232,140 L152,140 L72,140 Z"/>
+
+                <!-- Main line (kg) -->
+                <path class="line-kg" d="M72,108 L152,88 L232,68 L312,52 L392,48 L472,28"/>
+
+                <!-- Dashed line (points trend) -->
+                <path class="line-pts" d="M72,118 L152,100 L232,80 L312,65 L392,55 L472,38"/>
+
+                <!-- Dots on main line -->
+                <circle class="chart-dot" cx="72"  cy="108" r="4"/>
+                <circle class="chart-dot" cx="152" cy="88"  r="4"/>
+                <circle class="chart-dot" cx="232" cy="68"  r="4"/>
+                <circle class="chart-dot" cx="312" cy="52"  r="4"/>
+                <circle class="chart-dot" cx="392" cy="48"  r="4"/>
+                <circle class="chart-dot" cx="472" cy="28"  r="4" style="fill:#2d6a4f"/>
+
+                <!-- X-axis labels -->
+                <text class="chart-xlabel" x="72"  y="155">Des</text>
+                <text class="chart-xlabel" x="152" y="155">Jan</text>
+                <text class="chart-xlabel" x="232" y="155">Feb</text>
+                <text class="chart-xlabel" x="312" y="155">Mar</text>
+                <text class="chart-xlabel" x="392" y="155">Apr</text>
+                <text class="chart-xlabel" x="472" y="155" style="fill:var(--eco-mid);font-weight:600">Mei</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Feed + Reward -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- Reward Card -->
+          <div class="reward-card" role="region" aria-label="Status reward poin">
+            <div class="reward-header">
+              <span class="reward-label">Reward Points</span>
+              <div class="reward-icon">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+            </div>
+            <p class="reward-points">3,640</p>
+            <p class="reward-pts-label">poin terkumpul · Level: Ranger Hijau 🌿</p>
+            <div class="reward-progress-label">
+              <span>Progress ke Gold</span>
+              <span>72%</span>
+            </div>
+            <div class="reward-bar"><div class="reward-bar-fill"></div></div>
+            <p class="reward-next">Butuh <span>360 poin</span> lagi untuk naik level</p>
+          </div>
+
+          <!-- Activity Feed -->
+          <div class="section-card" role="region" aria-label="Aktivitas terbaru">
+            <div class="section-header">
+              <span class="section-title">Aktivitas Terbaru</span>
+              <a class="section-link" href="#" aria-label="Riwayat lengkap">Riwayat</a>
+            </div>
+            <div class="activity-list" role="list" aria-label="Feed aktivitas">
+              <div class="act-item" role="listitem">
+                <div class="act-avatar a1" aria-hidden="true">MR</div>
+                <div class="act-content">
+                  <p class="act-msg"><b>Pickup berhasil</b> — 12,5 kg organik dicatat</p>
+                  <span class="act-tag green">+125 pts</span>
+                  <p class="act-time">17 Mei · 09:14</p>
+                </div>
+              </div>
+              <div class="act-item" role="listitem">
+                <div class="act-avatar a2" aria-hidden="true">MR</div>
+                <div class="act-content">
+                  <p class="act-msg"><b>Laporan sampah liar</b> dikirim di Jl. Anggrek</p>
+                  <span class="act-tag blue">Verifikasi</span>
+                  <p class="act-time">15 Mei · 14:32</p>
+                </div>
+              </div>
+              <div class="act-item" role="listitem">
+                <div class="act-avatar a1" aria-hidden="true">MR</div>
+                <div class="act-content">
+                  <p class="act-msg"><b>Level naik!</b> Kamu jadi Ranger Hijau 🌿</p>
+                  <span class="act-tag gold">+200 pts bonus</span>
+                  <p class="act-time">13 Mei · 10:05</p>
+                </div>
+              </div>
+              <div class="act-item" role="listitem">
+                <div class="act-avatar a1" aria-hidden="true">MR</div>
+                <div class="act-content">
+                  <p class="act-msg"><b>Pickup berhasil</b> — 9,8 kg plastik & kertas</p>
+                  <span class="act-tag green">+98 pts</span>
+                  <p class="act-time">10 Mei · 08:50</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    </div><!-- /#page-dashboard -->
+
+
+    <!-- ══════════════════════════════════════
+         PAGE: SAMPAH
+    ══════════════════════════════════════ -->
+    <div class="resik-page" id="page-sampah" role="region" aria-label="Halaman Sampah">
+    <div class="rw-wrap">
+
+      <!-- Page Header -->
+      <div class="rw-page-header">
+        <div>
+          <div class="rw-page-eyebrow">
+            <span class="rw-page-eyebrow-dot" aria-hidden="true"></span>
+            Food Waste Management
+          </div>
+          <h1 class="rw-page-title">Pusat <em>Pengelolaan</em> Sampah</h1>
+          <p class="rw-page-sub">Lacak, monitor, dan konversi food waste hari ini</p>
+        </div>
+        <div class="rw-date-chip">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="rw-date-text">—</span>
+        </div>
+      </div>
+
+      <!-- Hero Metrics -->
+      <section class="rw-metrics" aria-label="Ringkasan metrik">
+        <article class="rw-metric">
+          <div class="rw-metric-top">
+            <div class="rw-metric-icon green" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></div>
+            <span class="rw-metric-delta up">↑ 12%</span>
+          </div>
+          <div class="rw-metric-value">248<span class="rw-metric-unit"> kg</span></div>
+          <div class="rw-metric-label">Total Food Waste</div>
+        </article>
+        <article class="rw-metric">
+          <div class="rw-metric-top">
+            <div class="rw-metric-icon teal" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+            <span class="rw-metric-delta up">↑ 5%</span>
+          </div>
+          <div class="rw-metric-value">83<span class="rw-metric-unit"> kg</span></div>
+          <div class="rw-metric-label">Sedang Diproses</div>
+        </article>
+        <article class="rw-metric">
+          <div class="rw-metric-top">
+            <div class="rw-metric-icon amber" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <span class="rw-metric-delta down">↓ 2%</span>
+          </div>
+          <div class="rw-metric-value">12<span class="rw-metric-unit"> laporan</span></div>
+          <div class="rw-metric-label">Menunggu Pickup</div>
+        </article>
+        <article class="rw-metric">
+          <div class="rw-metric-top">
+            <div class="rw-metric-icon leaf" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.82A2 2 0 005.64 22c4.57-.7 8.47-3.78 10.36-8.82M21 3s-6 1-8 8"/></svg></div>
+            <span class="rw-metric-delta up">↑ 18%</span>
+          </div>
+          <div class="rw-metric-value">92<span class="rw-metric-unit"> kg</span></div>
+          <div class="rw-metric-label">Emisi CO₂ Dicegah</div>
+        </article>
+      </section>
+
+      <!-- Quick Actions -->
+      <section aria-label="Aksi cepat">
+        <div class="rw-section-head"><h2 class="rw-section-title">Aksi Cepat</h2></div>
+        <div class="rw-actions-grid">
+          <button class="rw-action" data-rw-action="add-report">
+            <span class="rw-action-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>
+            <span class="rw-action-label">Tambah Laporan</span>
+          </button>
+          <button class="rw-action" data-rw-action="schedule-pickup">
+            <span class="rw-action-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            <span class="rw-action-label">Jadwalkan Pickup</span>
+          </button>
+          <button class="rw-action" data-rw-action="upload-photo">
+            <span class="rw-action-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>
+            <span class="rw-action-label">Upload Foto</span>
+          </button>
+          <button class="rw-action" data-rw-action="history">
+            <span class="rw-action-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            <span class="rw-action-label">Riwayat</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Smart Bin Fleet -->
+      <section aria-label="Fleet Smart Bin">
+        <div class="rw-section-head">
+          <h2 class="rw-section-title">Smart Bin Fleet</h2>
+          <span class="rw-section-count" id="rw-bin-active-count">9 aktif</span>
+        </div>
+        <div class="rw-bin-summary">
+          <div class="rw-bin-stat"><span class="rw-bin-stat-dot green"></span><span><strong id="rw-bin-count-green">5</strong> Normal</span></div>
+          <div class="rw-bin-stat"><span class="rw-bin-stat-dot yellow"></span><span><strong id="rw-bin-count-yellow">3</strong> 60–89%</span></div>
+          <div class="rw-bin-stat"><span class="rw-bin-stat-dot red"></span><span><strong id="rw-bin-count-red">1</strong> Penuh</span></div>
+        </div>
+        <div class="rw-bin-grid" id="rw-bin-grid" role="list"></div>
+      </section>
+
+      <!-- Body: List + Sidebar -->
+      <div class="rw-body-grid">
+
+        <!-- Waste List -->
+        <section aria-label="Daftar laporan food waste">
+          <div class="rw-section-head">
+            <h2 class="rw-section-title">Laporan Masuk</h2>
+            <span class="rw-section-count" id="rw-list-count">6 item</span>
+          </div>
+          <div class="rw-filters" role="group" aria-label="Filter status">
+            <button class="rw-filter active" data-rw-filter="all"       aria-pressed="true">Semua</button>
+            <button class="rw-filter"        data-rw-filter="fresh"     aria-pressed="false">🟢 Fresh</button>
+            <button class="rw-filter"        data-rw-filter="warn"      aria-pressed="false">🟡 Segera</button>
+            <button class="rw-filter"        data-rw-filter="urgent"    aria-pressed="false">🔴 Urgent</button>
+            <button class="rw-filter"        data-rw-filter="scheduled" aria-pressed="false">Terjadwal</button>
+          </div>
+          <div class="rw-list" id="rw-list">
+
+            <!-- Card 1 -->
+            <article class="rw-card" data-rw-fresh="fresh" data-rw-pickup="waiting" tabindex="0" aria-expanded="false">
+              <div class="rw-card-top">
+                <div class="rw-card-left"><div class="rw-card-emoji">🍱</div><div><div class="rw-card-name">Sisa Catering Kantor</div><div class="rw-card-meta">Dilaporkan 2 jam lalu · Kec. Genteng</div></div></div>
+                <div class="rw-card-badges">
+                  <span class="rw-fresh-badge fresh"><span class="rw-fresh-badge-dot"></span>Fresh</span>
+                  <span class="rw-pickup-chip waiting">Menunggu</span>
+                  <span class="rw-card-expand-icon"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="rw-card-footer">
+                <span class="rw-card-weight">12 kg</span>
+                <div class="rw-progress-wrap"><div class="rw-progress-fill fresh" style="width:80%"></div></div>
+                <span class="rw-card-time">09:45</span>
+              </div>
+              <div class="rw-card-detail">
+                <div class="rw-card-detail-inner">
+                  <div class="rw-detail-row"><span class="rw-detail-label">Pelapor</span><span class="rw-detail-val">PT. Maju Jaya</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Kategori</span><span class="rw-detail-val">Catering / Nasi</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Koordinat</span><span class="rw-detail-val mono">-7.2671, 112.7508</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Smart Bin</span><span class="rw-detail-val">BIN-03 · Genteng</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Volume Est.</span><span class="rw-detail-val">~18L</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Konversi</span><span class="rw-detail-val">Maggot BSF</span></div>
+                  <div class="rw-card-detail-actions">
+                    <button class="rw-detail-btn primary" data-rw-action="schedule-pickup">Jadwalkan Pickup</button>
+                    <button class="rw-detail-btn" data-rw-action="view-on-map">Lihat di Peta</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="rw-card" data-rw-fresh="warn" data-rw-pickup="scheduled" tabindex="0" aria-expanded="false">
+              <div class="rw-card-top">
+                <div class="rw-card-left"><div class="rw-card-emoji">🥦</div><div><div class="rw-card-name">Sayur Pasar Tidak Terjual</div><div class="rw-card-meta">Dilaporkan 5 jam lalu · Pasar Keputran</div></div></div>
+                <div class="rw-card-badges">
+                  <span class="rw-fresh-badge warn"><span class="rw-fresh-badge-dot"></span>Segera</span>
+                  <span class="rw-pickup-chip scheduled">Terjadwal</span>
+                  <span class="rw-card-expand-icon"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="rw-card-footer">
+                <span class="rw-card-weight">28 kg</span>
+                <div class="rw-progress-wrap"><div class="rw-progress-fill warn" style="width:52%"></div></div>
+                <span class="rw-card-time">06:20</span>
+              </div>
+              <div class="rw-card-detail">
+                <div class="rw-card-detail-inner">
+                  <div class="rw-detail-row"><span class="rw-detail-label">Pelapor</span><span class="rw-detail-val">Pasar Keputran</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Kategori</span><span class="rw-detail-val">Sayuran Segar</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Koordinat</span><span class="rw-detail-val mono">-7.2828, 112.7368</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Smart Bin</span><span class="rw-detail-val">BIN-07 · Keputran</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Volume Est.</span><span class="rw-detail-val">~42L</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Konversi</span><span class="rw-detail-val">Kompos Organik</span></div>
+                  <div class="rw-card-detail-actions">
+                    <button class="rw-detail-btn primary" data-rw-action="schedule-pickup">Ubah Jadwal</button>
+                    <button class="rw-detail-btn" data-rw-action="view-on-map">Lihat di Peta</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="rw-card" data-rw-fresh="urgent" data-rw-pickup="waiting" tabindex="0" aria-expanded="false">
+              <div class="rw-card-top">
+                <div class="rw-card-left"><div class="rw-card-emoji">🍖</div><div><div class="rw-card-name">Sisa Daging Resto A</div><div class="rw-card-meta">Dilaporkan 11 jam lalu · Kec. Wonokromo</div></div></div>
+                <div class="rw-card-badges">
+                  <span class="rw-fresh-badge urgent"><span class="rw-fresh-badge-dot"></span>Urgent</span>
+                  <span class="rw-pickup-chip waiting">Menunggu</span>
+                  <span class="rw-card-expand-icon"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="rw-card-footer">
+                <span class="rw-card-weight">7 kg</span>
+                <div class="rw-progress-wrap"><div class="rw-progress-fill urgent" style="width:18%"></div></div>
+                <span class="rw-card-time">22:10</span>
+              </div>
+              <div class="rw-card-detail">
+                <div class="rw-card-detail-inner">
+                  <div class="rw-detail-row"><span class="rw-detail-label">Pelapor</span><span class="rw-detail-val">Resto Ayam Bakar A</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Kategori</span><span class="rw-detail-val">Protein / Daging</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Koordinat</span><span class="rw-detail-val mono">-7.3003, 112.7296</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Smart Bin</span><span class="rw-detail-val">BIN-02 · Wonokromo</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Volume Est.</span><span class="rw-detail-val">~9L</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Konversi</span><span class="rw-detail-val">Maggot BSF ⚠️</span></div>
+                  <div class="rw-card-detail-actions">
+                    <button class="rw-detail-btn primary" data-rw-action="schedule-pickup">Prioritaskan Pickup</button>
+                    <button class="rw-detail-btn" data-rw-action="view-on-map">Lihat di Peta</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Card 4 -->
+            <article class="rw-card" data-rw-fresh="fresh" data-rw-pickup="scheduled" tabindex="0" aria-expanded="false">
+              <div class="rw-card-top">
+                <div class="rw-card-left"><div class="rw-card-emoji">🍚</div><div><div class="rw-card-name">Nasi Sisa Event Kampus</div><div class="rw-card-meta">Dilaporkan 1 jam lalu · Unair Kampus B</div></div></div>
+                <div class="rw-card-badges">
+                  <span class="rw-fresh-badge fresh"><span class="rw-fresh-badge-dot"></span>Fresh</span>
+                  <span class="rw-pickup-chip scheduled">Terjadwal</span>
+                  <span class="rw-card-expand-icon"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="rw-card-footer">
+                <span class="rw-card-weight">45 kg</span>
+                <div class="rw-progress-wrap"><div class="rw-progress-fill fresh" style="width:91%"></div></div>
+                <span class="rw-card-time">10:55</span>
+              </div>
+              <div class="rw-card-detail">
+                <div class="rw-card-detail-inner">
+                  <div class="rw-detail-row"><span class="rw-detail-label">Pelapor</span><span class="rw-detail-val">BEM Unair 2025</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Kategori</span><span class="rw-detail-val">Nasi / Karbohidrat</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Koordinat</span><span class="rw-detail-val mono">-7.2682, 112.7525</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Smart Bin</span><span class="rw-detail-val">BIN-09 · Dharmahusada</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Volume Est.</span><span class="rw-detail-val">~68L</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Konversi</span><span class="rw-detail-val">Maggot BSF</span></div>
+                  <div class="rw-card-detail-actions">
+                    <button class="rw-detail-btn primary" data-rw-action="schedule-pickup">Ubah Jadwal</button>
+                    <button class="rw-detail-btn" data-rw-action="view-on-map">Lihat di Peta</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Card 5 -->
+            <article class="rw-card" data-rw-fresh="warn" data-rw-pickup="waiting" tabindex="0" aria-expanded="false">
+              <div class="rw-card-top">
+                <div class="rw-card-left"><div class="rw-card-emoji">🍞</div><div><div class="rw-card-name">Roti & Kue Toko Bakeri</div><div class="rw-card-meta">Dilaporkan 7 jam lalu · Jl. Raya Darmo</div></div></div>
+                <div class="rw-card-badges">
+                  <span class="rw-fresh-badge warn"><span class="rw-fresh-badge-dot"></span>Segera</span>
+                  <span class="rw-pickup-chip waiting">Menunggu</span>
+                  <span class="rw-card-expand-icon"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="rw-card-footer">
+                <span class="rw-card-weight">9 kg</span>
+                <div class="rw-progress-wrap"><div class="rw-progress-fill warn" style="width:40%"></div></div>
+                <span class="rw-card-time">04:30</span>
+              </div>
+              <div class="rw-card-detail">
+                <div class="rw-card-detail-inner">
+                  <div class="rw-detail-row"><span class="rw-detail-label">Pelapor</span><span class="rw-detail-val">Darmo Bakery</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Kategori</span><span class="rw-detail-val">Roti / Tepung</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Koordinat</span><span class="rw-detail-val mono">-7.2905, 112.7349</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Smart Bin</span><span class="rw-detail-val">BIN-05 · Darmo</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Volume Est.</span><span class="rw-detail-val">~14L</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Konversi</span><span class="rw-detail-val">Kompos / Biogas</span></div>
+                  <div class="rw-card-detail-actions">
+                    <button class="rw-detail-btn primary" data-rw-action="schedule-pickup">Jadwalkan Pickup</button>
+                    <button class="rw-detail-btn" data-rw-action="view-on-map">Lihat di Peta</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Card 6 -->
+            <article class="rw-card" data-rw-fresh="fresh" data-rw-pickup="done" tabindex="0" aria-expanded="false">
+              <div class="rw-card-top">
+                <div class="rw-card-left"><div class="rw-card-emoji">🥗</div><div><div class="rw-card-name">Salad & Buah Potong Hotel</div><div class="rw-card-meta">Dilaporkan 3 jam lalu · Hotel Grand XYZ</div></div></div>
+                <div class="rw-card-badges">
+                  <span class="rw-fresh-badge fresh"><span class="rw-fresh-badge-dot"></span>Fresh</span>
+                  <span class="rw-pickup-chip done">Selesai ✓</span>
+                  <span class="rw-card-expand-icon"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+              <div class="rw-card-footer">
+                <span class="rw-card-weight">18 kg</span>
+                <div class="rw-progress-wrap"><div class="rw-progress-fill fresh" style="width:100%"></div></div>
+                <span class="rw-card-time">08:15</span>
+              </div>
+              <div class="rw-card-detail">
+                <div class="rw-card-detail-inner">
+                  <div class="rw-detail-row"><span class="rw-detail-label">Pelapor</span><span class="rw-detail-val">Hotel Grand Sungkono</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Kategori</span><span class="rw-detail-val">Buah & Sayur</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Kurir</span><span class="rw-detail-val">Andi Rahmat</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Smart Bin</span><span class="rw-detail-val">BIN-01 · Sungkono</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Selesai</span><span class="rw-detail-val mono">08:52 WIB</span></div>
+                  <div class="rw-detail-row"><span class="rw-detail-label">Konversi</span><span class="rw-detail-val">Maggot BSF ✓</span></div>
+                  <div class="rw-card-detail-actions">
+                    <button class="rw-detail-btn" data-rw-action="history">Lihat Riwayat</button>
+                    <button class="rw-detail-btn" data-rw-action="view-on-map">Lihat di Peta</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="rw-sidebar">
+
+          <!-- Pickup Status Panel -->
+          <div class="rw-panel">
+            <div class="rw-panel-title">Pickup Hari Ini</div>
+            <div class="rw-time-big">13:30 <small style="font-size:12px;opacity:.5;font-family:var(--font-main);font-weight:400">WIB</small></div>
+            <div class="rw-time-label" id="rw-pickup-countdown">Pickup berikutnya</div>
+            <span class="rw-status-chip en-route">
+              <span class="rw-status-pulse"></span>
+              Dalam Perjalanan
+            </span>
+            <div class="rw-courier-row">
+              <div class="rw-courier-avatar">AR</div>
+              <div>
+                <div class="rw-courier-name">Andi Rahmat</div>
+                <div class="rw-courier-sub">Kurir · Motor Listrik</div>
+              </div>
+            </div>
+            <div style="margin-top:14px">
+              <div class="rw-pickup-row"><span class="rw-pickup-row-label">Titik pickup</span><span class="rw-pickup-row-val">3 lokasi</span></div>
+              <div class="rw-pickup-row"><span class="rw-pickup-row-label">Est. berat</span><span class="rw-pickup-row-val">~84 kg</span></div>
+              <div class="rw-pickup-row"><span class="rw-pickup-row-label">ETA tiba</span><span class="rw-pickup-row-val">±25 menit</span></div>
+            </div>
+          </div>
+
+          <!-- Impact Panel -->
+          <div class="rw-panel">
+            <div class="rw-panel-title">Dampak Lingkungan</div>
+            <div class="rw-impact-item">
+              <div class="rw-impact-row">
+                <div class="rw-impact-info"><span class="rw-impact-icon">♻️</span><span class="rw-impact-label">Dialihkan dari TPA</span></div>
+                <span class="rw-impact-val">176 kg</span>
+              </div>
+              <div class="rw-impact-bar-wrap"><div class="rw-impact-bar landfill" style="width:71%"></div></div>
+              <span class="rw-impact-sub">71% dari target bulanan 248kg</span>
+            </div>
+            <div class="rw-impact-item">
+              <div class="rw-impact-row">
+                <div class="rw-impact-info"><span class="rw-impact-icon">🐛</span><span class="rw-impact-label">Pakan Maggot BSF</span></div>
+                <span class="rw-impact-val">132 kg</span>
+              </div>
+              <div class="rw-impact-bar-wrap"><div class="rw-impact-bar maggot" style="width:88%"></div></div>
+              <span class="rw-impact-sub">88% efisiensi konversi maggot</span>
+            </div>
+            <div class="rw-impact-item">
+              <div class="rw-impact-row">
+                <div class="rw-impact-info"><span class="rw-impact-icon">🌱</span><span class="rw-impact-label">Organik Dipulihkan</span></div>
+                <span class="rw-impact-val">44 kg</span>
+              </div>
+              <div class="rw-impact-bar-wrap"><div class="rw-impact-bar organic" style="width:55%"></div></div>
+              <span class="rw-impact-sub">Kompos & biogas proses aktif</span>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+
+      <!-- Maggot Callout -->
+      <section>
+        <div class="rw-maggot-callout">
+          <span class="rw-maggot-emoji">🐛</span>
+          <div>
+            <div class="rw-maggot-title">Ekosistem Maggot BSF Aktif</div>
+            <div class="rw-maggot-desc">132 kg food waste hari ini sedang dikonversi oleh koloni Black Soldier Fly. Perkiraan yield protein: <strong>18–22 kg</strong> dalam 14 hari.</div>
+          </div>
+          <div class="rw-maggot-badge">88%</div>
+        </div>
+      </section>
+
+    </div>
+    </div><!-- /#page-sampah -->
+
+
+    <!-- ══════════════════════════════════════
+         PAGE: PLACEHOLDER (Statistik, dll)
+    ══════════════════════════════════════ -->
+
+    <!-- ══════════════════════════════════════
+         PAGE: STATISTIK (integrated)
+    ══════════════════════════════════════ -->
+    <div class="resik-page" id="page-statistik" role="region" aria-label="Statistik">
+      <div class="page-wrap">
+
+      <!-- ── 1. PAGE HEADER ── -->
+      <div class="page-header anim-in">
+        <div class="page-header__left">
+          <div class="page-header__eyebrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            Laporan Aktivitas
+          </div>
+          <h1 class="page-header__title">Statistik Provider</h1>
+          <p class="page-header__sub">Pantau kontribusi limbah pangan dan dampak lingkungan Anda.</p>
+        </div>
+
+        <div class="page-header__actions">
+          <!-- Date Range -->
+          <div class="date-range" role="group" aria-label="Pilih rentang waktu">
+            <button class="date-range__btn" data-range="7">7 Hari</button>
+            <button class="date-range__btn active" data-range="30">30 Hari</button>
+            <button class="date-range__btn" data-range="90">3 Bulan</button>
+            <button class="date-range__btn" data-range="365">1 Tahun</button>
+          </div>
+
+          <!-- Export -->
+          <button class="btn-export" aria-label="Ekspor laporan">
+            <svg viewBox="0 0 24 24"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+            Ekspor
+          </button>
+        </div>
+      </div>
+
+      <!-- ── 2. SUMMARY STAT CARDS ── -->
+      <section class="section" aria-label="Ringkasan statistik">
+        <div class="stat-grid">
+
+          <!-- Card 1: Total Sampah -->
+          <article class="stat-card stat-card--green anim-in anim-delay-1">
+            <div class="stat-card__top">
+              <div class="stat-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 6h18l-1.5 13.5a2 2 0 01-2 1.5H6.5a2 2 0 01-2-1.5L3 6z"/><path d="M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/></svg>
+              </div>
+              <span class="stat-card__badge badge--up">↑ 12.4%</span>
+            </div>
+            <div class="stat-card__body">
+              <div class="stat-card__value" data-count="124" data-suffix=" Kg">0 Kg</div>
+              <div class="stat-card__label">Total Sampah Dikirim</div>
+              <div class="stat-card__trend">
+                <span class="stat-card__trend-val stat-card__trend-val--up">+13.8 Kg</span>
+                <span>vs bulan lalu</span>
+              </div>
+            </div>
+            <canvas class="stat-card__sparkline" id="spark1" aria-hidden="true"></canvas>
+          </article>
+
+          <!-- Card 2: Total Penjemputan -->
+          <article class="stat-card stat-card--teal anim-in anim-delay-2">
+            <div class="stat-card__top">
+              <div class="stat-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              </div>
+              <span class="stat-card__badge badge--up">↑ 8.3%</span>
+            </div>
+            <div class="stat-card__body">
+              <div class="stat-card__value" data-count="12" data-suffix=" Pickup">0 Pickup</div>
+              <div class="stat-card__label">Total Penjemputan</div>
+              <div class="stat-card__trend">
+                <span class="stat-card__trend-val stat-card__trend-val--up">+1</span>
+                <span>vs bulan lalu</span>
+              </div>
+            </div>
+            <canvas class="stat-card__sparkline" id="spark2" aria-hidden="true"></canvas>
+          </article>
+
+          <!-- Card 3: Dampak Lingkungan -->
+          <article class="stat-card stat-card--sky anim-in anim-delay-3">
+            <div class="stat-card__top">
+              <div class="stat-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <span class="stat-card__badge badge--up">↑ 18%</span>
+            </div>
+            <div class="stat-card__body">
+              <div class="stat-card__value" data-count="32" data-suffix=" Kg CO₂">0 Kg</div>
+              <div class="stat-card__label">CO₂ Berhasil Dikurangi</div>
+              <div class="stat-card__trend">
+                <span class="stat-card__trend-val stat-card__trend-val--up">+4.9 Kg</span>
+                <span>vs bulan lalu</span>
+              </div>
+            </div>
+            <canvas class="stat-card__sparkline" id="spark3" aria-hidden="true"></canvas>
+          </article>
+
+          <!-- Card 4: Reward -->
+          <article class="stat-card stat-card--amber anim-in anim-delay-4">
+            <div class="stat-card__top">
+              <div class="stat-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+              <span class="stat-card__badge badge--up">↑ 5.1%</span>
+            </div>
+            <div class="stat-card__body">
+              <div class="stat-card__value" data-count="85000" data-prefix="Rp " data-format="currency">Rp 0</div>
+              <div class="stat-card__label">Total Reward / Penghasilan</div>
+              <div class="stat-card__trend">
+                <span class="stat-card__trend-val stat-card__trend-val--up">+Rp 4.000</span>
+                <span>vs bulan lalu</span>
+              </div>
+            </div>
+            <canvas class="stat-card__sparkline" id="spark4" aria-hidden="true"></canvas>
+          </article>
+
+          <!-- Card 5: Processor Aktif -->
+          <article class="stat-card stat-card--violet anim-in anim-delay-5">
+            <div class="stat-card__top">
+              <div class="stat-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+              </div>
+              <span class="stat-card__badge badge--flat">Stabil</span>
+            </div>
+            <div class="stat-card__body">
+              <div class="stat-card__value" data-count="5" data-suffix=" Aktif">0 Aktif</div>
+              <div class="stat-card__label">Processor Aktif Bermitra</div>
+              <div class="stat-card__trend">
+                <span>Dari total</span>
+                <span class="stat-card__trend-val" style="color:var(--text-1);"> 8 processor</span>
+              </div>
+            </div>
+            <canvas class="stat-card__sparkline" id="spark5" aria-hidden="true"></canvas>
+          </article>
+
+          <!-- Card 6: Status Pickup Terakhir -->
+          <article class="stat-card stat-card--coral anim-in anim-delay-6">
+            <div class="stat-card__top">
+              <div class="stat-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+              </div>
+              <span class="stat-card__badge badge--up">Selesai</span>
+            </div>
+            <div class="stat-card__body">
+              <div class="stat-card__value" style="font-size:18px; padding-top:4px;">Hari ini</div>
+              <div class="stat-card__label">Status Penjemputan Terakhir</div>
+              <div class="stat-card__trend">
+                <span class="stat-card__trend-val stat-card__trend-val--up">✓ Diterima Pak Rudi</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ── 3. WASTE TREND CHART ── -->
+      <section class="section anim-in anim-delay-2" aria-label="Tren limbah pangan">
+        <div class="section-heading">
+          <div>
+            <div class="section-heading__title">Tren Limbah Pangan</div>
+            <div class="section-heading__sub">Volume sampah yang Anda kirimkan dari waktu ke waktu</div>
+          </div>
+          <div class="chart-tabs" role="tablist" aria-label="Filter periode">
+            <button class="chart-tab" role="tab" data-period="weekly" aria-selected="false">Mingguan</button>
+            <button class="chart-tab active" role="tab" data-period="monthly" aria-selected="true">Bulanan</button>
+            <button class="chart-tab" role="tab" data-period="yearly" aria-selected="false">Tahunan</button>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-area" style="height:260px;">
+            <canvas id="trendChart" aria-label="Grafik tren limbah pangan"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 4. WASTE CATEGORY + ACTIVITY ── -->
+      <section class="section anim-in anim-delay-3">
+        <div class="chart-duo">
+
+          <!-- Donut Chart: Kategori Sampah -->
+          <div>
+            <div class="section-heading">
+              <div>
+                <div class="section-heading__title">Kategori Limbah</div>
+                <div class="section-heading__sub">Distribusi jenis sampah yang dikirim</div>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="donut-wrap">
+                <div class="donut-canvas-wrap">
+                  <canvas id="categoryChart" aria-label="Donut chart kategori limbah"></canvas>
+                  <div class="donut-center">
+                    <div class="donut-center__val">124</div>
+                    <div class="donut-center__label">Total Kg</div>
+                  </div>
+                </div>
+                <div class="donut-legend" id="donutLegend" role="list" aria-label="Legenda kategori limbah"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div>
+            <div class="section-heading">
+              <div>
+                <div class="section-heading__title">Aktivitas Terkini</div>
+                <div class="section-heading__sub">Riwayat aksi terbaru</div>
+              </div>
+              <a class="section-heading__link" role="button" tabindex="0" aria-label="Lihat semua aktivitas">
+                Lihat semua
+                <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+            <div class="chart-card">
+              <div class="activity-feed" id="activityFeed" role="feed" aria-label="Feed aktivitas terbaru"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── 5. ECO IMPACT ── -->
+      <section class="section anim-in anim-delay-4" aria-label="Dampak lingkungan">
+        <div class="section-heading">
+          <div>
+            <div class="section-heading__title">Dampak Lingkungan 🌱</div>
+            <div class="section-heading__sub">Kontribusi Anda terhadap bumi yang lebih baik</div>
+          </div>
+        </div>
+
+        <div class="eco-grid">
+          <div class="eco-card eco-card--landfill">
+            <div class="eco-card__icon" aria-hidden="true">🗑️</div>
+            <div>
+              <span class="eco-card__value" data-count="124" data-suffix="">0</span>
+              <span class="eco-card__unit">Kg</span>
+            </div>
+            <div class="eco-card__label">Sampah Dialihkan dari TPA</div>
+            <div class="eco-card__detail">Setiap kilogram sampah pangan yang tidak masuk TPA membantu mengurangi produksi metana berbahaya.</div>
+          </div>
+
+          <div class="eco-card eco-card--co2">
+            <div class="eco-card__icon" aria-hidden="true">🌿</div>
+            <div>
+              <span class="eco-card__value" data-count="32" data-suffix="">0</span>
+              <span class="eco-card__unit">Kg CO₂</span>
+            </div>
+            <div class="eco-card__label">Estimasi Pengurangan Emisi</div>
+            <div class="eco-card__detail">Setara dengan menghemat 138 km perjalanan menggunakan kendaraan bermotor bensin rata-rata.</div>
+          </div>
+
+          <div class="eco-card eco-card--trees">
+            <div class="eco-card__icon" aria-hidden="true">🌳</div>
+            <div>
+              <span class="eco-card__value" data-count="2" data-suffix="">0</span>
+              <span class="eco-card__unit">Pohon</span>
+            </div>
+            <div class="eco-card__label">Setara Pohon Diselamatkan</div>
+            <div class="eco-card__detail">Satu pohon menyerap sekitar 21 Kg CO₂ per tahun. Kontribusi Anda setara menjaga 2 pohon selama setahun.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 6. PICKUP HISTORY TABLE ── -->
+      <section class="section anim-in anim-delay-5" aria-label="Riwayat penjemputan">
+        <div class="section-heading">
+          <div>
+            <div class="section-heading__title">Riwayat Penjemputan</div>
+            <div class="section-heading__sub">Detail semua pengiriman sampah Anda</div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-toolbar">
+            <div class="table-search" role="search">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="search" id="tableSearch" placeholder="Cari tanggal, kategori, processor..." aria-label="Cari riwayat penjemputan" />
+            </div>
+            <select class="table-filter-select" id="statusFilter" aria-label="Filter berdasarkan status">
+              <option value="">Semua Status</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Dijemput">Dijemput</option>
+              <option value="Menunggu">Menunggu</option>
+              <option value="Dibatalkan">Dibatalkan</option>
+            </select>
+          </div>
+
+          <div class="table-scroll" role="region" aria-label="Tabel riwayat penjemputan, bisa di-scroll horizontal">
+            <table aria-label="Riwayat penjemputan sampah">
+              <thead>
+                <tr>
+                  <th scope="col">Tanggal</th>
+                  <th scope="col">Kategori</th>
+                  <th scope="col">Berat</th>
+                  <th scope="col">Processor</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+            <div class="table-empty" id="tableEmpty" style="display:none;" aria-live="polite">
+              Tidak ada data yang cocok.
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /page-wrap -->
+    </div>
+
+    <div class="resik-page" id="page-notifikasi" role="region" aria-label="Notifikasi">
+      <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;flex-direction:column;gap:10px;opacity:.45">
+        <div style="font-size:32px">🔔</div>
+        <div style="font-size:15px;font-weight:600;color:var(--eco-dark)">Notifikasi</div>
+        <div style="font-size:13px;color:var(--eco-mid)">Segera hadir</div>
+      </div>
+    </div>
+
+    <div class="resik-page" id="page-profil" role="region" aria-label="Profil">
+      <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;flex-direction:column;gap:10px;opacity:.45">
+        <div style="font-size:32px">👤</div>
+        <div style="font-size:15px;font-weight:600;color:var(--eco-dark)">Profil</div>
+        <div style="font-size:13px;color:var(--eco-mid)">Segera hadir</div>
+      </div>
+    </div>
+
+    <div class="resik-page" id="page-search" role="region" aria-label="Cari">
+      <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;flex-direction:column;gap:10px;opacity:.45">
+        <div style="font-size:32px">🔍</div>
+        <div style="font-size:15px;font-weight:600;color:var(--eco-dark)">Pencarian</div>
+        <div style="font-size:13px;color:var(--eco-mid)">Segera hadir</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ BOTTOM DOCK (mobile) ═══ -->
+  <div class="rn-dock-wrap" aria-label="Navigasi bawah" role="navigation">
+    <nav class="rn-dock" role="menubar">
+      <button class="dock-item active" role="menuitem" data-page="dashboard" aria-current="page" aria-label="Dashboard">
+        <span class="dock-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </span>
+        <span class="dock-tip" aria-hidden="true">Dashboard</span>
+      </button>
+      <button class="dock-item" role="menuitem" data-page="sampah" aria-label="Sampah">
+        <span class="dock-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+        </span>
+        <span class="dock-tip" aria-hidden="true">Sampah</span>
+      </button>
+      <button class="dock-item" role="menuitem" data-page="statistik" aria-label="Statistik">
+        <span class="dock-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </span>
+        <span class="dock-tip" aria-hidden="true">Statistik</span>
+      </button>
+      <div class="dock-sep" role="separator" aria-hidden="true"></div>
+      <button class="dock-item" role="menuitem" data-page="notifikasi" aria-label="Notifikasi">
+        <span class="dock-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </span>
+        <span class="dock-tip" aria-hidden="true">Notifikasi</span>
+      </button>
+      <button class="dock-item" role="menuitem" data-page="profil" aria-label="Profil">
+        <span class="dock-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span class="dock-tip" aria-hidden="true">Profil</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ════════════════════════════════════════════
+       RESIK SPA ROUTER
+       Mengatur page switching antar halaman.
+       Tambah halaman baru: buat #page-{name}
+       dan tambahkan case di navigateTo().
+    ════════════════════════════════════════════ */
+
+    const PAGES = ['dashboard','sampah','statistik','notifikasi','search','profil'];
+    let activePage = 'dashboard';
+    let sampahInited = false;
+    let binInterval  = null;
+
+    /* ── Page switcher ── */
+    function navigateTo(page) {
+      if (page === activePage) return;
+      if (!PAGES.includes(page)) return;
+
+      /* Hide current */
+      const current = document.getElementById('page-' + activePage);
+      if (current) {
+        current.classList.remove('page-active');
+      }
+
+      /* Show next */
+      const next = document.getElementById('page-' + page);
+      if (next) {
+        next.classList.add('page-active', 'page-enter');
+        next.addEventListener('animationend', () => next.classList.remove('page-enter'), { once: true });
+      }
+
+      activePage = page;
+
+      /* Scroll to top */
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      /* Lazy-init Sampah module on first visit */
+      if (page === 'sampah' && !sampahInited) {
+        sampahInited = true;
+        initSampahPage();
+      }
+
+      /* Lazy-init Statistik module on first visit */
+      if (page === 'statistik' && !statistikInited) {
+        statistikInited = true;
+        initStatistikPage();
+      }
+
+      /* Dispatch event for future router hooks */
+      document.dispatchEvent(new CustomEvent('resik:navigate', { detail: { page } }));
+    }
+
+    /* ── Navbar state ── */
+    const topItems  = document.querySelectorAll('.rn-item');
+    const dockItems = document.querySelectorAll('.dock-item');
+
+    function setNavActive(page) {
+      topItems.forEach(item => {
+        const a = item.dataset.page === page;
+        item.classList.toggle('active', a);
+        item.setAttribute('aria-current', a ? 'page' : 'false');
+      });
+      dockItems.forEach(item => {
+        const a = item.dataset.page === page;
+        item.classList.toggle('active', a);
+        item.setAttribute('aria-current', a ? 'page' : 'false');
+      });
+    }
+
+    function setActive(page) {
+      setNavActive(page);
+      navigateTo(page);
+    }
+
+    /* ── Bind nav items ── */
+    topItems.forEach(item => {
+      item.addEventListener('click', () => setActive(item.dataset.page));
+      item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActive(item.dataset.page); } });
+    });
+    dockItems.forEach(item => {
+      item.addEventListener('click', () => setActive(item.dataset.page));
+      item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActive(item.dataset.page); } });
+    });
+
+    /* ── Profile button ── */
+    const profileBtn = document.querySelector('.rn-profile');
+    if (profileBtn) {
+      profileBtn.addEventListener('click', () => console.log('[RESIK] Profile menu dibuka'));
+      profileBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); profileBtn.click(); } });
+    }
+
+    /* ── Scroll shadow ── */
+    const header = document.querySelector('.rn-header');
+    if (header) {
+      let scrolled = false;
+      window.addEventListener('scroll', () => {
+        const s = window.scrollY > 8;
+        if (s !== scrolled) { scrolled = s; header.style.paddingTop = s ? '8px' : '14px'; }
+      }, { passive: true });
+    }
+
+    /* ── Resize sync ── */
+    const MOBILE_BP = 700;
+    let wasMobile = window.innerWidth < MOBILE_BP;
+    window.addEventListener('resize', () => {
+      const isMobile = window.innerWidth < MOBILE_BP;
+      if (isMobile !== wasMobile) { wasMobile = isMobile; setNavActive(activePage); }
+    }, { passive: true });
+
+    /* ── Dashboard: date + metric bars ── */
+    const dateEl = document.getElementById('greeting-date');
+    if (dateEl) {
+      const now = new Date();
+      const days   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+      const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      dateEl.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    }
+    document.querySelectorAll('.metric-bar-fill').forEach(bar => {
+      const target = bar.style.width;
+      bar.style.width = '0%';
+      setTimeout(() => { bar.style.width = target; }, 400);
+    });
+
+    /* ── Init ── */
+    setNavActive('dashboard');
+
+
+    /* ════════════════════════════════════════════
+       RESIK STATISTIK MODULE — Halaman Statistik
+       Hanya berjalan saat halaman Statistik dibuka.
+    ════════════════════════════════════════════ */
+    let statistikInited = false;
+
+    function initStatistikPage() {
+      (function() {
+
+  /* ══════════════════════════════════════════
+     RESIK Statistics Page — statistics.js
+     Versi: 1.0
+  ══════════════════════════════════════════ */
+
+  (function () {
+    'use strict';
+
+    /* ──────────────────────────────────
+       HELPERS
+    ────────────────────────────────── */
+
+    /** Format angka dengan titik ribuan */
+    function fmtNum(n) {
+      return Math.round(n).toLocaleString('id-ID');
+    }
+
+    /** Animated counter */
+    function animateCounter(el) {
+      const target  = parseFloat(el.dataset.count);
+      const prefix  = el.dataset.prefix  || '';
+      const suffix  = el.dataset.suffix  || '';
+      const format  = el.dataset.format;
+      const dur     = 1400;
+      const start   = performance.now();
+
+      function tick(now) {
+        const progress = Math.min((now - start) / dur, 1);
+        const ease     = 1 - Math.pow(1 - progress, 3);
+        const val      = target * ease;
+        el.textContent = prefix + (format === 'currency' ? fmtNum(val) : fmtNum(val)) + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = prefix + (format === 'currency' ? fmtNum(target) : fmtNum(target)) + suffix;
+      }
+      requestAnimationFrame(tick);
+    }
+
+    /** Run counters when element enters viewport */
+    const counterObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          counterObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('[data-count]').forEach(el => counterObs.observe(el));
+
+    /* ──────────────────────────────────
+       CHART.JS GLOBAL DEFAULTS
+    ────────────────────────────────── */
+    Chart.defaults.font.family   = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color         = '#5a7a68';
+    Chart.defaults.plugins.legend.display = false;
+
+    /* ──────────────────────────────────
+       SPARKLINE CHARTS (mini)
+    ────────────────────────────────── */
+    function makeSparkline(id, data, color) {
+      const canvas = document.getElementById(id);
+      if (!canvas) return;
+      new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: data.map((_, i) => i),
+          datasets: [{
+            data,
+            borderColor: color,
+            borderWidth: 1.8,
+            pointRadius: 0,
+            tension: 0.45,
+            fill: true,
+            backgroundColor: (ctx) => {
+              const grad = ctx.chart.ctx.createLinearGradient(0, 0, 0, 36);
+              grad.addColorStop(0, color.replace(')', ', 0.18)').replace('rgb', 'rgba'));
+              grad.addColorStop(1, color.replace(')', ', 0)').replace('rgb', 'rgba'));
+              return grad;
+            },
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { tooltip: { enabled: false } },
+          scales: { x: { display: false }, y: { display: false } },
+          animation: { duration: 1000 }
+        }
+      });
+    }
+
+    makeSparkline('spark1', [8,11,9,14,12,18,16,22,19,25,21,28], 'rgb(82,183,136)');
+    makeSparkline('spark2', [1,1,2,1,2,2,1,2,2,1,2,2],           'rgb(116,198,157)');
+    makeSparkline('spark3', [5,7,6,9,8,12,11,14,12,16,14,18],    'rgb(144,224,239)');
+    makeSparkline('spark4', [5000,7000,6500,9000,8000,12000,11000,14000,12000,16000,14000,18000], 'rgb(233,196,106)');
+    makeSparkline('spark5', [3,4,4,5,4,5,5,5,5,5,5,5],           'rgb(199,125,255)');
+
+    /* ──────────────────────────────────
+       TREND CHART DATA
+    ────────────────────────────────── */
+    const trendData = {
+      weekly: {
+        labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+        data:   [4.2, 6.8, 5.1, 8.4, 7.2, 9.6, 5.8]
+      },
+      monthly: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+        data:   [28, 34, 22, 40, 36, 45, 52, 48, 60, 55, 72, 124]
+      },
+      yearly: {
+        labels: ['2021', '2022', '2023', '2024'],
+        data:   [210, 380, 520, 780]
+      }
+    };
+
+    let trendChart;
+
+    function buildTrendChart(period) {
+      const { labels, data } = trendData[period];
+      const ctx = document.getElementById('trendChart').getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 0, 240);
+      grad.addColorStop(0,   'rgba(82,183,136, 0.20)');
+      grad.addColorStop(0.7, 'rgba(82,183,136, 0.03)');
+      grad.addColorStop(1,   'rgba(82,183,136, 0)');
+
+      const config = {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Sampah (Kg)',
+            data,
+            backgroundColor: (ctx) => {
+              const idx   = ctx.dataIndex;
+              const total = data.length - 1;
+              return idx === total
+                ? 'rgba(45,106,79,0.85)'
+                : 'rgba(82,183,136,0.55)';
+            },
+            borderRadius: 8,
+            borderSkipped: false,
+            hoverBackgroundColor: 'rgba(45,106,79,0.80)',
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.parsed.y} Kg`
+              },
+              backgroundColor: 'rgba(26,58,42,0.88)',
+              padding: { x: 12, y: 8 },
+              cornerRadius: 10,
+              titleFont: { weight: '600' }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              border: { display: false },
+              ticks: { font: { size: 11 } }
+            },
+            y: {
+              grid: { color: 'rgba(82,183,136,0.08)' },
+              border: { display: false, dash: [4, 4] },
+              ticks: {
+                font: { size: 11 },
+                callback: v => v + ' Kg'
+              },
+              beginAtZero: true
+            }
+          },
+          animation: { duration: 600, easing: 'easeInOutQuart' }
+        }
+      };
+
+      if (trendChart) {
+        trendChart.data.labels   = labels;
+        trendChart.data.datasets[0].data = data;
+        trendChart.update('active');
+      } else {
+        trendChart = new Chart(ctx, config);
+      }
+    }
+
+    buildTrendChart('monthly');
+
+    /* Chart period tabs */
+    document.querySelectorAll('.chart-tab[data-period]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.chart-tab[data-period]').forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        buildTrendChart(btn.dataset.period);
+      });
+    });
+
+    /* ──────────────────────────────────
+       DONUT CHART — Kategori Sampah
+    ────────────────────────────────── */
+    const categories = [
+      { label: 'Nasi / Karbohidrat', value: 38, color: '#52b788' },
+      { label: 'Sayuran',            value: 22, color: '#74c69d' },
+      { label: 'Buah-buahan',        value: 15, color: '#40916c' },
+      { label: 'Daging & Protein',   value: 12, color: '#2d6a4f' },
+      { label: 'Roti / Kue',         value:  7, color: '#b7e4c7' },
+      { label: 'Minuman',            value:  4, color: '#90e0ef' },
+      { label: 'Lainnya',            value:  2, color: '#d8f3dc' },
+    ];
+
+    const totalKg = categories.reduce((s, c) => s + c.value, 0);
+
+    new Chart(document.getElementById('categoryChart'), {
+      type: 'doughnut',
+      data: {
+        labels:   categories.map(c => c.label),
+        datasets: [{
+          data:            categories.map(c => c.value),
+          backgroundColor: categories.map(c => c.color),
+          borderWidth:     2,
+          borderColor:     '#fff',
+          hoverOffset:     8,
+        }]
+      },
+      options: {
+        cutout: '70%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` ${ctx.label}: ${ctx.parsed} Kg (${Math.round(ctx.parsed / totalKg * 100)}%)`
+            },
+            backgroundColor: 'rgba(26,58,42,0.88)',
+            padding: { x: 12, y: 8 },
+            cornerRadius: 10,
+          }
+        },
+        animation: { animateRotate: true, duration: 900 }
+      }
+    });
+
+    /* Build donut legend */
+    const legendEl = document.getElementById('donutLegend');
+    categories.forEach(c => {
+      const pct = Math.round(c.value / totalKg * 100);
+      const item = document.createElement('div');
+      item.className = 'legend-item';
+      item.setAttribute('role', 'listitem');
+      item.innerHTML = `
+        <span class="legend-dot" style="background:${c.color}" aria-hidden="true"></span>
+        <span>${c.label}</span>
+        <span class="legend-item__pct">${pct}%</span>
+      `;
+      legendEl.appendChild(item);
+    });
+
+    /* ──────────────────────────────────
+       ACTIVITY FEED
+    ────────────────────────────────── */
+    const activities = [
+      {
+        type: 'pickup', icon: 'M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3',
+        title: 'Penjemputan Selesai',
+        sub: 'Pak Rudi Processor — 18 Kg Nasi & Sayuran',
+        time: '2j lalu'
+      },
+      {
+        type: 'submit', icon: 'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12',
+        title: 'Sampah Dikirim',
+        sub: 'Kategori: Nasi + Sayuran — 18 Kg',
+        time: '2j lalu'
+      },
+      {
+        type: 'accept', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100 8 4 4 0 000-8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75',
+        title: 'Processor Menerima Permintaan',
+        sub: 'CV. Hijau Lestari menerima pickup Anda',
+        time: '1h lalu'
+      },
+      {
+        type: 'reward', icon: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z',
+        title: 'Reward Ditambahkan',
+        sub: '+Rp 12.000 dari pengiriman 15 Okt',
+        time: '3h lalu'
+      },
+      {
+        type: 'submit', icon: 'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12',
+        title: 'Sampah Dikirim',
+        sub: 'Kategori: Buah-buahan — 9 Kg',
+        time: 'Kemarin'
+      },
+    ];
+
+    const feedEl = document.getElementById('activityFeed');
+    activities.forEach(a => {
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+      item.setAttribute('role', 'article');
+      item.innerHTML = `
+        <div class="activity-item__icon act--${a.type}" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="${a.icon}"/>
+          </svg>
+        </div>
+        <div class="activity-item__body">
+          <div class="activity-item__title">${a.title}</div>
+          <div class="activity-item__sub">${a.sub}</div>
+        </div>
+        <div class="activity-item__time" aria-label="Waktu: ${a.time}">${a.time}</div>
+      `;
+      feedEl.appendChild(item);
+    });
+
+    /* ──────────────────────────────────
+       PICKUP HISTORY TABLE
+    ────────────────────────────────── */
+    const historyData = [
+      { date:'19 Mei 2025', category:'Nasi & Sayuran',  weight:'18 Kg', processor:'Pak Rudi',           status:'Selesai'   },
+      { date:'15 Okt 2024', category:'Buah-buahan',     weight:'9 Kg',  processor:'CV. Hijau Lestari',  status:'Selesai'   },
+      { date:'10 Okt 2024', category:'Daging & Protein',weight:'5 Kg',  processor:'UD. Berkah Compost', status:'Selesai'   },
+      { date:'05 Okt 2024', category:'Roti / Kue',      weight:'4 Kg',  processor:'Pak Rudi',           status:'Selesai'   },
+      { date:'01 Okt 2024', category:'Nasi & Sayuran',  weight:'12 Kg', processor:'CV. Hijau Lestari',  status:'Dijemput'  },
+      { date:'25 Sep 2024', category:'Sayuran',          weight:'7 Kg',  processor:'UD. Berkah Compost', status:'Selesai'   },
+      { date:'20 Sep 2024', category:'Minuman',          weight:'3 Kg',  processor:'Pak Rudi',           status:'Selesai'   },
+      { date:'15 Sep 2024', category:'Lainnya',          weight:'2 Kg',  processor:'CV. Hijau Lestari',  status:'Dibatalkan'},
+      { date:'10 Sep 2024', category:'Nasi & Sayuran',  weight:'20 Kg', processor:'UD. Berkah Compost', status:'Selesai'   },
+      { date:'05 Sep 2024', category:'Buah-buahan',     weight:'6 Kg',  processor:'Pak Rudi',           status:'Menunggu'  },
+    ];
+
+    const statusClass = {
+      'Selesai':   'status--done',
+      'Dijemput':  'status--pickup',
+      'Menunggu':  'status--pending',
+      'Dibatalkan':'status--cancelled',
+    };
+
+    const tbody   = document.getElementById('historyTableBody');
+    const emptyEl = document.getElementById('tableEmpty');
+
+    function renderTable(data) {
+      tbody.innerHTML = '';
+      if (!data.length) {
+        emptyEl.style.display = 'block';
+        return;
+      }
+      emptyEl.style.display = 'none';
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="td-date">${row.date}</td>
+          <td>${row.category}</td>
+          <td class="td-weight">${row.weight}</td>
+          <td>${row.processor}</td>
+          <td><span class="status-badge ${statusClass[row.status]}">${row.status}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    renderTable(historyData);
+
+    /* Search + filter */
+    function filterTable() {
+      const q      = document.getElementById('tableSearch').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const filtered = historyData.filter(row => {
+        const matchQ = !q ||
+          row.date.toLowerCase().includes(q) ||
+          row.category.toLowerCase().includes(q) ||
+          row.processor.toLowerCase().includes(q);
+        const matchS = !status || row.status === status;
+        return matchQ && matchS;
+      });
+      renderTable(filtered);
+    }
+
+    document.getElementById('tableSearch').addEventListener('input', filterTable);
+    document.getElementById('statusFilter').addEventListener('change', filterTable);
+
+    /* ──────────────────────────────────
+       DATE RANGE BUTTONS
+    ────────────────────────────────── */
+    document.querySelectorAll('.date-range__btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.date-range__btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        /* In a real app: re-fetch data for btn.dataset.range */
+        console.log('[RESIK Stats] Rentang waktu dipilih:', btn.dataset.range, 'hari');
+      });
+    });
+
+    /* ──────────────────────────────────
+       EXPORT BUTTON (UI only)
+    ────────────────────────────────── */
+    document.querySelector('.btn-export').addEventListener('click', () => {
+      alert('Fitur ekspor akan tersedia segera. Terima kasih!');
+    });
+
+  })();
+  
+      })();
+    }
+
+
+
+    /* ════════════════════════════════════════════
+       RESIK WASTE MODULE — Halaman Sampah
+       Hanya berjalan saat halaman Sampah dibuka.
+    ════════════════════════════════════════════ */
+
+    /* ── Smart bin data ── */
+    const BIN_DATA = [
+      { id:'BIN-01', name:'Sungkono',     location:'Kec. Dukuh Pakis',  pct:34,  online:true,  syncMins:2  },
+      { id:'BIN-02', name:'Wonokromo',    location:'Kec. Wonokromo',    pct:91,  online:true,  syncMins:1  },
+      { id:'BIN-03', name:'Genteng',      location:'Kec. Genteng',      pct:55,  online:true,  syncMins:4  },
+      { id:'BIN-04', name:'Tegalsari',    location:'Kec. Tegalsari',    pct:22,  online:true,  syncMins:3  },
+      { id:'BIN-05', name:'Darmo',        location:'Jl. Raya Darmo',    pct:67,  online:true,  syncMins:5  },
+      { id:'BIN-06', name:'Kenjeran',     location:'Kec. Kenjeran',     pct:78,  online:true,  syncMins:7  },
+      { id:'BIN-07', name:'Keputran',     location:'Pasar Keputran',    pct:61,  online:true,  syncMins:2  },
+      { id:'BIN-08', name:'Gubeng',       location:'Kec. Gubeng',       pct:18,  online:true,  syncMins:6  },
+      { id:'BIN-09', name:'Dharmahusada', location:'Kec. Mulyorejo',    pct:44,  online:true,  syncMins:3  },
+      { id:'BIN-10', name:'Lakarsantri',  location:'Kec. Lakarsantri',  pct:0,   online:false, syncMins:92 },
+    ];
+
+    function binStatus(pct, online) {
+      if (!online) return 'offline';
+      if (pct >= 90) return 'red';
+      if (pct >= 60) return 'yellow';
+      return 'green';
+    }
+
+    function binLabel(s) {
+      return { green:'Normal', yellow:'Hampir Penuh', red:'Penuh!', offline:'Offline' }[s];
+    }
+
+    function renderBins() {
+      const grid = document.getElementById('rw-bin-grid');
+      if (!grid) return;
+      let green = 0, yellow = 0, red = 0, active = 0;
+
+      grid.innerHTML = BIN_DATA.map(bin => {
+        const s = binStatus(bin.pct, bin.online);
+        if (bin.online) active++;
+        if (s === 'green') green++;
+        if (s === 'yellow') yellow++;
+        if (s === 'red') red++;
+        const syncText = bin.online
+          ? (bin.syncMins < 60 ? `${bin.syncMins} mnt lalu` : `${Math.round(bin.syncMins/60)} jam lalu`)
+          : 'Tidak terhubung';
+        const pctDisplay = bin.online ? `${bin.pct}%` : '—';
+        return `
+        <div class="rw-bin-card ${s}" role="listitem">
+          <div class="rw-bin-top">
+            <div class="rw-bin-icon">🗑️</div>
+            <span class="rw-bin-badge"><span class="rw-bin-badge-dot"></span>${binLabel(s)}</span>
+          </div>
+          <div class="rw-bin-name">${bin.id} · ${bin.name}</div>
+          <div class="rw-bin-location">${bin.location}</div>
+          <div class="rw-bin-gauge-wrap">
+            <div class="rw-bin-gauge-bar">
+              <div class="rw-bin-gauge-fill" style="width:${bin.online ? bin.pct : 0}%"></div>
+            </div>
+            <span class="rw-bin-pct">${pctDisplay}</span>
+          </div>
+          <div class="rw-bin-sync">
+            <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            ${syncText}
+          </div>
+        </div>`;
+      }).join('');
+
+      /* Update summary */
+      const el = id => document.getElementById(id);
+      if (el('rw-bin-count-green'))  el('rw-bin-count-green').textContent  = green;
+      if (el('rw-bin-count-yellow')) el('rw-bin-count-yellow').textContent = yellow;
+      if (el('rw-bin-count-red'))    el('rw-bin-count-red').textContent    = red;
+      if (el('rw-bin-active-count')) el('rw-bin-active-count').textContent = `${active} aktif`;
+
+      /* Animate gauge fills */
+      requestAnimationFrame(() => {
+        grid.querySelectorAll('.rw-bin-gauge-fill').forEach(fill => {
+          const t = fill.style.width;
+          fill.style.width = '0%';
+          setTimeout(() => { fill.style.width = t; }, 200 + Math.random() * 150);
+        });
+      });
+    }
+
+    function initSampahPage() {
+      /* Date chip */
+      const dateChip = document.getElementById('rw-date-text');
+      if (dateChip) {
+        const now    = new Date();
+        const days   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+        const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        dateChip.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+      }
+
+      /* Metric entrance */
+      document.querySelectorAll('#page-sampah .rw-metric').forEach((c, i) => {
+        c.style.opacity = '0';
+        c.style.transform = 'translateY(12px)';
+        setTimeout(() => {
+          c.style.transition = 'opacity 320ms cubic-bezier(.22,.68,0,1), transform 320ms cubic-bezier(.22,.68,0,1)';
+          c.style.opacity = '1';
+          c.style.transform = 'translateY(0)';
+        }, 60 + i * 55);
+      });
+
+      /* Progress bar entrance */
+      document.querySelectorAll('#page-sampah .rw-progress-fill, #page-sampah .rw-impact-bar').forEach(bar => {
+        const t = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = t; }, 350 + Math.random() * 200);
+      });
+
+      /* Render smart bins */
+      renderBins();
+
+      /* Freshness simulation */
+      simulateFreshness();
+      setInterval(simulateFreshness, 60_000);
+
+      /* Pickup countdown */
+      updatePickupCountdown();
+      setInterval(updatePickupCountdown, 30_000);
+
+      /* Bin live updates every 30s */
+      if (binInterval) clearInterval(binInterval);
+      binInterval = setInterval(() => {
+        BIN_DATA.forEach(bin => {
+          if (!bin.online) return;
+          bin.pct = Math.max(0, Math.min(100, bin.pct + (Math.random() > .5 ? 1 : -1)));
+        });
+        renderBins();
+      }, 30_000);
+
+      /* Card expand */
+      const cards = document.querySelectorAll('#rw-list .rw-card');
+      cards.forEach(card => {
+        card.addEventListener('click', e => {
+          if (e.target.closest('.rw-detail-btn')) return;
+          const isExpanded = card.classList.contains('expanded');
+          cards.forEach(c => {
+            if (c !== card) {
+              c.classList.remove('expanded');
+              c.setAttribute('aria-expanded', 'false');
+              const d = c.querySelector('.rw-card-detail');
+              if (d) d.setAttribute('aria-hidden', 'true');
+            }
+          });
+          card.classList.toggle('expanded', !isExpanded);
+          card.setAttribute('aria-expanded', String(!isExpanded));
+          const detail = card.querySelector('.rw-card-detail');
+          if (detail) detail.setAttribute('aria-hidden', String(isExpanded));
+        });
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+        });
+      });
+
+      /* Filter */
+      const filterBtns = document.querySelectorAll('[data-rw-filter]');
+      const countEl    = document.getElementById('rw-list-count');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+          btn.classList.add('active');
+          btn.setAttribute('aria-pressed','true');
+          applyFilter(btn.dataset.rwFilter, cards, countEl);
+        });
+      });
+
+      /* Quick actions + detail buttons */
+      document.querySelectorAll('#page-sampah [data-rw-action]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const action = btn.dataset.rwAction;
+          btn.style.transform = 'scale(.94)';
+          setTimeout(() => { btn.style.transform = ''; }, 200);
+          document.dispatchEvent(new CustomEvent('rw:action', { detail: { action }, bubbles: true }));
+          console.log('[RESIK Waste] Aksi:', action);
+        });
+      });
+    }
+
+    function applyFilter(filter, cards, countEl) {
+      let visible = 0;
+      cards.forEach(card => {
+        const fresh  = card.dataset.rwFresh;
+        const pickup = card.dataset.rwPickup;
+        let show = filter === 'all'
+          || (filter === 'fresh'     && fresh  === 'fresh')
+          || (filter === 'warn'      && fresh  === 'warn')
+          || (filter === 'urgent'    && fresh  === 'urgent')
+          || (filter === 'scheduled' && pickup === 'scheduled');
+        if (show) {
+          card.style.display = '';
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(6px)';
+          requestAnimationFrame(() => {
+            card.style.transition = 'opacity 280ms cubic-bezier(.22,.68,0,1), transform 280ms cubic-bezier(.22,.68,0,1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          });
+          visible++;
+        } else {
+          card.classList.remove('expanded');
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(-4px)';
+          setTimeout(() => { card.style.display = 'none'; }, 240);
+        }
+      });
+      if (countEl) setTimeout(() => { countEl.textContent = `${visible} item`; }, 260);
+    }
+
+    function simulateFreshness() {
+      const thresholds = { '09:45':2,'06:20':5,'22:10':12,'10:55':1,'04:30':7,'08:15':3 };
+      document.querySelectorAll('#rw-list .rw-card').forEach(card => {
+        const timeEl = card.querySelector('.rw-card-time');
+        if (!timeEl) return;
+        const h     = thresholds[timeEl.textContent.trim()] ?? 0;
+        const fresh = h < 4 ? 'fresh' : h < 10 ? 'warn' : 'urgent';
+        const badge = card.querySelector('.rw-fresh-badge');
+        const fill  = card.querySelector('.rw-progress-fill');
+        const labels = { fresh:'Fresh', warn:'Segera', urgent:'Urgent' };
+        if (badge) { badge.className = `rw-fresh-badge ${fresh}`; badge.innerHTML = `<span class="rw-fresh-badge-dot"></span>${labels[fresh]}`; }
+        if (fill)  { fill.className = `rw-progress-fill ${fresh}`; }
+        card.dataset.rwFresh = fresh;
+      });
+    }
+
+    function updatePickupCountdown() {
+      const now    = new Date();
+      const pickup = new Date();
+      pickup.setHours(13, 30, 0, 0);
+      const diff   = pickup - now;
+      const el     = document.getElementById('rw-pickup-countdown');
+      if (!el) return;
+      if (diff > 0) {
+        const mins = Math.floor(diff / 60000);
+        const hrs  = Math.floor(mins / 60);
+        const rem  = mins % 60;
+        el.textContent = `Pickup berikutnya · ${hrs > 0 ? `${hrs} jam ${rem} menit` : `${mins} menit`} lagi`;
+      } else {
+        el.textContent = 'Pickup berikutnya';
+      }
+    }
+
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,693 @@
+/* ═══════════════════════════════════════════════
+   RESIK Dashboard — Navbar CSS
+   Sistem: Desktop > Tablet > Mobile Dock
+   Versi: 1.0
+═══════════════════════════════════════════════ */
+
+/* ─────────────────────────────────
+   1. RESET & ROOT VARIABLES
+───────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Eco Color Palette */
+  --eco-dark:        #1a3a2a;
+  --eco-mid:         #2d6a4f;
+  --eco-soft:        #52b788;
+  --eco-pale:        #b7e4c7;
+  --eco-cream:       #f0f7f4;
+
+  /* Glass & Overlay */
+  --glass-bg:        rgba(255, 255, 255, 0.72);
+  --glass-border:    rgba(82, 183, 136, 0.22);
+  --hover-bg:        rgba(82, 183, 136, 0.10);
+  --active-bg:       rgba(45, 106, 79, 0.13);
+  --active-border:   rgba(45, 106, 79, 0.30);
+  --glow-soft:       rgba(82, 183, 136, 0.18);
+
+  /* Typography */
+  --font-main: system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Animation */
+  --ease-fluid:  cubic-bezier(.22, .68, 0, 1);
+  --dur-main:    300ms;
+  --dur-fast:    220ms;
+
+  /* Layout */
+  --nav-height:  58px;
+  --nav-radius:  18px;
+  --pill-radius: 40px;
+}
+
+
+/* ─────────────────────────────────
+   2. PAGE BASE & BACKGROUND
+───────────────────────────────── */
+html, body {
+  height: 100%;
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--eco-cream);
+  background-image:
+    radial-gradient(ellipse 65% 40% at 25% 0%,
+      rgba(45, 106, 79, 0.13) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 35% at 80% 95%,
+      rgba(82, 183, 136, 0.09) 0%, transparent 55%),
+    linear-gradient(155deg, #eaf7f0 0%, #f5fbf8 55%, #e8f5ee 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+
+/* ─────────────────────────────────
+   3. HEADER WRAPPER
+───────────────────────────────── */
+.rn-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  padding: 14px 24px 0;
+  /* Fade saat scroll — opsional */
+  transition: padding var(--dur-main) var(--ease-fluid);
+}
+
+
+/* ─────────────────────────────────
+   4. TOP NAVBAR
+───────────────────────────────── */
+.rn-top {
+  height: var(--nav-height);
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--nav-radius);
+  box-shadow:
+    0 4px 30px rgba(26, 58, 42, 0.08),
+    0 1px 4px  rgba(26, 58, 42, 0.05);
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  transition:
+    padding   var(--dur-main) var(--ease-fluid),
+    border-radius var(--dur-main) var(--ease-fluid);
+}
+
+
+/* ─────────────────────────────────
+   5. LOGO (LEFT)
+───────────────────────────────── */
+.rn-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 9px;
+  border-radius: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--dur-fast) var(--ease-fluid);
+}
+
+.rn-logo:hover,
+.rn-logo:focus-visible {
+  background: var(--hover-bg);
+  outline: none;
+}
+
+.rn-logo-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--eco-mid), var(--eco-soft));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.rn-logo-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.rn-logo-text {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .045em;
+  color: var(--eco-dark);
+}
+
+
+/* ─────────────────────────────────
+   6. CENTER — ICON NAV ITEMS
+───────────────────────────────── */
+.rn-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.rn-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  height: 38px;
+  padding: 0 11px;
+  border-radius: var(--pill-radius);
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    background      var(--dur-main) var(--ease-fluid),
+    border-color    var(--dur-main) var(--ease-fluid),
+    box-shadow      var(--dur-main) var(--ease-fluid);
+}
+
+.rn-item:hover {
+  background: var(--hover-bg);
+  border-color: var(--glass-border);
+  box-shadow: 0 0 0 3px var(--glow-soft);
+}
+
+.rn-item.active {
+  background: var(--active-bg);
+  border-color: var(--active-border);
+}
+
+.rn-item:focus-visible {
+  outline: 2px solid var(--eco-soft);
+  outline-offset: 2px;
+}
+
+/* Icon inside item */
+.rn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.rn-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--eco-dark);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .65;
+  transition:
+    stroke   var(--dur-main) var(--ease-fluid),
+    opacity  var(--dur-fast) var(--ease-fluid);
+}
+
+.rn-item:hover .rn-icon svg,
+.rn-item.active .rn-icon svg {
+  opacity: 1;
+  stroke: var(--eco-mid);
+}
+
+/* Expanding label */
+.rn-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--eco-dark);
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  margin-left: 0;
+  pointer-events: none;
+  transition:
+    max-width    var(--dur-main) var(--ease-fluid),
+    opacity      var(--dur-fast) var(--ease-fluid),
+    margin-left  var(--dur-main) var(--ease-fluid);
+}
+
+.rn-item:hover .rn-label,
+.rn-item.active .rn-label {
+  max-width: 80px;
+  opacity: 1;
+  margin-left: 7px;
+}
+
+
+/* ─────────────────────────────────
+   7. PROFILE (RIGHT)
+───────────────────────────────── */
+.rn-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px 5px 6px;
+  border-radius: var(--pill-radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background    var(--dur-main) var(--ease-fluid),
+    border-color  var(--dur-main) var(--ease-fluid),
+    box-shadow    var(--dur-main) var(--ease-fluid);
+}
+
+.rn-profile:hover,
+.rn-profile:focus-visible {
+  background: var(--hover-bg);
+  border-color: var(--glass-border);
+  box-shadow: 0 0 0 3px var(--glow-soft);
+  outline: none;
+}
+
+.rn-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--eco-mid), #74c69d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  letter-spacing: .02em;
+}
+
+.rn-uname {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--eco-dark);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rn-chev svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: var(--eco-mid);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  transition: transform var(--dur-fast) var(--ease-fluid);
+}
+
+.rn-profile:hover .rn-chev svg {
+  transform: translateY(1px);
+}
+
+
+/* ─────────────────────────────────
+   8. MAIN CONTENT
+───────────────────────────────── */
+.rn-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--nav-height) - 40px);
+  padding: 32px 24px 120px; /* bottom padding untuk safe zone dock mobile */
+}
+
+.rn-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.rn-empty-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(82, 183, 136, 0.08);
+  border: 1.5px dashed rgba(82, 183, 136, 0.30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.rn-empty-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: var(--eco-soft);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.rn-empty-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--eco-dark);
+  opacity: .55;
+}
+
+.rn-empty-sub {
+  font-size: 13px;
+  color: var(--eco-mid);
+  opacity: .45;
+}
+
+
+/* ─────────────────────────────────
+   9. BOTTOM DOCK — Mobile only
+   v2: Icon-only, clean, premium
+───────────────────────────────── */
+.rn-dock-wrap {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 300;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  justify-content: center;
+  pointer-events: none;
+}
+
+.rn-dock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(82, 183, 136, 0.20);
+  border-radius: 40px;
+  box-shadow:
+    0 12px 40px rgba(26, 58, 42, 0.11),
+    0 2px 8px   rgba(26, 58, 42, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.90);
+  pointer-events: all;
+}
+
+/* Dock separator */
+.dock-sep {
+  width: 1px;
+  height: 22px;
+  background: rgba(82, 183, 136, 0.18);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* Dock item — icon only, no label */
+.dock-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 22px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform     .35s cubic-bezier(.22,.68,0,1),
+    background    .35s cubic-bezier(.22,.68,0,1),
+    box-shadow    .35s cubic-bezier(.22,.68,0,1);
+}
+
+.dock-item:hover {
+  background: rgba(82, 183, 136, 0.09);
+}
+
+.dock-item:active {
+  transform: scale(.90);
+}
+
+.dock-item.active {
+  background: rgba(45, 106, 79, 0.12);
+  transform: translateY(-3px) scale(1.08);
+  box-shadow:
+    0 6px 18px rgba(45, 106, 79, 0.16),
+    0 0 0 1px rgba(82, 183, 136, 0.25);
+}
+
+/* Active dot indicator */
+.dock-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--eco-soft);
+  opacity: .85;
+  transition: opacity .3s ease;
+}
+
+/* Dock icon SVG */
+.dock-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: rgba(26, 58, 42, 0.45);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition:
+    stroke   .35s cubic-bezier(.22,.68,0,1),
+    opacity  .3s ease;
+}
+
+.dock-item.active .dock-icon svg {
+  stroke: var(--eco-mid);
+}
+
+.dock-item:hover:not(.active) .dock-icon svg {
+  stroke: rgba(26, 58, 42, 0.70);
+}
+
+/* Tooltip — muncul saat hover (desktop/tablet feel) */
+.dock-tip {
+  pointer-events: none;
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(26, 58, 42, 0.88);
+  color: #e8f5ee;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 9px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  letter-spacing: .02em;
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.dock-tip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(26, 58, 42, 0.88);
+}
+
+.dock-item:hover .dock-tip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Hapus label lama — tidak dipakai lagi */
+.dock-label {
+  display: none;
+}
+
+
+/* ─────────────────────────────────
+   10. RESPONSIVE BREAKPOINTS
+───────────────────────────────── */
+
+/* ── TABLET (700px – 1100px) ── */
+@media (max-width: 1100px) {
+  :root {
+    --nav-height:  54px;
+    --nav-radius:  16px;
+  }
+
+  .rn-header {
+    padding: 12px 18px 0;
+  }
+
+  .rn-top {
+    padding: 0 16px;
+    gap: 10px;
+  }
+
+  .rn-logo {
+    padding: 4px 7px;
+    gap: 7px;
+  }
+
+  .rn-logo-icon {
+    width: 27px;
+    height: 27px;
+    border-radius: 8px;
+  }
+
+  .rn-logo-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .rn-logo-text {
+    font-size: 14px;
+  }
+
+  .rn-center {
+    gap: 2px;
+  }
+
+  .rn-item {
+    height: 34px;
+    padding: 0 9px;
+  }
+
+  .rn-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .rn-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.8;
+  }
+
+  .rn-label {
+    font-size: 12px;
+  }
+
+  .rn-item:hover .rn-label,
+  .rn-item.active .rn-label {
+    max-width: 65px;
+    margin-left: 6px;
+  }
+
+  .rn-avatar {
+    width: 27px;
+    height: 27px;
+    font-size: 10px;
+  }
+
+  .rn-uname {
+    font-size: 12px;
+    max-width: 90px;
+  }
+
+  .rn-profile {
+    padding: 4px 8px 4px 5px;
+    gap: 6px;
+  }
+}
+
+/* ── MOBILE (<700px) ── */
+@media (max-width: 700px) {
+  /* Sembunyikan top navbar */
+  .rn-header {
+    display: none;
+  }
+
+  /* Tampilkan bottom dock */
+  .rn-dock-wrap {
+    display: flex;
+  }
+
+  /* Sesuaikan konten utama */
+  .rn-main {
+    min-height: 100vh;
+    padding: 24px 16px 140px;
+    align-items: center;
+  }
+
+  .rn-empty-state {
+    gap: 8px;
+  }
+
+  .rn-empty-title {
+    font-size: 14px;
+  }
+
+  .rn-empty-sub {
+    font-size: 12px;
+  }
+}
+
+/* ── SMALL MOBILE (<420px) ── */
+@media (max-width: 420px) {
+  .rn-dock {
+    gap: 2px;
+    padding: 7px 8px;
+  }
+
+  .dock-item {
+    width: 48px;
+    min-height: 50px;
+    border-radius: 15px;
+  }
+
+  .dock-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dock-label {
+    font-size: 9px;
+  }
+}
+
+
+/* ─────────────────────────────────
+   11. ACCESSIBILITY
+───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}
+
+.rn-item:focus-visible,
+.rn-logo:focus-visible,
+.rn-profile:focus-visible,
+.dock-item:focus-visible {
+  outline: 2px solid var(--eco-soft);
+  outline-offset: 2px;
+}

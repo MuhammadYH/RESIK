@@ -886,12 +886,12 @@
 
 <!-- Top bar -->
 <div class="topbar" style="justify-content:space-between;">
-  <a href="01RESIK.html" class="logo-link">
+  <a href="index.html" class="logo-link">
     <div class="logo-wrapper">
       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABTgAAAGzCAYAAAAL0XjzAAEAAElEQVR4nOydd5wkR3m/n6rqNGF3by8pnHIACaGIACEESoBEzmAyCCSCABsRTDT4h3HEmJxsMNEiCAGyTTAgkWWRQWAQWAIsAeJOd7dhUoeq+v1R3b2ze7uX73b3tp77zGdud2Z7erqrq6u+9b7fV+DZJcIwJM9zjjzySM65z1n2iKMOo9ubZNWqMYqiINMZIyMjdHvT/OAHP2B6qksURRgEExMT/P53fxRbN3fAlBvUgAAhwBoQEoJAkucGLKgAdAFhNPM7qcDo8rUcpAQhBMZYrN3+/kspMcZ9uBACaxUASiqEEGitsVjAlK/boffO/L7C7ugDd4hc4Pdmgd97PB6Px+PxeDwej8fj8Xg8MwSLvQPLgTAMAdBak+c5QRBw0UUX2de+9jWsP2Q1Uhg2b91Ms9nACOj3uwghGB8dY7IzTRRFhFGCxZKludXaolRIEAT8+Hs/Issy/nd//n3uu+8+Xnzxxex75R0YSWB7CQDGnT3hy+RQbDkrCsJXMcjQLaRSFaklVYBCMJH7HEQc5Bk7kRLHb9m0iXePiNQ0SBOQp2sWOMLYGt4SWoZgCsSgVG6CJNLbVxjgQMBHYzI4RJuMuenHNXTr9TBCl5AWKS0fxJGBiAoAAAAASUVORK5CYII=" alt="RESIK" class="logo-img">
     </div>
   </a>
-  <a href="01RESIK.html" class="back-link">
+  <a href="index.html" class="back-link">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M10 4L6 8l4 4"/>
     </svg>
@@ -1278,7 +1278,7 @@
       await RESIK_AUTH.login(email.value.trim(), pass.value);
       document.getElementById('login-form-wrap').style.display = 'none';
       document.getElementById('login-success').style.display = 'block';
-      setTimeout(() => { window.location.href = '01RESIK.html'; }, 1500);
+      setTimeout(() => { window.location.href = 'index.html'; }, 1500);
     } catch (err) {
       btn.classList.remove('loading');
       btn.textContent = 'Masuk ke ReFood';
