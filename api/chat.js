@@ -7,6 +7,34 @@ import {
   shouldClarify,
   buildClarificationPrompt
 } from '../resik-ai-backend/modules/clarificationEngine.js';
+const rateLimitMap = new Map();
+const ip =
+  req.headers['x-forwarded-for'] ||
+  'unknown';
+
+const now = Date.now();
+
+const windowMs = 60 * 1000; // 1 menit
+const maxRequests = 20;
+
+if (!rateLimitMap.has(ip)) {
+  rateLimitMap.set(ip, []);
+}
+
+const requests =
+  rateLimitMap
+    .get(ip)
+    .filter(ts => now - ts < windowMs);
+
+if (requests.length >= maxRequests) {
+  return res.status(429).json({
+    error:
+      'Terlalu banyak request. Coba lagi sebentar.'
+  });
+}
+
+requests.push(now);
+rateLimitMap.set(ip, requests);
 
 export default async function handler(req, res) {
 
@@ -122,12 +150,15 @@ export default async function handler(req, res) {
 
   } catch (err) {
 
-    console.error('[RESIK AI ERROR]', err);
+    console.error({
+      message: err.message,
+      stack: err.stack,
+      time: new Date().toISOString()
+    });
 
     return res.status(500).json({
       error: 'Internal server error',
-      reply:
-        'Maaf, AI sedang mengalami gangguan sementara.'
+      reply: getSmartFallback(message)
     });
   }
 }
@@ -145,4 +176,43 @@ function buildMessages(history, userMessage) {
       content: userMessage
     }
   ];
+}
+function getSmartFallback(userMessage = '') {
+
+  const text =
+    userMessage.toLowerCase();
+
+  if (
+    text.includes('harga') ||
+    text.includes('biaya')
+  ) {
+    return `
+Untuk informasi harga terbaru,
+silakan hubungi admin kami 😊
+
+📞 WhatsApp:
++62xxxxxxxxxx
+`;
+  }
+
+  if (
+    text.includes('layanan')
+  ) {
+    return `
+Kami menyediakan layanan:
+
+• Sedot WC
+• Saluran mampet
+• Limbah
+• Perawatan septic tank
+
+Tim kami siap membantu 🚀
+`;
+  }
+
+  return `
+Maaf, AI sedang sibuk sementara 🙏
+
+Silakan coba lagi beberapa saat.
+`;
 }

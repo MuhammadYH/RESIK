@@ -1,3 +1,5 @@
+import { services }
+from '../../knowledge/services.js';
 /**
  * modules/promptBuilder.js
  * Build system prompt secara dinamis berdasarkan intent + memory + context.
@@ -148,6 +150,10 @@ export function buildSystemPrompt(intentResult, memory, retrievedContext = '') {
     '\n\n' + intentLayer.trim(),
     memoryLayer,
     styleGuide,
+
+    '\n\nKNOWLEDGE BASE RESIK:\n',
+    services,
+
     retrievedContext
   ].join('');
 }
