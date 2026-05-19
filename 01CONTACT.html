@@ -8,6 +8,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
   <!-- Satu file CSS eksternal untuk semua halaman -->
   <link rel="stylesheet" href="resik-main.css">
+  <!-- [RESIK AI] Tambahan CSS untuk AI assistant — jangan hapus -->
+  <link rel="stylesheet" href="resik-ai.css">
+  <style>
+    .qc-icon-wrap svg {
+      color: #3a8f5a;
+      display: block;
+    }
+    .qc-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
   <title>Bantuan &amp; Kontak — RESIK</title>
   <script src="resik-supabase.js" defer></script>
 </head>
@@ -16,19 +29,44 @@
 <!-- ════════════════ NAV ════════════════ -->
 <nav id="navbar">
   <div class="nav-wrap">
-    <!-- FIX: Hapus RESIK</span>'"> yang tersesat di dalam tag <a> -->
     <a href="01RESIK.html" class="nav-logo-wrap">
       <img src="image_0.png" alt="RESIK Logo" class="nav-logo-img">
     </a>
     <ul class="nav-links">
       <li><a href="01RESIK.html">Beranda</a></li>
-          <li><a href="01TENTANGKAMI.html">Tentang Kami</a></li>
+      <li><a href="01TENTANGKAMI.html">Tentang Kami</a></li>
       <li><a href="01SOLUSI.html">Solusi</a></li>
       <li><a href="01CONTACT.html" class="active">Kontak Kami</a></li>
     </ul>
+    <!-- Hamburger (mobile) -->
+    <button class="nav-hamburger" id="hamburgerBtn" aria-label="Buka menu">
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+    </button>
     <a href="01login_register.html" class="nav-btn">Masuk</a>
   </div>
 </nav>
+
+<!-- Mobile Drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-header">
+    <a href="01RESIK.html" class="drawer-logo">
+      <img src="image_0.png" alt="RESIK Logo">
+    </a>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <nav class="drawer-nav">
+    <a href="01RESIK.html">Beranda</a>
+    <a href="01TENTANGKAMI.html">Tentang Kami</a>
+    <a href="01SOLUSI.html">Solusi</a>
+    <a href="01CONTACT.html" class="active">Kontak Kami</a>
+  </nav>
+  <div class="drawer-cta">
+    <a href="01login_register.html">Masuk</a>
+  </div>
+</div>
 
 <!-- ════════════════ HERO ════════════════ -->
 <section class="page-hero">
@@ -46,18 +84,53 @@
   </div>
   <h1 class="fu fu-2">Ada yang bisa<br>kami <em>bantu?</em></h1>
   <!-- FIX: "ReFood" diganti "RESIK" agar konsisten brand -->
-  <p class="hero-sub fu fu-3">Tim RESIK siap membantu 7 hari seminggu. Temukan jawaban di FAQ atau hubungi kami langsung.</p>
+  <p class="hero-sub fu fu-3">Tim RESIK siap membantu 7 hari seminggu. Tanya RESIK AI atau temukan jawaban di FAQ.</p>
 
-  <div class="hero-search fu fu-4">
-    <input type="text" placeholder="Cari pertanyaan atau topik bantuan..." id="searchInput" oninput="searchFAQ(this.value)">
-    <button class="hero-search-btn">Cari</button>
+  <!-- [RESIK AI] Label "RESIK AI — Online" di atas search bar -->
+  <div class="ai-label-wrap fu fu-4">
+    <div class="ai-label">
+      <span class="ai-label-dot"></span>
+      RESIK AI — Online
+    </div>
   </div>
+
+  <!-- Search bar existing — placeholder & tombol diubah oleh resik-ai.js -->
+  <div class="hero-search fu fu-4">
+    <input type="text" placeholder="Tanya RESIK AI — &quot;Bagaimana cara daftar?&quot;" id="searchInput">
+    <button class="hero-search-btn">Tanya AI</button>
+  </div>
+
+  <!-- [RESIK AI] Area response — awalnya tersembunyi, muncul setelah kirim pertanyaan -->
+  <div class="ai-response-area" id="aiResponseArea">
+    <div class="ai-response-card">
+      <div class="ai-response-header">
+        <div class="ai-avatar">🌿</div>
+        <div>
+          <div class="ai-name">RESIK AI</div>
+          <div class="ai-tagline">Asisten virtual platform RESIK</div>
+        </div>
+      </div>
+      <div class="ai-loading" id="aiLoading">
+        <div class="ai-loading-dot"></div>
+        <div class="ai-loading-dot"></div>
+        <div class="ai-loading-dot"></div>
+        <span class="ai-loading-text">Sedang berpikir...</span>
+      </div>
+      <div class="ai-response-body" id="aiResponseBody"></div>
+    </div>
+  </div>
+  <!-- [RESIK AI] Akhir blok AI -->
+
 </section>
 
 <!-- ════════════════ QUICK CARDS ════════════════ -->
 <div class="quick-cards">
   <a href="#form-section" class="quick-card fu fu-2">
-    <div class="qc-icon-wrap">💬</div>
+    <div class="qc-icon-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    </div>
     <div class="qc-title">Kirim Pesan</div>
     <p class="qc-desc">Isi formulir dan kami balas dalam waktu singkat</p>
     <div class="qc-footer">
@@ -66,7 +139,12 @@
     </div>
   </a>
   <a href="mailto:admin@resik.id" class="quick-card fu fu-3">
-    <div class="qc-icon-wrap">📧</div>
+    <div class="qc-icon-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <polyline points="2,4 12,13 22,4"/>
+      </svg>
+    </div>
     <div class="qc-title">Email Langsung</div>
     <p class="qc-desc">Untuk pertanyaan lebih detail dan pengiriman dokumen</p>
     <div class="qc-footer">
@@ -75,7 +153,11 @@
     </div>
   </a>
   <a href="https://wa.me/6281234567890" class="quick-card fu fu-4">
-    <div class="qc-icon-wrap">📱</div>
+    <div class="qc-icon-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.84a16 16 0 0 0 6 6l1.27-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+      </svg>
+    </div>
     <div class="qc-title">WhatsApp Admin</div>
     <p class="qc-desc">Chat langsung untuk urusan mendesak dan prioritas</p>
     <div class="qc-footer">
@@ -331,42 +413,6 @@
 
 </div>
 
-<!-- ════════════════ ADMIN SECTION ════════════════ -->
-<div class="admin-section">
-  <div class="admin-section-header">
-    <div>
-      <h2 class="admin-section-title">Hubungi <em>Tim Admin</em> Langsung</h2>
-      <p class="admin-desc">Untuk verifikasi, pelanggaran, atau masalah teknis serius — hubungi tim kami langsung.</p>
-    </div>
-  </div>
-
-  <div class="admin-grid">
-    <div class="admin-card">
-      <div class="admin-icon-wrap">🛡️</div>
-      <div>
-        <div class="admin-role">Moderasi &amp; Keamanan</div>
-        <div class="admin-name">Tim Moderasi</div>
-        <a href="mailto:moderasi@resik.id" class="admin-contact">📧 moderasi@resik.id</a>
-      </div>
-    </div>
-    <div class="admin-card">
-      <div class="admin-icon-wrap">✅</div>
-      <div>
-        <div class="admin-role">Verifikasi Pengelola</div>
-        <div class="admin-name">Tim Verifikasi</div>
-        <a href="mailto:verifikasi@resik.id" class="admin-contact">📧 verifikasi@resik.id</a>
-      </div>
-    </div>
-    <div class="admin-card">
-      <div class="admin-icon-wrap">⚙️</div>
-      <div>
-        <div class="admin-role">Teknis &amp; Bug</div>
-        <div class="admin-name">Tim Teknis</div>
-        <a href="mailto:teknis@resik.id" class="admin-contact">📧 teknis@resik.id</a>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ════════════════ FOOTER — FIX: Satu footer bersih, tidak ada duplikat ════════════════ -->
 <footer>
@@ -528,7 +574,34 @@
     btn.disabled = false;
     btn.style.background = '';
   }
+
+  /* ── Hamburger / Mobile Drawer ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    const hamburgerBtn  = document.getElementById('hamburgerBtn');
+    const mobileDrawer  = document.getElementById('mobileDrawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const drawerClose   = document.getElementById('drawerClose');
+
+    function openDrawer() {
+      mobileDrawer.classList.add('open');
+      drawerOverlay.classList.add('open');
+      hamburgerBtn.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeDrawer() {
+      mobileDrawer.classList.remove('open');
+      drawerOverlay.classList.remove('open');
+      hamburgerBtn.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    if (hamburgerBtn)  hamburgerBtn.addEventListener('click', openDrawer);
+    if (drawerClose)   drawerClose.addEventListener('click', closeDrawer);
+    if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+  });
 </script>
+<!-- [RESIK AI] Script AI assistant — letakkan sebelum resik-shared.js -->
+<script src="resik-ai.js" defer></script>
 <script src="resik-shared.js"></script>
 </body>
 </html>

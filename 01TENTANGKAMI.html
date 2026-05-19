@@ -10,11 +10,6 @@
   <link rel="stylesheet" href="resik-main.css">
   <script src="resik-supabase.js" defer></script>
   <style>
-    /* ── Mobile menu: sembunyikan by default ── */
-    .mobile-menu {
-      display: none !important;
-    }
-
     /* ── Hero layout fix: center semua konten ── */
     .hero {
       position: relative;
@@ -159,20 +154,34 @@
       <li><a href="01SOLUSI.html">Solusi</a></li>
       <li><a href="01CONTACT.html">Kontak Kami</a></li>
     </ul>
-    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
+    <!-- Hamburger (mobile) -->
+    <button class="nav-hamburger" id="hamburgerBtn" aria-label="Buka menu">
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
     </button>
     <a href="01login_register.html" class="nav-btn">Masuk</a>
   </div>
 </nav>
 
-<!-- Mobile Menu -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="01RESIK.html">Beranda</a>
-  <a href="01TENTANGKAMI.html">Tentang Kami</a>
-  <a href="01SOLUSI.html">Solusi</a>
-  <a href="01CONTACT.html">Kontak Kami</a>
-  <a href="01login_register.html" class="mobile-masuk">Masuk</a>
+<!-- Mobile Drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-header">
+    <a href="01RESIK.html" class="drawer-logo">
+      <img src="image_0.png" alt="RESIK Logo">
+    </a>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <nav class="drawer-nav">
+    <a href="01RESIK.html">Beranda</a>
+    <a href="01TENTANGKAMI.html" class="active">Tentang Kami</a>
+    <a href="01SOLUSI.html">Solusi</a>
+    <a href="01CONTACT.html">Kontak Kami</a>
+  </nav>
+  <div class="drawer-cta">
+    <a href="01login_register.html">Masuk</a>
+  </div>
 </div>
 
 <!-- ── HERO ── -->
@@ -300,42 +309,18 @@
   </div>
 </section>
 
-<!-- ── VISI MISI FULL ── -->
-<section class="visimisi-section" id="visi">
-  <div class="container">
-    <span class="section-label fade-up">Fondasi Kami</span>
-    <h2 class="section-title fade-up fade-up-1">Visi &amp; Misi</h2>
-    <p class="section-desc fade-up fade-up-2">Landasan nilai yang menggerakkan setiap inovasi dan langkah kami.</p>
-    <div class="vm-full-grid">
-      <div class="vm-full-card dark fade-up fade-up-1">
-        <div class="vm-card-header">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:26px;height:26px"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-          Visi
-        </div>
-        <div class="vm-text">Menjadi solusi terdepan dalam pengelolaan sampah makanan untuk mewujudkan Bumi yang Lebih Bersih dan berkelanjutan bagi generasi mendatang di seluruh Indonesia.</div>
-      </div>
-      <div class="vm-full-card light fade-up fade-up-2">
-        <div class="vm-card-header" style="color:var(--green-mid)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:26px;height:26px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-          Misi
-        </div>
-        <div class="vm-text" style="color:var(--text-muted)">Menghadirkan teknologi cerdas berbasis IoT dan data, logistik efisien yang andal, serta sistem monitoring terintegrasi untuk mengubah sampah makanan menjadi nilai ekonomi dan lingkungan yang nyata dan terukur.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ── SOLUSI ── -->
-<section class="solusi-section" id="solusi">
-  <div class="container">
+<section class="solusi-section" id="solusi" style="background: linear-gradient(160deg, var(--green-bg) 0%, #e8f5e9 100%); position: relative; overflow: hidden;">
+  <!-- dot pattern overlay (sama seperti ex-visimisi) -->
+  <div style="position:absolute;inset:0;background:url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Ccircle cx=%2230%22 cy=%2230%22 r=%224%22 fill=%22%234a9e55%22 fill-opacity=%220.04%22/%3E%3C/svg%3E');pointer-events:none;"></div>
+  <div class="container" style="position:relative;z-index:1;">
     <span class="section-label fade-up">Produk &amp; Layanan</span>
     <h2 class="section-title fade-up fade-up-1">Solusi Kami</h2>
     <p class="section-desc fade-up fade-up-2">Ekosistem teknologi lengkap dari pengumpulan hingga pengolahan sampah makanan.</p>
     <div class="solusi-grid">
 
-      <div class="solusi-card fade-up fade-up-1">
-        <div class="solusi-illus">
-          <!-- Smart Bin line icon -->
+      <div class="solusi-card fade-up fade-up-1" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
           <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="10" y="20" width="24" height="18" rx="3"/>
             <path d="M7 20h30"/>
@@ -346,13 +331,12 @@
             <circle cx="22" cy="25.5" r="1" fill="#2d6a35" stroke="none"/>
           </svg>
         </div>
-        <div class="solusi-name">Smart Bin</div>
-        <div class="solusi-desc">Tempat sampah cerdas berbasis IoT yang memantau kapasitas secara real-time dan memberi notifikasi otomatis saat penuh.</div>
+        <div class="solusi-name" style="color:var(--text-dark);">Smart Bin</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Tempat sampah cerdas berbasis IoT yang memantau kapasitas secara real-time dan memberi notifikasi otomatis saat penuh.</div>
       </div>
 
-      <div class="solusi-card fade-up fade-up-2">
-        <div class="solusi-illus">
-          <!-- Dashboard line icon -->
+      <div class="solusi-card fade-up fade-up-2" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
           <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="5" y="8" width="34" height="22" rx="3"/>
             <line x1="17" y1="30" x2="17" y2="34"/>
@@ -362,13 +346,12 @@
             <circle cx="28" cy="13" r="1.8" fill="#2d6a35" stroke="none"/>
           </svg>
         </div>
-        <div class="solusi-name">Monitoring Dashboard</div>
-        <div class="solusi-desc">Platform digital terintegrasi untuk memantau, menganalisis, dan melaporkan dampak pengelolaan sampah secara akurat.</div>
+        <div class="solusi-name" style="color:var(--text-dark);">Monitoring Dashboard</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Platform digital terintegrasi untuk memantau, menganalisis, dan melaporkan dampak pengelolaan sampah secara akurat.</div>
       </div>
 
-      <div class="solusi-card fade-up fade-up-3">
-        <div class="solusi-illus">
-          <!-- Truck / logistik line icon -->
+      <div class="solusi-card fade-up fade-up-3" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
           <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="16" width="24" height="14" rx="2"/>
             <path d="M27 22h8l4 6v4h-12V22z"/>
@@ -378,68 +361,55 @@
             <rect x="29" y="24" width="6" height="5" rx="1"/>
           </svg>
         </div>
-        <div class="solusi-name">Logistik Cerdas</div>
-        <div class="solusi-desc">Sistem pengangkutan sampah yang efisien dengan rute optimal dan jadwal penjemputan berbasis data permintaan.</div>
+        <div class="solusi-name" style="color:var(--text-dark);">Logistik Cerdas</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Sistem pengangkutan sampah yang efisien dengan rute optimal dan jadwal penjemputan berbasis data permintaan.</div>
       </div>
 
-      <div class="solusi-card fade-up fade-up-1">
-        <div class="solusi-illus">
-          <!-- Circular / recycle line icon -->
+      <div class="solusi-card fade-up fade-up-1" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
           <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <!-- Arrow 1: top -->
             <path d="M22 8 L26 13 L23 13 A10 10 0 0 1 32 22"/>
             <polyline points="24,10 26,13 23.5,15.5"/>
-            <!-- Arrow 2: bottom-right -->
             <path d="M32 23 A10 10 0 0 1 19 34 L17 34"/>
             <polyline points="18.5,31.5 17,34 19.5,36"/>
-            <!-- Arrow 3: bottom-left -->
             <path d="M16 33 A10 10 0 0 1 12 22 A10 10 0 0 1 19 13 L21 13"/>
             <polyline points="19.5,10.5 21,13 18.5,15.5"/>
           </svg>
         </div>
-        <div class="solusi-name">Pengelolaan Sampah</div>
-        <div class="solusi-desc">Proses pengolahan sampah makanan menjadi kompos, biogas, dan produk bernilai ekonomi lainnya secara berkelanjutan.</div>
+        <div class="solusi-name" style="color:var(--text-dark);">Pengelolaan Sampah</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Proses pengolahan sampah makanan menjadi kompos, biogas, dan produk bernilai ekonomi lainnya secara berkelanjutan.</div>
       </div>
 
-      <div class="solusi-card fade-up fade-up-2">
-        <div class="solusi-illus">
-          <!-- Mobile app line icon -->
+      <div class="solusi-card fade-up fade-up-2" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
           <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="13" y="5" width="18" height="34" rx="4"/>
             <line x1="19" y1="38" x2="25" y2="38"/>
             <line x1="17" y1="10" x2="27" y2="10"/>
-            <!-- App content bars -->
             <rect x="17" y="15" width="10" height="3" rx="1.5" stroke-width="1.6"/>
             <line x1="17" y1="22" x2="22" y2="22" stroke-width="1.6"/>
             <line x1="17" y1="26" x2="24" y2="26" stroke-width="1.6"/>
             <line x1="17" y1="30" x2="20" y2="30" stroke-width="1.6"/>
           </svg>
         </div>
-        <div class="solusi-name">ResikApp</div>
-        <div class="solusi-desc">Aplikasi mobile untuk mitra, komunitas, dan individu dalam memantau kontribusi lingkungan mereka secara langsung.</div>
+        <div class="solusi-name" style="color:var(--text-dark);">ResikApp</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Aplikasi mobile untuk mitra, komunitas, dan individu dalam memantau kontribusi lingkungan mereka secara langsung.</div>
       </div>
 
-      <div class="solusi-card fade-up fade-up-3">
-        <div class="solusi-illus">
-          <!-- Handshake / kemitraan line icon -->
+      <div class="solusi-card fade-up fade-up-3" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
           <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <!-- Left arm -->
             <path d="M4 28 L12 20 L20 20"/>
-            <!-- Right arm -->
             <path d="M40 28 L32 20 L24 20"/>
-            <!-- Clasped hands -->
             <path d="M20 20 Q22 17 24 20 Q26 23 24 26 Q22 29 20 26 Q18 23 20 20Z"/>
-            <!-- Fingers left -->
             <path d="M12 28 Q14 26 16 28"/>
-            <!-- Fingers right -->
             <path d="M32 28 Q30 26 28 28"/>
-            <!-- Connection line -->
             <path d="M20 26 L12 34"/>
             <path d="M24 26 L32 34"/>
           </svg>
         </div>
-        <div class="solusi-name">Kemitraan Strategis</div>
-        <div class="solusi-desc">Program kolaborasi dengan restoran, hotel, dan institusi untuk membangun ekosistem pengelolaan sampah yang menyeluruh.</div>
+        <div class="solusi-name" style="color:var(--text-dark);">Kemitraan Strategis</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Program kolaborasi dengan restoran, hotel, dan institusi untuk membangun ekosistem pengelolaan sampah yang menyeluruh.</div>
       </div>
 
     </div>
@@ -706,42 +676,30 @@
 <script>
 // ── Scroll animations ditangani oleh resik-shared.js ──
 
-// ── Active nav link based on scroll
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-links a');
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 90) current = s.id;
-  });
-  navLinks.forEach(link => {
-    link.classList.remove('active');
-    const href = link.getAttribute('href') || '';
-    if (href.includes(current) && current) link.classList.add('active');
-  });
-});
+// ── Active nav link & counter animation ditangani oleh resik-shared.js ──
 
-// ── Counter animation ditangani oleh resik-shared.js ──
+// ── Hamburger / Mobile Drawer ──
+const hamburgerBtn  = document.getElementById('hamburgerBtn');
+const mobileDrawer  = document.getElementById('mobileDrawer');
+const drawerOverlay = document.getElementById('drawerOverlay');
+const drawerClose   = document.getElementById('drawerClose');
 
-// ── Hamburger menu
-const hamburger = document.getElementById('hamburger');
-const mobileMenu = document.getElementById('mobileMenu');
-hamburger?.addEventListener('click', () => {
-  hamburger.classList.toggle('open');
-  mobileMenu.classList.toggle('open');
-});
-mobileMenu?.querySelectorAll('a').forEach(a => {
-  a.addEventListener('click', () => {
-    hamburger.classList.remove('open');
-    mobileMenu.classList.remove('open');
-  });
-});
-
-// ── Navbar scroll shadow & scrolled class
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 40);
-});
+function openDrawer() {
+  mobileDrawer.classList.add('open');
+  drawerOverlay.classList.add('open');
+  hamburgerBtn.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  mobileDrawer.classList.remove('open');
+  drawerOverlay.classList.remove('open');
+  hamburgerBtn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+if (hamburgerBtn)  hamburgerBtn.addEventListener('click', openDrawer);
+if (drawerClose)   drawerClose.addEventListener('click', closeDrawer);
+if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 </script>
 <script src="resik-shared.js"></script>
 </body>
