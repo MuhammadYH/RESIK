@@ -8,9 +8,6 @@ import {
   buildClarificationPrompt
 } from '../resik-ai-backend/modules/clarificationEngine.js';
 const rateLimitMap = new Map();
-const ip =
-  req.headers['x-forwarded-for'] ||
-  'unknown';
 
 const now = Date.now();
 
@@ -44,6 +41,36 @@ export default async function handler(req, res) {
       error: 'Method not allowed'
     });
   }
+
+  // RATE LIMIT START
+  const ip =
+    req.headers['x-forwarded-for'] ||
+    'unknown';
+
+  const now = Date.now();
+
+  const windowMs = 60 * 1000;
+  const maxRequests = 20;
+
+  if (!rateLimitMap.has(ip)) {
+    rateLimitMap.set(ip, []);
+  }
+
+  const requests =
+    rateLimitMap
+      .get(ip)
+      .filter(ts => now - ts < windowMs);
+
+  if (requests.length >= maxRequests) {
+    return res.status(429).json({
+      error:
+      'Terlalu banyak request. Coba lagi sebentar.'
+    });
+  }
+
+  requests.push(now);
+  rateLimitMap.set(ip, requests);
+  // RATE LIMIT END
 
   try {
 
