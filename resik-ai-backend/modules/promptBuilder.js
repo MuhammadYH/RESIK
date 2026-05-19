@@ -1,5 +1,4 @@
-import { services }
-from '../../knowledge/services.js';
+import { services } from '../../knowledge/services.js';
 /**
  * modules/promptBuilder.js
  * Build system prompt secara dinamis berdasarkan intent + memory + context.
