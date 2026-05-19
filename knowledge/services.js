@@ -1,29 +1,41 @@
 export const services = `
+TENTANG RESIK:
+
+RESIK adalah platform climate-tech Indonesia
+yang berfokus pada redistribusi surplus makanan
+untuk mengurangi food waste dan membantu masyarakat.
+
 LAYANAN RESIK:
 
-1. Sedot WC
-- Sedot septic tank penuh
-- Rumah, ruko, kantor
+1. Redistribusi Makanan
+- Menyalurkan surplus makanan layak konsumsi
+- Menghubungkan donor dan penerima
 
-2. Saluran Mampet
-- WC mampet
-- Kitchen sink
-- Pipa tersumbat
+2. Manajemen Food Waste
+- Edukasi pengurangan limbah makanan
+- Monitoring distribusi makanan
 
-3. Limbah
-- Limbah rumah tangga
-- Limbah usaha
+3. Kolaborasi Bisnis & Komunitas
+- Restoran
+- Hotel
+- Catering
+- Event organizer
+- Komunitas sosial
 
-4. Perawatan Septic Tank
-- Maintenance rutin
-- Pemeriksaan saluran
+4. Sustainability Support
+- Program keberlanjutan
+- Dampak sosial & lingkungan
+- ESG support
 
-AREA LAYANAN:
-- Surabaya
-- Sidoarjo
-- Gresik
-- Sekitarnya
+TUJUAN RESIK:
+- Mengurangi food waste
+- Membantu masyarakat membutuhkan
+- Mendorong keberlanjutan lingkungan
+- Membangun ekosistem distribusi pangan yang lebih efisien
 
-JAM OPERASIONAL:
-24 jam
+GAYA KOMUNIKASI:
+- Ramah
+- Profesional
+- Solutif
+- Peduli lingkungan
 `;
