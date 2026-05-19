@@ -3,35 +3,13 @@ import { retrieveContext } from '../resik-ai-backend/modules/ragRetriever.js';
 import { buildMemory, updateMemory } from '../resik-ai-backend/modules/memoryManager.js';
 import { buildSystemPrompt } from '../resik-ai-backend/modules/promptBuilder.js';
 import { callGemini } from '../resik-ai-backend/modules/llmClient.js';
+
 import {
   shouldClarify,
   buildClarificationPrompt
 } from '../resik-ai-backend/modules/clarificationEngine.js';
+
 const rateLimitMap = new Map();
-
-const now = Date.now();
-
-const windowMs = 60 * 1000; // 1 menit
-const maxRequests = 20;
-
-if (!rateLimitMap.has(ip)) {
-  rateLimitMap.set(ip, []);
-}
-
-const requests =
-  rateLimitMap
-    .get(ip)
-    .filter(ts => now - ts < windowMs);
-
-if (requests.length >= maxRequests) {
-  return res.status(429).json({
-    error:
-      'Terlalu banyak request. Coba lagi sebentar.'
-  });
-}
-
-requests.push(now);
-rateLimitMap.set(ip, requests);
 
 export default async function handler(req, res) {
 
@@ -42,7 +20,10 @@ export default async function handler(req, res) {
     });
   }
 
-  // RATE LIMIT START
+  // =========================
+  // RATE LIMIT
+  // =========================
+
   const ip =
     req.headers['x-forwarded-for'] ||
     'unknown';
@@ -64,17 +45,23 @@ export default async function handler(req, res) {
   if (requests.length >= maxRequests) {
     return res.status(429).json({
       error:
-      'Terlalu banyak request. Coba lagi sebentar.'
+        'Terlalu banyak request. Coba lagi sebentar.'
     });
   }
 
   requests.push(now);
   rateLimitMap.set(ip, requests);
-  // RATE LIMIT END
+
+  // =========================
+  // MAIN AI LOGIC
+  // =========================
 
   try {
 
-    const { message, sessionMemory = {} } = req.body;
+    const {
+      message,
+      sessionMemory = {}
+    } = req.body;
 
     // validasi input
     if (!message || typeof message !== 'string') {
@@ -83,20 +70,29 @@ export default async function handler(req, res) {
       });
     }
 
-    const userMessage = message.trim().slice(0, 1000);
+    const userMessage =
+      message.trim().slice(0, 1000);
 
-    // 1. intent detection
-    const intent = detectIntent(
-      userMessage,
-      sessionMemory
-    );
+    // =========================
+    // INTENT DETECTION
+    // =========================
 
-    // 2. clarification
-    const needsClarification = shouldClarify(
-      userMessage,
-      intent,
-      sessionMemory
-    );
+    const intent =
+      detectIntent(
+        userMessage,
+        sessionMemory
+      );
+
+    // =========================
+    // CLARIFICATION
+    // =========================
+
+    const needsClarification =
+      shouldClarify(
+        userMessage,
+        intent,
+        sessionMemory
+      );
 
     if (needsClarification) {
 
@@ -122,21 +118,30 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3. retrieve context
+    // =========================
+    // RETRIEVE CONTEXT
+    // =========================
+
     const retrievedContext =
       retrieveContext(
         userMessage,
         intent
       );
 
-    // 4. build memory
+    // =========================
+    // BUILD MEMORY
+    // =========================
+
     const memory =
       buildMemory(sessionMemory, {
         userMessage,
         intent
       });
 
-    // 5. build system prompt
+    // =========================
+    // BUILD SYSTEM PROMPT
+    // =========================
+
     const systemPrompt =
       buildSystemPrompt(
         intent,
@@ -144,21 +149,30 @@ export default async function handler(req, res) {
         retrievedContext
       );
 
-    // 6. build messages
+    // =========================
+    // BUILD MESSAGES
+    // =========================
+
     const messages =
       buildMessages(
         memory.conversationHistory || [],
         userMessage
       );
 
-    // 7. call Gemini
+    // =========================
+    // CALL GEMINI
+    // =========================
+
     const aiReply =
       await callGemini(
         systemPrompt,
         messages
       );
 
-    // 8. update memory
+    // =========================
+    // UPDATE MEMORY
+    // =========================
+
     const updatedMemory =
       updateMemory(memory, {
         userMessage,
@@ -167,7 +181,10 @@ export default async function handler(req, res) {
         awaitingClarification: false
       });
 
-    // response sukses
+    // =========================
+    // SUCCESS RESPONSE
+    // =========================
+
     return res.status(200).json({
       reply: aiReply,
       updatedMemory,
@@ -185,12 +202,15 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       error: 'Internal server error',
-      reply: getSmartFallback(message)
+      reply: getSmartFallback()
     });
   }
 }
 
-// helper messages
+// ===================================
+// HELPER: BUILD CHAT HISTORY
+// ===================================
+
 function buildMessages(history, userMessage) {
 
   const trimmedHistory =
@@ -204,38 +224,12 @@ function buildMessages(history, userMessage) {
     }
   ];
 }
-function getSmartFallback(userMessage = '') {
 
-  const text =
-    userMessage.toLowerCase();
+// ===================================
+// HELPER: SMART FALLBACK
+// ===================================
 
-  if (
-    text.includes('harga') ||
-    text.includes('biaya')
-  ) {
-    return `
-Untuk informasi harga terbaru,
-silakan hubungi admin kami 😊
-
-📞 WhatsApp:
-+62xxxxxxxxxx
-`;
-  }
-
-  if (
-    text.includes('layanan')
-  ) {
-    return `
-Kami menyediakan layanan:
-
-• Sedot WC
-• Saluran mampet
-• Limbah
-• Perawatan septic tank
-
-Tim kami siap membantu 🚀
-`;
-  }
+function getSmartFallback() {
 
   return `
 Maaf, AI sedang sibuk sementara 🙏
