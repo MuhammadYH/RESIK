@@ -19,7 +19,7 @@
      ══════════════════════════════════════════════════════ */
 
   // URL backend RESIK AI — TIDAK ada API key di sini
-  const AI_BACKEND_URL = 'https://api.resik.id/api/chat'; // production
+  const AI_BACKEND_URL = '/api/chat'; // production
   // const AI_BACKEND_URL = 'http://localhost:3001/api/chat'; // development
 
   const TYPING_SPEED_MS = 10;
