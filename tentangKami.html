@@ -137,6 +137,98 @@
       height: 16px !important;
       flex-shrink: 0;
     }
+
+    /* ── Circular Section ── */
+    .circular-section {
+      padding: 6rem 0;
+      background: linear-gradient(160deg, #f0f9f4 0%, #ffffff 60%);
+    }
+
+    .circular-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    @media (max-width: 900px) { .circular-grid { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; } }
+
+    .circular-card {
+      background: #fff;
+      border: 1.5px solid #daeee5;
+      border-radius: 20px;
+      padding: 2rem 1.75rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .circular-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(20,56,42,.12);
+      border-color: #1e6b43;
+    }
+    .featured-circular {
+      background: #0f2d1e;
+      border-color: #1e6b43;
+      box-shadow: 0 8px 32px rgba(20,56,42,.18);
+    }
+    .featured-circular .circular-body h3,
+    .featured-circular .circular-body p,
+    .featured-circular .circular-relevance span { color: #d4ede2; }
+    .featured-circular .circular-relevance { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); }
+    .featured-circular .circular-icon-wrap { background: rgba(255,255,255,.1); }
+    .featured-circular .circular-icon-wrap svg * { stroke: #6ed9a8; }
+    .featured-circular .circular-tag-accent { background: #1e6b43; color: #d4ede2; }
+
+    .circular-icon-wrap {
+      width: 80px;
+      height: 80px;
+      background: #e8f5ee;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .circular-icon-wrap svg { width: 52px; height: 52px; }
+
+    .circular-tag {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #1e6b43;
+      background: #e8f5ee;
+      padding: .25rem .7rem;
+      border-radius: 100px;
+      width: fit-content;
+    }
+    .circular-tag-accent { background: #1e6b43; color: #fff; }
+
+    .circular-body { display: flex; flex-direction: column; gap: .6rem; }
+    .circular-body h3 { font-size: 1.15rem; font-weight: 700; color: #0f2d1e; margin: 0; }
+    .circular-body p { font-size: .875rem; line-height: 1.65; color: #4a6358; margin: 0; }
+
+    .circular-relevance {
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+      background: #f4f9f6;
+      border: 1px solid #daeee5;
+      border-radius: 10px;
+      padding: .65rem .9rem;
+      margin-top: .25rem;
+    }
+    .circular-relevance .relevance-icon { display: flex; align-items: center; flex-shrink: 0; color: #1e6b43; }
+    .featured-circular .circular-relevance .relevance-icon { color: #6ed9a8; }
+    .circular-relevance span { font-size: .8rem; line-height: 1.5; color: #2d6e4a; font-weight: 500; }
+
+    .circular-cta {
+      display: flex;
+      justify-content: center;
+      margin-top: 3rem;
+    }
   </style>
   <title>RESIK – Tentang Kami</title>
 </head>
@@ -179,8 +271,15 @@
     <a href="solusi.html">Solusi</a>
     <a href="kontak.html">Kontak Kami</a>
   </nav>
-  <div class="drawer-cta">
-    <a href="login.html">Masuk</a>
+  <div class="drawer-profile" id="drawerProfile" style="display:none;">
+    <div class="drawer-profile-avatar" id="drawerAvatar">👤</div>
+    <div class="drawer-profile-info">
+      <div class="drawer-profile-name" id="drawerName">Pengguna</div>
+      <div class="drawer-profile-email" id="drawerEmail"></div>
+    </div>
+  </div>
+  <div class="drawer-cta" id="drawerCta">
+    <a href="login.html">Masuk ke RESIK →</a>
   </div>
 </div>
 
@@ -416,6 +515,114 @@
   </div>
 </section>
 
+<!-- ════════════════════ PRODUK SIRKULAR ════════════════════ -->
+<section class="circular-section" id="produk-sirkular">
+  <div class="container">
+    <div class="section-hd fade-in">
+      <span class="label">Produk Sirkular</span>
+      <h2>Dari Limbah Menjadi Nilai</h2>
+      <p>Dari limbah organik yang dikumpulkan, RESIK mengembangkan berbagai solusi sirkular seperti eco enzyme, kompos organik, dan maggot BSF untuk mendukung ekosistem berkelanjutan.</p>
+    </div>
+
+    <div class="circular-grid">
+
+      <!-- Maggot BSF -->
+      <div class="circular-card fade-in">
+        <div class="circular-icon-wrap">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Leaf/larva shape -->
+            <ellipse cx="40" cy="40" rx="22" ry="12" stroke="#1e6b43" stroke-width="4"/>
+            <!-- Segments -->
+            <line x1="27" y1="32" x2="27" y2="48" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            <line x1="35" y1="29" x2="35" y2="51" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            <line x1="45" y1="29" x2="45" y2="51" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            <line x1="53" y1="32" x2="53" y2="48" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            <!-- Circular arrows around -->
+            <path d="M40 14 Q62 14 62 40" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".4"/>
+            <path d="M62 40 Q62 66 40 66 Q18 66 18 40 Q18 14 40 14" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".4"/>
+            <polyline points="55,9 62,14 57,21" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="circular-body">
+          <div class="circular-tag">Pengolah Limbah</div>
+          <h3>Maggot BSF</h3>
+          <p>Larva Black Soldier Fly yang mengurai food waste organik secara efisien, menghasilkan protein tinggi untuk pakan ternak dan pupuk kasgot berkualitas.</p>
+          <div class="circular-relevance">
+            <span class="relevance-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </span>
+            <span>Mengurangi food waste &amp; mendukung circular farming</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eco Enzyme -->
+      <div class="circular-card featured-circular fade-in" style="transition-delay:.1s">
+        <div class="circular-icon-wrap">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Bottle/flask shape -->
+            <path d="M30 20 L30 34 L18 54 Q16 60 20 64 Q24 68 30 68 L50 68 Q56 68 60 64 Q64 60 62 54 L50 34 L50 20 Z" stroke="#1e6b43" stroke-width="4" stroke-linejoin="round"/>
+            <!-- Bottle neck/cap -->
+            <rect x="28" y="12" width="24" height="10" rx="3" stroke="#1e6b43" stroke-width="4"/>
+            <!-- Bubbles inside -->
+            <circle cx="32" cy="52" r="4" stroke="#1e6b43" stroke-width="3" opacity=".5"/>
+            <circle cx="44" cy="58" r="3" stroke="#1e6b43" stroke-width="3" opacity=".5"/>
+            <circle cx="50" cy="48" r="2.5" stroke="#1e6b43" stroke-width="2.5" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="circular-body">
+          <div class="circular-tag circular-tag-accent">Unggulan</div>
+          <h3>Eco Enzyme</h3>
+          <p>Cairan fermentasi dari sisa buah dan sayuran yang berfungsi sebagai pembersih alami serbaguna, desinfektan organik, dan pupuk cair ramah lingkungan.</p>
+          <div class="circular-relevance">
+            <span class="relevance-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </span>
+            <span>Alternatif pembersih alami ramah lingkungan</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kompos -->
+      <div class="circular-card fade-in" style="transition-delay:.2s">
+        <div class="circular-icon-wrap">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Mound/soil -->
+            <path d="M14 62 Q14 50 40 50 Q66 50 66 62 Z" stroke="#1e6b43" stroke-width="4" stroke-linejoin="round" fill="none"/>
+            <!-- Sprout stem -->
+            <line x1="40" y1="50" x2="40" y2="30" stroke="#1e6b43" stroke-width="4" stroke-linecap="round"/>
+            <!-- Left leaf -->
+            <path d="M40 38 Q28 32 24 20 Q36 20 40 32" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".7"/>
+            <!-- Right leaf -->
+            <path d="M40 34 Q52 28 56 16 Q44 18 40 30" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".7"/>
+            <!-- Soil dots -->
+            <circle cx="26" cy="60" r="2.5" fill="#1e6b43" opacity=".4"/>
+            <circle cx="40" cy="63" r="2.5" fill="#1e6b43" opacity=".4"/>
+            <circle cx="54" cy="60" r="2.5" fill="#1e6b43" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="circular-body">
+          <div class="circular-tag">Pemupukan Tanah</div>
+          <h3>Kompos Organik</h3>
+          <p>Hasil dekomposisi limbah organik yang kaya nutrisi untuk menyuburkan tanah pertanian, perkebunan, dan ruang hijau perkotaan secara alami.</p>
+          <div class="circular-relevance">
+            <span class="relevance-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </span>
+            <span>Mengembalikan nutrisi ke tanah</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="circular-cta fade-in">
+      <a href="kontak.html" class="btn btn-primary">Eksplor Ekosistem RESIK</a>
+    </div>
+  </div>
+</section>
+
 <!-- ── TIM KAMI ── -->
 <section class="team-section" id="tim">
   <div class="container">
@@ -425,8 +632,12 @@
     <div class="team-grid">
 
       <div class="team-card fade-up fade-up-1">
-        <div class="team-card-img">
-          <div class="team-avatar">AR</div>
+        <div class="team-card-img style-blur">
+          <img src="images/foto-ceo.png" alt="Aldi Ramadhana" class="team-photo-blur"
+               onerror="this.style.display='none'">
+          <img src="images/foto-ceo.png" alt="Aldi Ramadhana" class="team-photo"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="team-avatar" style="display:none;">AR</div>
         </div>
         <div class="team-card-body">
           <div class="team-name">Aldi Ramadhana</div>
@@ -447,8 +658,12 @@
       </div>
 
       <div class="team-card fade-up fade-up-2">
-        <div class="team-card-img" style="background: linear-gradient(135deg,#c8e6c9,#e0f2e1);">
-          <div class="team-avatar" style="background:#4a9e55;">DP</div>
+        <div class="team-card-img style-blur">
+          <img src="images/foto-cto.png" alt="Dewi Puspita" class="team-photo-blur"
+               onerror="this.style.display='none'">
+          <img src="images/foto-cto.png" alt="Dewi Puspita" class="team-photo"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="team-avatar" style="background:#4a9e55;display:none;">DP</div>
         </div>
         <div class="team-card-body">
           <div class="team-name">Dewi Puspita</div>
@@ -469,8 +684,12 @@
       </div>
 
       <div class="team-card fade-up fade-up-3">
-        <div class="team-card-img" style="background: linear-gradient(135deg,#d6ecd8,#b5d9b8);">
-          <div class="team-avatar" style="background:#1a3a1f;">AB</div>
+        <div class="team-card-img style-blur">
+          <img src="images/foto-coo.png" alt="Aldi Brankam" class="team-photo-blur"
+               onerror="this.style.display='none'">
+          <img src="images/foto-coo.png" alt="Aldi Brankam" class="team-photo"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="team-avatar" style="background:#1a3a1f;display:none;">AB</div>
         </div>
         <div class="team-card-body">
           <div class="team-name">Aldi Brankam</div>
@@ -491,8 +710,12 @@
       </div>
 
       <div class="team-card fade-up fade-up-4">
-        <div class="team-card-img" style="background: linear-gradient(135deg,#e8f5e9,#c8e6c9);">
-          <div class="team-avatar" style="background:#2d6a35;">KS</div>
+        <div class="team-card-img style-blur">
+          <img src="images/foto-cmo.png" alt="Kuhun Supita" class="team-photo-blur"
+               onerror="this.style.display='none'">
+          <img src="images/foto-cmo.png" alt="Kuhun Supita" class="team-photo"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="team-avatar" style="background:#2d6a35;display:none;">KS</div>
         </div>
         <div class="team-card-body">
           <div class="team-name">Kuhun Supita</div>
@@ -634,10 +857,10 @@
       <div class="footer-col fade-in" style="transition-delay:.1s">
         <h5>Produk</h5>
         <ul>
-          <li><a href="#">RESIK Lite 20L</a></li>
-          <li><a href="#">RESIK Pro 40L</a></li>
-          <li><a href="#">RESIK Enterprise 60L</a></li>
-          <li><a href="#">Bandingkan Semua</a></li>
+          <li><a href="tentangKami.html#circular-section">Eco-Enzyme</a></li>
+          <li><a href="tentangKami.html#circular-section">Maggot</a></li>
+          <li><a href="tentangKami.html#circular-section">Pupuk Kompos</a></li>
+          <li><a href="solusi.html#products-section">Smart Bin</a></li>
         </ul>
       </div>
       <div class="footer-col fade-in" style="transition-delay:.2s">
@@ -646,18 +869,15 @@
           <li><a href="index.html">Beranda</a></li>
           <li><a href="tentangKami.html">Tentang Kami</a></li>
           <li><a href="solusi.html">Solusi</a></li>
-          <li><a href="#">Teknologi</a></li>
-          <li><a href="#">Laporan ESG</a></li>
-          <li><a href="#">Karier</a></li>
+          <li><a href="kontak.html">Kontak</a></li>
         </ul>
       </div>
       <div class="footer-col fade-in" style="transition-delay:.3s">
         <h5>Dukungan</h5>
         <ul>
-          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="tentangKami.html">Dokumentasi</a></li>
           <li><a href="kontak.html">Hubungi Kami</a></li>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Garansi</a></li>
+          <li><a href="kontak.html">FAQ</a></li>
         </ul>
       </div>
     </div>
@@ -700,6 +920,41 @@ if (hamburgerBtn)  hamburgerBtn.addEventListener('click', openDrawer);
 if (drawerClose)   drawerClose.addEventListener('click', closeDrawer);
 if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+</script>
+
+<script>
+/* ── Drawer: tampilkan profil via RESIK_AUTH ── */
+document.addEventListener('DOMContentLoaded', async () => {
+  const profile = document.getElementById('drawerProfile');
+  const cta     = document.getElementById('drawerCta');
+  if (!profile || !cta) return;
+  try {
+    const user = await RESIK_AUTH.getUser();
+    if (user) {
+      const meta = user.user_metadata || {};
+      const name = meta.first_name || user.email.split('@')[0];
+      profile.style.display = 'flex';
+      cta.style.display = 'none';
+      const nameEl   = document.getElementById('drawerName');
+      const emailEl  = document.getElementById('drawerEmail');
+      const avatarEl = document.getElementById('drawerAvatar');
+      if (nameEl)  nameEl.textContent  = name;
+      if (emailEl) emailEl.textContent = user.email;
+      if (avatarEl && meta.avatar_url) {
+        avatarEl.innerHTML = '<img src="' + meta.avatar_url + '" alt="avatar">';
+      }
+      /* Klik profil → logout */
+      profile.style.cursor = 'pointer';
+      profile.title = 'Klik untuk keluar';
+      profile.addEventListener('click', async () => {
+        if (confirm('Keluar dari akun RESIK?')) {
+          await RESIK_AUTH.logout();
+          location.reload();
+        }
+      });
+    }
+  } catch(e) { /* belum login, drawer-cta tetap tampil */ }
+});
 </script>
 <script src="resik-shared.js"></script>
 </body>

@@ -50,8 +50,15 @@
     <a href="solusi.html">Solusi</a>
     <a href="kontak.html">Kontak Kami</a>
   </nav>
-  <div class="drawer-cta">
-    <a href="login.html">Masuk</a>
+  <div class="drawer-profile" id="drawerProfile" style="display:none;">
+    <div class="drawer-profile-avatar" id="drawerAvatar">👤</div>
+    <div class="drawer-profile-info">
+      <div class="drawer-profile-name" id="drawerName">Pengguna</div>
+      <div class="drawer-profile-email" id="drawerEmail"></div>
+    </div>
+  </div>
+  <div class="drawer-cta" id="drawerCta">
+    <a href="login.html">Masuk ke RESIK →</a>
   </div>
 </div>
 
@@ -404,7 +411,7 @@
     <div class="sdg-strip">
       <div class="sdg-pill" style="background:#e8f5ee;color:#1b4d35;border:1px solid #c0ddc8">
         <svg viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M8 6v4M6 8h4"/></svg>
-        SDG 8 — Pertumbuhan Ekonomi
+        SDG 9 — Industri, Inovasi, dan Infrastruktur
       </div>
       <div class="sdg-pill" style="background:#fff8e1;color:#8b6914;border:1px solid #e8d88a">
         <svg viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M8 6v4M6 8h4"/></svg>
@@ -516,10 +523,10 @@
       <div class="footer-col fade-in" style="transition-delay:.1s">
         <h5>Produk</h5>
         <ul>
-          <li><a href="#">RESIK Lite 20L</a></li>
-          <li><a href="#">RESIK Pro 40L</a></li>
-          <li><a href="#">RESIK Enterprise 60L</a></li>
-          <li><a href="#">Bandingkan Semua</a></li>
+          <li><a href="tentangKami.html#circular-section">Eco-Enzyme</a></li>
+          <li><a href="tentangKami.html#circular-section">Maggot</a></li>
+          <li><a href="tentangKami.html#circular-section">Pupuk Kompos</a></li>
+          <li><a href="solusi.html#products-section">Smart Bin</a></li>
         </ul>
       </div>
       <div class="footer-col fade-in" style="transition-delay:.2s">
@@ -528,18 +535,15 @@
           <li><a href="index.html">Beranda</a></li>
           <li><a href="tentangKami.html">Tentang Kami</a></li>
           <li><a href="solusi.html">Solusi</a></li>
-          <li><a href="#">Teknologi</a></li>
-          <li><a href="#">Laporan ESG</a></li>
-          <li><a href="#">Karier</a></li>
+          <li><a href="kontak.html">Kontak</a></li>
         </ul>
       </div>
       <div class="footer-col fade-in" style="transition-delay:.3s">
         <h5>Dukungan</h5>
         <ul>
-          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="tentangKami.html">Dokumentasi</a></li>
           <li><a href="kontak.html">Hubungi Kami</a></li>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Garansi</a></li>
+          <li><a href="kontak.html">FAQ</a></li>
         </ul>
       </div>
     </div>
@@ -642,6 +646,41 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (e) {
     console.warn('RESIK hero data error:', e);
   }
+});
+</script>
+
+<script>
+/* ── Drawer: tampilkan profil via RESIK_AUTH ── */
+document.addEventListener('DOMContentLoaded', async () => {
+  const profile = document.getElementById('drawerProfile');
+  const cta     = document.getElementById('drawerCta');
+  if (!profile || !cta) return;
+  try {
+    const user = await RESIK_AUTH.getUser();
+    if (user) {
+      const meta = user.user_metadata || {};
+      const name = meta.first_name || user.email.split('@')[0];
+      profile.style.display = 'flex';
+      cta.style.display = 'none';
+      const nameEl   = document.getElementById('drawerName');
+      const emailEl  = document.getElementById('drawerEmail');
+      const avatarEl = document.getElementById('drawerAvatar');
+      if (nameEl)  nameEl.textContent  = name;
+      if (emailEl) emailEl.textContent = user.email;
+      if (avatarEl && meta.avatar_url) {
+        avatarEl.innerHTML = '<img src="' + meta.avatar_url + '" alt="avatar">';
+      }
+      /* Klik profil → logout */
+      profile.style.cursor = 'pointer';
+      profile.title = 'Klik untuk keluar';
+      profile.addEventListener('click', async () => {
+        if (confirm('Keluar dari akun RESIK?')) {
+          await RESIK_AUTH.logout();
+          location.reload();
+        }
+      });
+    }
+  } catch(e) { /* belum login, drawer-cta tetap tampil */ }
 });
 </script>
 <script src="resik-shared.js"></script>

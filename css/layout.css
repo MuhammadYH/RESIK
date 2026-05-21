@@ -19,11 +19,6 @@
   justify-content: unset !important;
   min-height: calc(100vh - var(--nav-height) - 40px);
   padding: 28px 24px 80px;
-  /* KRITIS: jangan ada transform/filter/will-change di sini
-     karena akan menjebak position:fixed pada .rn-dock-wrap */
-  transform: none;
-  will-change: auto;
-  filter: none;
 }
 
 /* ── DASHBOARD LAYOUT ── */
@@ -56,23 +51,6 @@
   grid-template-columns: 1fr 320px;
   gap: 16px;
   align-items: start;
-}
-
-/* ── PAGE VISIBILITY: semua page hidden by default ── */
-/* Router/JS akan toggle 'active' class atau remove 'hidden' attribute */
-.resik-page {
-  display: none;
-}
-.resik-page.active,
-.resik-page:not([hidden]):first-of-type {
-  display: block;
-}
-/* Fallback: jika JS gagal load, tampilkan dashboard saja */
-#page-dashboard {
-  display: block;
-}
-.resik-page.active ~ #page-dashboard {
-  display: none;
 }
 
 /* ── SAMPAH PAGE LAYOUT ── */
@@ -164,24 +142,4 @@
 
 @media (max-width: 420px) {
   #page-statistik .stat-grid { grid-template-columns: 1fr; }
-}
-
-/* ══════════════════════════════════════════════
-   FIX: Pastikan tidak ada elemen yang membuat
-   containing block baru untuk position:fixed.
-   Ini mencegah .rn-dock-wrap "terjebak" saat
-   berada di halaman statistik atau halaman lain
-   yang menggunakan animasi berbasis transform.
-══════════════════════════════════════════════ */
-.resik-page,
-.rn-main,
-main,
-#page-statistik .page-wrap,
-#page-statistik .section,
-#page-sampah .rw-wrap {
-  transform: none !important;
-  will-change: auto !important;
-  filter: none !important;
-  perspective: none !important;
-  contain: none !important;
 }

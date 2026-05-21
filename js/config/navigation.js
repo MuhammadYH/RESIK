@@ -103,7 +103,7 @@ const NavigationConfig = {
    * Halaman-halaman yang dikenali oleh router.
    * Harus sesuai dengan id section di admin.html (tanpa prefix "page-").
    */
-  pages: ['dashboard', 'sampah', 'statistik', 'notifikasi', 'search', 'profil']
+  pages: ['dashboard', 'sampah', 'statistik', 'marketplace', 'notifikasi', 'search', 'profil']
 
 };
 

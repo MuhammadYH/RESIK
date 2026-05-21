@@ -4,15 +4,11 @@
 ═══════════════════════════════════════════════ */
 
 /* ── TOP NAV CONTAINER ── */
-/*
-  PENTING: backdrop-filter TIDAK boleh ada di .rn-header (sticky),
-  karena browser akan membuat new containing block yang menjebak
-  position:fixed pada .rn-dock-wrap sehingga dock ikut scroll.
-  Blur dipindah ke pseudo-element .rn-top::before agar aman.
-*/
 .rn-top {
   height: var(--nav-height);
   background: var(--glass-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--glass-border);
   border-radius: var(--nav-radius);
   box-shadow: 0 4px 30px rgba(26,58,42,0.08), 0 1px 4px rgba(26,58,42,0.05);
@@ -21,22 +17,6 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 16px;
-  position: relative;
-  /* isolation: isolate DIHAPUS — meskipun berguna untuk z-index stacking,
-     beberapa browser memperlakukannya seperti transform yang membuat
-     new containing block, sehingga bisa menjebak position:fixed di sekitarnya.
-     Z-index stacking tetap dihandle via z-index pada .rn-header. */
-}
-/* Blur layer via pseudo-element — tidak membuat containing block baru */
-.rn-top::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--nav-radius);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  z-index: -1;
-  pointer-events: none;
 }
 
 /* ── LOGO ── */
@@ -243,26 +223,16 @@
 .rn-profile:hover .rn-chev svg { transform: translateY(1px); }
 
 /* ── BOTTOM DOCK (mobile) ── */
-/*
-  KRITIS: .rn-dock-wrap harus di-render LANGSUNG sebagai child of <body>,
-  di luar <main>. Jika ada ancestor dengan transform/filter/will-change,
-  position:fixed akan gagal. Sudah benar di HTML (setelah </main>).
-  Tambahkan contain:none dan will-change:none untuk mencegah containment.
-*/
 .rn-dock-wrap {
   display: none;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 9999; /* naik dari 300 agar tidak tertimpa elemen lain */
+  z-index: 300;
   padding-bottom: max(20px, env(safe-area-inset-bottom));
   justify-content: center;
   pointer-events: none;
-  /* Cegah siapapun mengisolasi elemen ini */
-  contain: none;
-  will-change: auto;
-  transform: translateZ(0); /* force own compositing layer */
 }
 
 .rn-dock {
