@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="resik-main.css">
   <title>Masuk — RESIK</title>
-  <script src="resik-supabase.js" defer></script>
+
 
   <style>
     /* ══════════════════════════════════════════════════════
@@ -1160,9 +1160,20 @@
 
 </div>
 
+<script src="assets/js/resik-supabase.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/session.js"></script>
 <script>
   let currentStep = 1;
   let selectedRole = null;
+
+  // ── CEK SESI AKTIF ──
+  document.addEventListener('DOMContentLoaded', async () => {
+    const existing = await RESIK_SESSION.checkSession();
+    if (existing?.profile) {
+      RESIK_AUTH_CORE.redirectByRole(existing.profile.role);
+    }
+  });
 
   function switchTab(tab) {
     document.querySelectorAll('.auth-tab').forEach((t, i) => {
@@ -1275,11 +1286,10 @@
     btn.textContent = 'Memverifikasi...';
 
     try {
-      if (typeof RESIK_AUTH === 'undefined') await new Promise(r => setTimeout(r, 600));
-      await RESIK_AUTH.login(email.value.trim(), pass.value);
+      const { profile } = await RESIK_AUTH_CORE.loginUser(email.value.trim(), pass.value, false);
       document.getElementById('login-form-wrap').style.display = 'none';
       document.getElementById('login-success').style.display = 'block';
-      setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+      setTimeout(() => RESIK_AUTH_CORE.redirectByRole(profile.role), 1200);
     } catch (err) {
       btn.classList.remove('loading');
       btn.textContent = 'Masuk ke ReFood';
@@ -1317,8 +1327,7 @@
     const org       = (document.getElementById('regOrg') || {}).value?.trim() || null;
 
     try {
-      if (typeof RESIK_AUTH === 'undefined') await new Promise(r => setTimeout(r, 600));
-      await RESIK_AUTH.register({ email, password: pass.value, firstName, lastName, role, organization: org });
+      await RESIK_AUTH_CORE.registerUser({ email, password: pass.value, firstName, lastName, role, organization: org });
       document.getElementById('reg-content').style.display = 'none';
       document.getElementById('reg-success').style.display = 'block';
       document.getElementById('loginHint').style.display = 'none';
@@ -1334,8 +1343,7 @@
 
   async function handleGoogle() {
     try {
-      if (typeof RESIK_AUTH === 'undefined') await new Promise(r => setTimeout(r, 600));
-      await RESIK_AUTH.loginWithGoogle();
+      await RESIK_AUTH_CORE.loginWithGoogle();
     } catch (err) {
       showToast('❌ ' + (err.message || 'Google login gagal.'));
     }
@@ -1347,6 +1355,19 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3000);
   }
+
+  // ── LUPA PASSWORD ──
+  document.querySelector('.forgot-link')?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    if (!email) { showToast('Masukkan email login Anda terlebih dahulu.'); return; }
+    try {
+      await RESIK_AUTH_CORE.resetPassword(email);
+      showToast('✅ Link reset password dikirim ke ' + email);
+    } catch (err) {
+      showToast('❌ ' + (err.message || 'Gagal mengirim email reset.'));
+    }
+  });
 
   document.addEventListener('keydown', function(e) {
     if (e.key !== 'Enter') return;
