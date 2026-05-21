@@ -953,7 +953,14 @@
     </div>
 
     <div class="success-overlay" id="login-success">
-      <span class="success-icon">🌿</span>
+      <span class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#2d8c55" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 20h10"/>
+          <path d="M12 20V10"/>
+          <path d="M12 10C12 10 8 9 6 6c4 0 6 2 6 4z"/>
+          <path d="M12 10C12 10 16 7 18 4c-4 1-6 3-6 6z"/>
+        </svg>
+      </span>
       <div class="success-title">Berhasil masuk!</div>
       <p class="success-desc">Selamat datang kembali. Siap menyelamatkan lebih banyak makanan hari ini?</p>
       <a href="#" class="btn-go">Buka Dashboard →</a>
@@ -1148,7 +1155,14 @@
 
     <!-- Success -->
     <div class="success-overlay" id="reg-success">
-      <span class="success-icon">🌱</span>
+      <span class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#2d8c55" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 20h10"/>
+          <path d="M12 20V10"/>
+          <path d="M12 10C12 10 8 9 6 6c4 0 6 2 6 4z"/>
+          <path d="M12 10C12 10 16 7 18 4c-4 1-6 3-6 6z"/>
+        </svg>
+      </span>
       <div class="success-title">Akun berhasil dibuat!</div>
       <p class="success-desc">Selamat datang di keluarga ReFood. Cek email kamu untuk verifikasi.</p>
       <a href="#" class="btn-go">Mulai Sekarang →</a>
@@ -1191,14 +1205,18 @@
 
   function selectRole(role) {
     selectedRole = role;
-    ['provider','pengolah','buyer'].forEach(r => {
-      const el = document.getElementById('role' + r.charAt(0).toUpperCase() + r.slice(1));
-      if (el) el.classList.toggle('selected', r === role);
-    });
+    // Deselect all role options dynamically (no hardcoded list)
+    document.querySelectorAll('.role-option').forEach(el => el.classList.remove('selected'));
+    // Select the clicked one
+    const selected = document.getElementById('role' + role.charAt(0).toUpperCase() + role.slice(1));
+    if (selected) selected.classList.add('selected');
     const radio = document.querySelector('input[name="role"][value="' + role + '"]');
     if (radio) radio.checked = true;
-    // Show org field only for pengolah
-    document.getElementById('orgField').style.display = role === 'pengolah' ? 'block' : 'none';
+    // Show org field for pengolah and provider (not buyer/admin)
+    const needsOrg = role === 'pengolah' || role === 'provider';
+    document.getElementById('orgField').style.display = needsOrg ? 'block' : 'none';
+    const orgLabel = document.querySelector('label[for="regOrg"]');
+    if (orgLabel) orgLabel.textContent = role === 'provider' ? 'Nama Usaha / Bisnis *' : 'Nama Organisasi *';
     hideErr('roleErr');
   }
 
@@ -1243,7 +1261,7 @@
     else { setFieldErr('regFirst', 'regFirstErr', false); }
     if (!emailReg.test(email.value.trim())) { setFieldErr('regEmail', 'regEmailErr', true); ok = false; }
     else { setFieldErr('regEmail', 'regEmailErr', false); }
-    if (selectedRole === 'pengolah') {
+    if (selectedRole === 'pengolah' || selectedRole === 'provider') {
       const org = document.getElementById('regOrg');
       if (!org.value.trim()) { setFieldErr('regOrg', 'regOrgErr', true); ok = false; }
       else { setFieldErr('regOrg', 'regOrgErr', false); }
@@ -1289,7 +1307,7 @@
       const { profile } = await RESIK_AUTH_CORE.loginUser(email.value.trim(), pass.value, false);
       document.getElementById('login-form-wrap').style.display = 'none';
       document.getElementById('login-success').style.display = 'block';
-      setTimeout(() => RESIK_AUTH_CORE.redirectByRole(profile.role), 1200);
+      setTimeout(() => RESIK_AUTH_CORE.redirectByRole(profile?.role ?? ''), 1200);
     } catch (err) {
       btn.classList.remove('loading');
       btn.textContent = 'Masuk ke ReFood';
@@ -1324,7 +1342,8 @@
     const lastName  = (document.getElementById('regLast') || {}).value?.trim() || '';
     const email     = document.getElementById('regEmail').value.trim();
     const role      = selectedRole;
-    const org       = (document.getElementById('regOrg') || {}).value?.trim() || null;
+    const orgEl     = document.getElementById('regOrg');
+    const org       = (role === 'pengolah' || role === 'provider') && orgEl ? orgEl.value.trim() || null : null;
 
     try {
       await RESIK_AUTH_CORE.registerUser({ email, password: pass.value, firstName, lastName, role, organization: org });
@@ -1357,16 +1376,18 @@
   }
 
   // ── LUPA PASSWORD ──
-  document.querySelector('.forgot-link')?.addEventListener('click', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    if (!email) { showToast('Masukkan email login Anda terlebih dahulu.'); return; }
-    try {
-      await RESIK_AUTH_CORE.resetPassword(email);
-      showToast('✅ Link reset password dikirim ke ' + email);
-    } catch (err) {
-      showToast('❌ ' + (err.message || 'Gagal mengirim email reset.'));
-    }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.forgot-link')?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      if (!email) { showToast('Masukkan email login Anda terlebih dahulu.'); return; }
+      try {
+        await RESIK_AUTH_CORE.resetPassword(email);
+        showToast('✅ Link reset password dikirim ke ' + email);
+      } catch (err) {
+        showToast('❌ ' + (err.message || 'Gagal mengirim email reset.'));
+      }
+    });
   });
 
   document.addEventListener('keydown', function(e) {
