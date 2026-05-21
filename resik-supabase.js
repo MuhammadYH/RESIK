@@ -5,8 +5,8 @@
  */
 
 // ── Konfigurasi Supabase ──
-const SUPABASE_URL = 'https://ollfoifgiwpqsveqyote.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9sbGZvaWZnaXdwcXN2ZXF5b3RlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NTQ2MjAsImV4cCI6MjA5NDUzMDYyMH0.ZWL5IVdghG-Rn-AibWid0mfz91prxarnn5dGAIzbNk8';
+const SUPABASE_URL = 'https://vcxwphzxavolrbsafroa.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjeHdwaHp4YXZvbHJic2Fmcm9hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNzM4NjQsImV4cCI6MjA5NDg0OTg2NH0.OOW5l0QgcNRPp5Q4qBIaK6uotvTdo91zt2uV5ON6rx0';
 
 // ── Inisialisasi Supabase client ──
 let _supabase = null;
