@@ -36,7 +36,7 @@ export async function callGemini(systemPrompt, messages) {
     contents,
     generationConfig: {
       maxOutputTokens: 600,
-      temperature: 0.55,  // deliberate, tidak terlalu random
+      temperature: 0.7,  // deliberate, tidak terlalu random
       topP: 0.9
     },
     safetySettings: [

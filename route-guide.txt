@@ -1,0 +1,43 @@
+project/
+│
+├── admin.html
+│
+├── css/
+│   ├── base.css
+│   ├── layout.css
+│   ├── navbar.css
+│   ├── dashboard.css
+│   ├── stats.css
+│   ├── alerts.css
+│   └── components/
+│
+├── js/
+│   ├── app.js
+│   ├── router.js
+│   ├── state.js
+│   │
+│   ├── config/
+│   │   ├── roles.js
+│   │   └── navigation.js
+│   │
+│   ├── renderers/
+│   │   ├── navbar.js
+│   │   ├── dashboard.js
+│   │   └── stats.js
+│   │
+│   ├── pages/
+│   │   ├── dashboard.js
+│   │   ├── reports.js
+│   │   ├── marketplace.js
+│   │   └── management.js
+│   │
+│   └── components/
+│       ├── cards.js
+│       ├── charts.js
+│       ├── modals.js
+│       └── tables.js
+│
+└── assets/
+    ├── icons/
+    ├── illustrations/
+    └── images/

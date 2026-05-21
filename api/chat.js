@@ -202,7 +202,8 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       error: 'Internal server error',
-      reply: getSmartFallback()
+      reply:
+        'Maaf, saya belum memahami pertanyaan itu sepenuhnya. Bisa dijelaskan sedikit lebih detail?'
     });
   }
 }

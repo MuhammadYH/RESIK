@@ -44,6 +44,98 @@
 
     .ov-body h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .4rem; color: #0f2d1e; }
     .ov-body p  { font-size: .875rem; line-height: 1.6; color: #4a6358; margin: 0; }
+
+    /* ── Circular Section ── */
+    .circular-section {
+      padding: 6rem 0;
+      background: linear-gradient(160deg, #f0f9f4 0%, #ffffff 60%);
+    }
+
+    .circular-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    @media (max-width: 900px) { .circular-grid { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; } }
+
+    .circular-card {
+      background: #fff;
+      border: 1.5px solid #daeee5;
+      border-radius: 20px;
+      padding: 2rem 1.75rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .circular-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(20,56,42,.12);
+      border-color: #1e6b43;
+    }
+    .featured-circular {
+      background: #0f2d1e;
+      border-color: #1e6b43;
+      box-shadow: 0 8px 32px rgba(20,56,42,.18);
+    }
+    .featured-circular .circular-body h3,
+    .featured-circular .circular-body p,
+    .featured-circular .circular-relevance span { color: #d4ede2; }
+    .featured-circular .circular-relevance { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); }
+    .featured-circular .circular-icon-wrap { background: rgba(255,255,255,.1); }
+    .featured-circular .circular-icon-wrap svg * { stroke: #6ed9a8; }
+    .featured-circular .circular-tag-accent { background: #1e6b43; color: #d4ede2; }
+
+    .circular-icon-wrap {
+      width: 80px;
+      height: 80px;
+      background: #e8f5ee;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .circular-icon-wrap svg { width: 52px; height: 52px; }
+
+    .circular-tag {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #1e6b43;
+      background: #e8f5ee;
+      padding: .25rem .7rem;
+      border-radius: 100px;
+      width: fit-content;
+    }
+    .circular-tag-accent { background: #1e6b43; color: #fff; }
+
+    .circular-body { display: flex; flex-direction: column; gap: .6rem; }
+    .circular-body h3 { font-size: 1.15rem; font-weight: 700; color: #0f2d1e; margin: 0; }
+    .circular-body p { font-size: .875rem; line-height: 1.65; color: #4a6358; margin: 0; }
+
+    .circular-relevance {
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+      background: #f4f9f6;
+      border: 1px solid #daeee5;
+      border-radius: 10px;
+      padding: .65rem .9rem;
+      margin-top: .25rem;
+    }
+    .circular-relevance .relevance-icon { display: flex; align-items: center; flex-shrink: 0; color: #1e6b43; }
+    .featured-circular .circular-relevance .relevance-icon { color: #6ed9a8; }
+    .circular-relevance span { font-size: .8rem; line-height: 1.5; color: #2d6e4a; font-weight: 500; }
+
+    .circular-cta {
+      display: flex;
+      justify-content: center;
+      margin-top: 3rem;
+    }
   </style>
   <title>RESIK — From Plate To Planet</title>
 </head>
@@ -341,22 +433,32 @@
       <div class="specs-table fade-in">
         <div class="specs-table-hd">Hardware & Fisik</div>
         <div class="spec-row"><span>Model</span><span>RESIK Smart Bin</span></div>
-        <div class="spec-row"><span>Material</span><span>Impact-resistant Polymer</span></div>
+        <div class="spec-row"><span>Material</span><span>Industrial Grade Polymer</span></div>
         <div class="spec-row"><span>Kapasitas</span><span>20L / 40L / 60L</span></div>
-        <div class="spec-row"><span>Dimensi (40L)</span><span>38 × 38 × 63 cm</span></div>
-        <div class="spec-row"><span>Bobot (40L)</span><span>8 kg</span></div>
-        <div class="spec-row"><span>Tipe Sensor</span><span>Ultrasonik + Load Cell</span></div>
-        <div class="spec-row"><span>Rating IP</span><span>IP67 Waterproof</span></div>
+        <div class="spec-row"><span>Fokus Limbah</span><span>Food Waste / Organik</span></div>
+        <div class="spec-row"><span>Sensor Utama</span><span>Ultrasonik + Load Cell</span></div>
+        <div class="spec-row"><span>Monitoring</span><span>Real-time Waste Monitoring</span></div>
+        <div class="spec-row"><span>Indikator Visual</span><span>LED Indicator System</span></div>
+        <div class="spec-row"><span>Sistem Notifikasi</span><span>Auto Pickup Notification</span></div>
+        <div class="spec-row"><span>Storage Limit</span><span>Maksimal 24 Jam</span></div>
+        <div class="spec-row"><span>Ekosistem</span><span>Circular Food Waste Ecosystem</span></div>
+        <div class="spec-row"><span>Produk Olahan</span><span>Kompos, Maggot BSF, Eco-enzyme</span></div>
+        <div class="spec-row"><span>Lingkungan Penggunaan</span><span>Indoor & Semi Outdoor</span></div>
       </div>
       <div class="specs-table fade-in" style="transition-delay:.1s">
         <div class="specs-table-hd">Konektivitas & Daya</div>
         <div class="spec-row"><span>Konektivitas</span><span>Wi-Fi / 4G / NB-IoT</span></div>
-        <div class="spec-row"><span>Mikrokontroler</span><span>ESP32 Dev Kit</span></div>
-        <div class="spec-row"><span>Waktu Pengisian</span><span>3 Jam</span></div>
-        <div class="spec-row"><span>Masa Baterai</span><span>Hingga 5 Hari</span></div>
-        <div class="spec-row"><span>Suhu Operasional</span><span>0°C – 50°C</span></div>
-        <div class="spec-row"><span>Akurasi Data</span><span>±2 cm tingkat isian</span></div>
-        <div class="spec-row"><span>Enkripsi</span><span>AES-256 / TLS 1.3</span></div>
+        <div class="spec-row"><span>Teknologi Utama</span><span>IoT Based Smart System</span></div>
+        <div class="spec-row"><span>Dashboard</span><span>Web & Mobile Monitoring</span></div>
+        <div class="spec-row"><span>Sistem Tracking</span><span>Real-time Waste Tracking</span></div>
+        <div class="spec-row"><span>Integrasi Platform</span><span>RESIK Ecosystem Platform</span></div>
+        <div class="spec-row"><span>Database</span><span>Firebase / Supabase</span></div>
+        <div class="spec-row"><span>Sistem Distribusi</span><span>Integrated Pickup System</span></div>
+        <div class="spec-row"><span>Pengguna Sistem</span><span>Waste Provider / Manager / Buyer</span></div>
+        <div class="spec-row"><span>Power Supply</span><span>DC Adapter / Rechargeable</span></div>
+        <div class="spec-row"><span>Konsumsi Daya</span><span>Low Power IoT System</span></div>
+        <div class="spec-row"><span>Status Monitoring</span><span>Online Real-time</span></div>
+        <div class="spec-row"><span>Smart Feature</span><span>Automatic Waste Detection</span></div>
       </div>
     </div>
   </div>
@@ -373,7 +475,7 @@
     <div class="products-grid">
       <div class="product-card fade-in">
         <div class="product-img">
-          <img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?q=80&w=800&auto=format&fit=crop" alt="RESIK Lite 20L">
+          <img src="images/product-lite.jpg" alt="RESIK Lite 20L">
         </div>
         <div class="product-body">
           <h3>RESIK Lite — 20L</h3>
@@ -388,7 +490,7 @@
 
       <div class="product-card featured fade-in" style="transition-delay:.1s">
         <div class="product-img">
-          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&auto=format&fit=crop" alt="RESIK Pro 40L">
+          <img src="images/product-pro.jpg" alt="RESIK Pro 40L">
           <span class="product-badge">Paling Populer</span>
         </div>
         <div class="product-body">
@@ -404,7 +506,7 @@
 
       <div class="product-card fade-in" style="transition-delay:.2s">
         <div class="product-img">
-          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop" alt="RESIK Enterprise 60L">
+          <img src="images/product-enterprise.jpg" alt="RESIK Enterprise 60L">
         </div>
         <div class="product-body">
           <h3>RESIK Enterprise — 60L</h3>
@@ -420,6 +522,114 @@
   </div>
 </section>
 
+<!-- ════════════════════ PRODUK SIRKULAR ════════════════════ -->
+<section class="circular-section" id="produk-sirkular">
+  <div class="container">
+    <div class="section-hd fade-in">
+      <span class="label">Produk Sirkular</span>
+      <h2>Dari Limbah Menjadi Nilai</h2>
+      <p>Dari limbah organik yang dikumpulkan, RESIK mengembangkan berbagai solusi sirkular seperti eco enzyme, kompos organik, dan maggot BSF untuk mendukung ekosistem berkelanjutan.</p>
+    </div>
+
+    <div class="circular-grid">
+
+      <!-- Maggot BSF -->
+      <div class="circular-card fade-in">
+        <div class="circular-icon-wrap">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Leaf/larva shape -->
+            <ellipse cx="40" cy="40" rx="22" ry="12" stroke="#1e6b43" stroke-width="4"/>
+            <!-- Segments -->
+            <line x1="27" y1="32" x2="27" y2="48" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            <line x1="35" y1="29" x2="35" y2="51" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            <line x1="45" y1="29" x2="45" y2="51" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            <line x1="53" y1="32" x2="53" y2="48" stroke="#1e6b43" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            <!-- Circular arrows around -->
+            <path d="M40 14 Q62 14 62 40" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".4"/>
+            <path d="M62 40 Q62 66 40 66 Q18 66 18 40 Q18 14 40 14" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".4"/>
+            <polyline points="55,9 62,14 57,21" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="circular-body">
+          <div class="circular-tag">Pengolah Limbah</div>
+          <h3>Maggot BSF</h3>
+          <p>Larva Black Soldier Fly yang mengurai food waste organik secara efisien, menghasilkan protein tinggi untuk pakan ternak dan pupuk kasgot berkualitas.</p>
+          <div class="circular-relevance">
+            <span class="relevance-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </span>
+            <span>Mengurangi food waste &amp; mendukung circular farming</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eco Enzyme -->
+      <div class="circular-card featured-circular fade-in" style="transition-delay:.1s">
+        <div class="circular-icon-wrap">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Bottle/flask shape -->
+            <path d="M30 20 L30 34 L18 54 Q16 60 20 64 Q24 68 30 68 L50 68 Q56 68 60 64 Q64 60 62 54 L50 34 L50 20 Z" stroke="#1e6b43" stroke-width="4" stroke-linejoin="round"/>
+            <!-- Bottle neck/cap -->
+            <rect x="28" y="12" width="24" height="10" rx="3" stroke="#1e6b43" stroke-width="4"/>
+            <!-- Bubbles inside -->
+            <circle cx="32" cy="52" r="4" stroke="#1e6b43" stroke-width="3" opacity=".5"/>
+            <circle cx="44" cy="58" r="3" stroke="#1e6b43" stroke-width="3" opacity=".5"/>
+            <circle cx="50" cy="48" r="2.5" stroke="#1e6b43" stroke-width="2.5" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="circular-body">
+          <div class="circular-tag circular-tag-accent">Unggulan</div>
+          <h3>Eco Enzyme</h3>
+          <p>Cairan fermentasi dari sisa buah dan sayuran yang berfungsi sebagai pembersih alami serbaguna, desinfektan organik, dan pupuk cair ramah lingkungan.</p>
+          <div class="circular-relevance">
+            <span class="relevance-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </span>
+            <span>Alternatif pembersih alami ramah lingkungan</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kompos -->
+      <div class="circular-card fade-in" style="transition-delay:.2s">
+        <div class="circular-icon-wrap">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Mound/soil -->
+            <path d="M14 62 Q14 50 40 50 Q66 50 66 62 Z" stroke="#1e6b43" stroke-width="4" stroke-linejoin="round" fill="none"/>
+            <!-- Sprout stem -->
+            <line x1="40" y1="50" x2="40" y2="30" stroke="#1e6b43" stroke-width="4" stroke-linecap="round"/>
+            <!-- Left leaf -->
+            <path d="M40 38 Q28 32 24 20 Q36 20 40 32" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".7"/>
+            <!-- Right leaf -->
+            <path d="M40 34 Q52 28 56 16 Q44 18 40 30" stroke="#1e6b43" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".7"/>
+            <!-- Soil dots -->
+            <circle cx="26" cy="60" r="2.5" fill="#1e6b43" opacity=".4"/>
+            <circle cx="40" cy="63" r="2.5" fill="#1e6b43" opacity=".4"/>
+            <circle cx="54" cy="60" r="2.5" fill="#1e6b43" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="circular-body">
+          <div class="circular-tag">Pemupukan Tanah</div>
+          <h3>Kompos Organik</h3>
+          <p>Hasil dekomposisi limbah organik yang kaya nutrisi untuk menyuburkan tanah pertanian, perkebunan, dan ruang hijau perkotaan secara alami.</p>
+          <div class="circular-relevance">
+            <span class="relevance-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </span>
+            <span>Mengembalikan nutrisi ke tanah</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="circular-cta fade-in">
+      <a href="kontak.html" class="btn btn-primary">Eksplor Ekosistem RESIK</a>
+    </div>
+  </div>
+</section>
+
 <!-- ════════════════════ FEATURES ════════════════════ -->
 <section class="features-section">
   <div class="container">
@@ -431,7 +641,7 @@
     <div class="features-grid">
       <div class="feature-card fade-in">
         <div class="feat-img">
-          <img src="https://images.unsplash.com/photo-1504608524841-42584120d24a?q=80&w=800&auto=format&fit=crop" alt="Monitoring Real-time">
+          <img src="images/feature-monitoring.jpg" alt="Monitoring Real-time">
         </div>
         <div class="feat-body">
           <h3>Monitoring Real-time</h3>
@@ -440,7 +650,7 @@
       </div>
       <div class="feature-card fade-in" style="transition-delay:.1s">
         <div class="feat-img">
-          <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop" alt="Notifikasi Cerdas">
+          <img src="images/feature-notifikasi.jpg" alt="Notifikasi Cerdas">
         </div>
         <div class="feat-body">
           <h3>Notifikasi Cerdas Multi-kanal</h3>
@@ -449,7 +659,7 @@
       </div>
       <div class="feature-card fade-in" style="transition-delay:.2s">
         <div class="feat-img">
-          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop" alt="Analitik Prediktif">
+          <img src="images/feature-analitik.jpg" alt="Analitik Prediktif">
         </div>
         <div class="feat-body">
           <h3>Analitik Prediktif</h3>
@@ -458,7 +668,7 @@
       </div>
       <div class="feature-card fade-in" style="transition-delay:.3s">
         <div class="feat-img">
-          <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=800&auto=format&fit=crop" alt="Laporan ESG">
+          <img src="images/feature-esg.jpg" alt="Laporan ESG">
         </div>
         <div class="feat-body">
           <h3>Laporan ESG Otomatis</h3>
