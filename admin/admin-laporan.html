@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laporan — POROS Admin</title>
+
+  <link rel="stylesheet" href="css/admin-shared.css"/>
+  <link rel="stylesheet" href="css/admin-layout.css"/>
+  <link rel="stylesheet" href="css/admin-components.css"/>
+  <link rel="stylesheet" href="css/admin-laporan.css"/>
+  <link rel="stylesheet" href="css/admin-navbar.css"/>
+</head>
+<body data-navbar-title="Laporan">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="assets/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" data-page="admin-dashboard.html" href="admin-dashboard.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+        Dashboard
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-smart-bin.html" href="admin-smart-bin.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span>
+        Smart Bin
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-pengiriman.html" href="admin-pengiriman.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+        Pengiriman
+        <span class="nav-badge">Baru</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-riwayat.html" href="admin-riwayat.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        Riwayat
+      </a>
+      <a class="sidebar-nav-item active" data-page="admin-laporan.html" href="admin-laporan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        Laporan
+      </a>
+      <div class="sidebar-divider"></div>
+      <a class="sidebar-nav-item" data-page="admin-notifikasi.html" href="admin-notifikasi.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        Notifikasi
+        <span class="nav-badge">3</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-pengaturan.html" href="admin-pengaturan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        Pengaturan
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-bantuan.html" href="admin-bantuan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        Bantuan
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-3); display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22c1.25-1.25 2.5-2.5 3.5-4 1.8-2.7 2.5-6 2.5-9 0 0 3 1 5 4 1.5 2.3 1.5 5 1.5 5s1.5-1 2-3c.8-3 0-6 0-6s3 2 4 5c.7 2 .5 4.5-.5 6.5C18.5 23 14 24 10 22"/><path d="M2 22c2-2 4-5 4-9"/></svg></div>
+      <h4>Kelola Sampah Organik Lebih Cerdas dan Berdampak</h4>
+      <p>Bersama POROS, kelola sampah organik secara efisien, transparan, dan memberikan manfaat nyata bagi masyarakat.</p>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name">Admin Pondok</div>
+        <div class="user-email">admin@darululum.id</div>
+      </div>
+      <svg class="user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- TOPBAR -->
+    <header class="admin-topbar"></header>
+
+    <!-- CONTENT -->
+    <div class="admin-content">
+
+      <!-- ── STAT CARDS ── -->
+      <div class="laporan-stats">
+
+        <div class="laporan-stat-card">
+          <div class="lsc-icon" style="background:#E8F5E9; color:#2E7D32;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+          </div>
+          <div class="lsc-body">
+            <div class="lsc-label">Total Sampah Terkelola</div>
+            <div class="lsc-value" data-count="1.24" data-suffix=" ton">1.24 ton</div>
+            <div class="lsc-trend up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              18% dari periode lalu
+            </div>
+          </div>
+          <svg class="lsc-spark" id="spark-sampah" viewBox="0 0 80 30"></svg>
+        </div>
+
+        <div class="laporan-stat-card">
+          <div class="lsc-icon" style="background:#E8F5E9; color:#2E7D32;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+          </div>
+          <div class="lsc-body">
+            <div class="lsc-label">Pengurangan Emisi CO₂</div>
+            <div class="lsc-value">~98 kg</div>
+            <div class="lsc-trend up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              15% dari periode lalu
+            </div>
+          </div>
+          <svg class="lsc-spark" id="spark-emisi" viewBox="0 0 80 30"></svg>
+        </div>
+
+        <div class="laporan-stat-card">
+          <div class="lsc-icon" style="background:#E3F2FD; color:#1565C0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div class="lsc-body">
+            <div class="lsc-label">Total Pengiriman</div>
+            <div class="lsc-value" data-count="352" data-suffix="">352</div>
+            <div class="lsc-trend up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              12% dari periode lalu
+            </div>
+          </div>
+          <svg class="lsc-spark" id="spark-pengiriman" viewBox="0 0 80 30"></svg>
+        </div>
+
+        <div class="laporan-stat-card">
+          <div class="lsc-icon" style="background:#FFF3E0; color:#F57C00;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="lsc-body">
+            <div class="lsc-label">Nilai Produk</div>
+            <div class="lsc-value">Rp 8.4 jt</div>
+            <div class="lsc-trend up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              9% dari periode lalu
+            </div>
+          </div>
+          <svg class="lsc-spark" id="spark-nilai" viewBox="0 0 80 30"></svg>
+        </div>
+
+      </div><!-- /laporan-stats -->
+
+      <!-- ── ROW 2: CHARTS ── -->
+      <div class="laporan-charts-row">
+
+        <!-- Volume Sampah Bar Chart -->
+        <div class="card laporan-chart-card laporan-chart-wide">
+          <div class="card-header">
+            <span class="card-title">Volume Sampah Terkelola</span>
+            <div class="laporan-select-wrap laporan-select-sm">
+              <select id="chart-period">
+                <option value="harian">Harian</option>
+                <option value="mingguan">Mingguan</option>
+                <option value="bulanan">Bulanan</option>
+              </select>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-dot" style="background:#2E7D32;"></span>
+            <span class="legend-label">Total Sampah (kg)</span>
+          </div>
+          <div class="bar-chart-wrap">
+            <canvas id="chart-volume" height="160"></canvas>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="card laporan-chart-card laporan-chart-donut">
+          <div class="card-header">
+            <span class="card-title">Komposisi Jenis Sampah</span>
+            <div class="laporan-select-wrap laporan-select-sm">
+              <select id="chart-jenis-filter">
+                <option>Semua Jenis</option>
+                <option>Sisa Makanan</option>
+                <option>Sayuran &amp; Buah</option>
+              </select>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="donut-wrap">
+            <canvas id="chart-donut" width="180" height="180"></canvas>
+            <div class="donut-center">
+              <div class="donut-value">1.24</div>
+              <div class="donut-unit">ton</div>
+            </div>
+          </div>
+          <div class="donut-legend" id="donut-legend"></div>
+        </div>
+
+        <!-- Ringkasan Manfaat -->
+        <div class="card laporan-chart-card laporan-chart-manfaat">
+          <div class="card-header" style="margin-bottom:var(--space-4);">
+            <span class="card-title">Ringkasan Manfaat</span>
+          </div>
+          <div class="manfaat-list">
+            <div class="manfaat-item">
+              <div class="manfaat-icon" style="background:#E8F5E9;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+              </div>
+              <div class="manfaat-body">
+                <div class="manfaat-label">Pengurangan Emisi CO₂</div>
+                <div class="manfaat-value">~98 kg</div>
+              </div>
+              <div class="manfaat-trend up">↑ 15%</div>
+            </div>
+            <div class="manfaat-item">
+              <div class="manfaat-icon" style="background:#FFF3E0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F57C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>
+              </div>
+              <div class="manfaat-body">
+                <div class="manfaat-label">Nilai Ekonomi</div>
+                <div class="manfaat-value">Rp 8.4 jt</div>
+              </div>
+              <div class="manfaat-trend up">↑ 9%</div>
+            </div>
+            <div class="manfaat-item">
+              <div class="manfaat-icon" style="background:#EDE7F6;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6A1B9A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div class="manfaat-body">
+                <div class="manfaat-label">Penerima Manfaat</div>
+                <div class="manfaat-value">125 orang</div>
+              </div>
+              <div class="manfaat-trend up">↑ 7%</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /laporan-charts-row -->
+
+      <!-- ── ROW 3: TABLE + LINE CHART ── -->
+      <div class="laporan-bottom-row">
+
+        <!-- Kinerja Per Lokasi Table -->
+        <div class="card laporan-table-card">
+          <div class="card-header">
+            <span class="card-title">Ringkasan Kinerja Per Lokasi</span>
+          </div>
+          <div class="laporan-table-wrap">
+            <table class="laporan-table">
+              <thead>
+                <tr>
+                  <th>Lokasi</th>
+                  <th>Sampah Terkelola (kg)</th>
+                  <th>Pengiriman (kali)</th>
+                  <th>Nilai Produk (Rp)</th>
+                  <th>Pengurangan Emisi CO₂ (kg)</th>
+                </tr>
+              </thead>
+              <tbody id="kinerja-tbody"></tbody>
+            </table>
+          </div>
+          <div class="laporan-table-footer">
+            <span id="kinerja-count">Menampilkan 1 - 5 dari 5 lokasi</span>
+          </div>
+        </div>
+
+        <!-- Tren Emisi Line Chart -->
+        <div class="card laporan-trend-card">
+          <div class="card-header">
+            <span class="card-title">Tren Pengurangan Emisi CO₂</span>
+            <div class="laporan-select-wrap laporan-select-sm">
+              <select id="trend-period">
+                <option value="mingguan">Mingguan</option>
+                <option value="harian">Harian</option>
+                <option value="bulanan">Bulanan</option>
+              </select>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-dot" style="background:#2E7D32;"></span>
+            <span class="legend-label">Pengurangan Emisi (kg)</span>
+          </div>
+          <div class="line-chart-wrap">
+            <canvas id="chart-trend" height="180"></canvas>
+          </div>
+        </div>
+
+      </div><!-- /laporan-bottom-row -->
+
+      <!-- ── INFO BANNER ── -->
+      <div class="laporan-info-banner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1565C0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="info-banner-text">Laporan ini menampilkan data berdasarkan periode 01 Mei 2024 – 31 Mei 2024 untuk semua lokasi.</span>
+      </div>
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-shell -->
+<script src="js/admin-laporan.js"></script>
+<script src="js/admin-sidebar.js"></script>
+<script src="components/admin-navbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+/* ════════════════════════════════════════════════════════
+   RESIK AUTH NAVBAR — CSS ADDITIONS
+   Paste ini ke AKHIR resik-main.css
+   ════════════════════════════════════════════════════════ */
+
+
+/* ────────────────────────────────────────────────────────
+   NAV AUTH AREA — Container (replaces .nav-btn slot)
+──────────────────────────────────────────────────────── */
+#navAuthArea {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* ────────────────────────────────────────────────────────
+   MASUK BUTTON — same look as existing .nav-btn
+   (Class .rsik-nav-masuk so it inherits correctly)
+──────────────────────────────────────────────────────── */
+.rsik-nav-masuk {
+  /* Inherits all .nav-btn styles; no overrides needed */
+}
+
+
+/* ════════════════════════════════════════════════════════
+   DESKTOP NAV PROFILE — Trigger button
+   ════════════════════════════════════════════════════════ */
+.nav-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 40px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+  user-select: none;
+  position: relative;
+}
+.nav-profile:hover {
+  background: var(--leaf-pale);
+  border-color: var(--leaf-bright);
+  box-shadow: 0 2px 12px rgba(27, 77, 53, .08);
+}
+
+/* Avatar circle */
+.nav-profile-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  color: rgba(255,255,255,.85);
+}
+.nav-profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.nav-profile-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,.9);
+}
+
+/* First name label */
+.nav-profile-name {
+  font-family: var(--font-body);
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Chevron */
+.nav-profile-chevron {
+  color: var(--muted);
+  flex-shrink: 0;
+  transition: transform .2s ease;
+}
+.nav-profile[aria-expanded="true"] .nav-profile-chevron {
+  transform: rotate(180deg);
+}
+
+
+/* ════════════════════════════════════════════════════════
+   DESKTOP NAV PROFILE — Dropdown panel
+   ════════════════════════════════════════════════════════ */
+.nav-profile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(20, 56, 42, .14), 0 4px 16px rgba(0,0,0,.06);
+  padding: 6px;
+  z-index: 9000;
+
+  /* Hidden state */
+  opacity: 0;
+  transform: translateY(-6px) scale(.97);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.nav-profile-dropdown.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* User info block at top of dropdown */
+.nav-dropdown-user {
+  padding: 10px 12px 8px;
+}
+.nav-dropdown-user-name {
+  font-family: var(--font-heading);
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-dropdown-user-email {
+  font-size: .75rem;
+  color: var(--muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Divider */
+.nav-dropdown-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 6px;
+}
+
+/* Menu items */
+.nav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  text-align: left;
+}
+.nav-dropdown-item svg {
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: color .15s;
+}
+.nav-dropdown-item:hover {
+  background: var(--leaf-pale);
+  color: var(--leaf);
+}
+.nav-dropdown-item:hover svg {
+  color: var(--leaf-bright);
+}
+
+/* Logout — subtle danger tint on hover */
+.nav-dropdown-logout:hover {
+  background: #fff5f5;
+  color: #c0392b;
+}
+.nav-dropdown-logout:hover svg {
+  color: #c0392b;
+}
+.nav-dropdown-logout:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+
+/* ════════════════════════════════════════════════════════
+   MOBILE DRAWER — Auth action links (Dashboard + Logout)
+   Injected below #drawerProfile when logged in
+   ════════════════════════════════════════════════════════ */
+.drawer-auth-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 0.75rem 0.5rem;
+}
+
+.drawer-action-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: .875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, .75);
+  text-decoration: none;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+  width: 100%;
+  text-align: left;
+}
+.drawer-action-link svg {
+  flex-shrink: 0;
+  opacity: .6;
+  transition: opacity .2s;
+}
+.drawer-action-link:hover {
+  background: rgba(61, 184, 112, .12);
+  color: #fff;
+  border-color: rgba(61, 184, 112, .25);
+}
+.drawer-action-link:hover svg { opacity: 1; }
+
+/* Logout variant in drawer */
+.drawer-action-logout:hover {
+  background: rgba(192, 57, 43, .12);
+  color: #ffb3ae;
+  border-color: rgba(192, 57, 43, .2);
+}
+.drawer-action-logout:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+
+/* ════════════════════════════════════════════════════════
+   RESPONSIVE — hide desktop profile on mobile,
+   hide .rsik-nav-masuk on mobile (drawer handles it)
+   ════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  #navAuthArea { display: none !important; }
+}
+@media (min-width: 901px) {
+  /* On desktop, drawer auth actions are irrelevant
+     but they only render when drawer is open anyway */
+}

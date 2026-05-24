@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar — RESIK</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+
+  <style>
+    /* ── Loading Overlay ── */
+    #resik-loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,.85);
+      display: none; align-items: center; justify-content: center;
+      z-index: 9999; flex-direction: column; gap: .75rem;
+      font-size: 1.1rem; color: #2d6a4f;
+    }
+    #resik-loading-overlay .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid #e0e0e0; border-top-color: #2d6a4f;
+      border-radius: 50%; animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Alert ── */
+    .resik-alert {
+      padding: .75rem 1rem; border-radius: 8px; margin-bottom: 1rem;
+      font-size: .9rem; display: none;
+    }
+    .resik-alert.error   { background:#fdecea; color:#c62828; border:1px solid #ef9a9a; }
+    .resik-alert.success { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; }
+    .resik-alert a { color: inherit; font-weight: 600; }
+
+    /* ── Field error ── */
+    .field-error { display: none; color: #c62828; font-size: .8rem; margin-top: .25rem; }
+    input[aria-invalid="true"] { border-color: #c62828 !important; }
+
+    /* ── Password wrapper ── */
+    .pw-wrapper { position: relative; }
+    .pw-wrapper input { width: 100%; padding-right: 2.5rem; box-sizing: border-box; }
+    .pw-toggle {
+      position: absolute; right: .75rem; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0;
+    }
+
+    /* ── Password Strength ── */
+    .strength-wrap { margin-top: .5rem; }
+    .strength-track {
+      height: 5px; background: #e0e0e0; border-radius: 99px; overflow: hidden;
+    }
+    #strength-bar {
+      height: 100%; width: 0; border-radius: 99px;
+      transition: width .3s ease, background .3s ease;
+    }
+    #strength-label {
+      font-size: .75rem; margin-top: .2rem; font-weight: 600;
+      min-height: 1em;
+    }
+
+    /* ── Role Options ── */
+    #role-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: .75rem;
+      margin-top: .5rem;
+    }
+    .role-option {
+      display: flex; align-items: flex-start; gap: .6rem;
+      border: 2px solid #e0e0e0; border-radius: 10px;
+      padding: .75rem 1rem; cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .role-option:has(input:checked) {
+      border-color: #2d6a4f; background: #f0faf4;
+    }
+    .role-option input[type="radio"] { margin-top: .15rem; accent-color: #2d6a4f; }
+    .role-icon { font-size: 1.3rem; line-height: 1; }
+    .role-label { display: block; font-weight: 600; font-size: .9rem; color: #1a1a1a; }
+    .role-desc  { display: block; font-size: .78rem; color: #666; line-height: 1.4; }
+
+    /* ── Name row ── */
+    .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 480px) { .name-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Loading Overlay ══ -->
+  <div id="resik-loading-overlay" role="status" aria-live="polite">
+    <div class="spinner"></div>
+    <span>Memuat...</span>
+  </div>
+
+  <main class="auth-page">
+    <div class="auth-card">
+
+      <div class="auth-logo">
+        <a href="/index.html">
+          <img src="assets/img/resik-logo.svg" alt="RESIK" height="40" />
+        </a>
+      </div>
+
+      <h1 class="auth-title">Buat Akun RESIK</h1>
+      <p class="auth-subtitle">Bergabung dalam ekosistem pengelolaan limbah organik.</p>
+
+      <!-- ── Alerts ── -->
+      <div id="register-error"   class="resik-alert error"   role="alert"  aria-live="polite"></div>
+      <div id="register-success" class="resik-alert success" role="status" aria-live="polite"></div>
+
+      <!-- ══ Form Register ══ -->
+      <form id="register-form" novalidate autocomplete="off">
+
+        <!-- Nama -->
+        <div class="form-group name-row">
+          <div>
+            <label for="reg-firstname">Nama Depan <span aria-hidden="true">*</span></label>
+            <input
+              type="text" id="reg-firstname" name="first_name"
+              placeholder="Budi" required autocomplete="given-name"
+            />
+            <span id="reg-firstname-error" class="field-error" aria-live="polite"></span>
+          </div>
+          <div>
+            <label for="reg-lastname">Nama Belakang</label>
+            <input
+              type="text" id="reg-lastname" name="last_name"
+              placeholder="Santoso" autocomplete="family-name"
+            />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="reg-email">Email <span aria-hidden="true">*</span></label>
+          <input
+            type="email" id="reg-email" name="email"
+            placeholder="kamu@email.com" required autocomplete="email"
+          />
+          <span id="reg-email-error" class="field-error" aria-live="polite"></span>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="reg-password">Password <span aria-hidden="true">*</span></label>
+          <div class="pw-wrapper">
+            <input
+              type="password" id="reg-password" name="password"
+              placeholder="Min. 8 karakter" required autocomplete="new-password"
+            />
+            <button type="button" id="toggle-password" class="pw-toggle" aria-label="Tampilkan password">
+              👁️
+            </button>
+          </div>
+          <!-- Strength meter -->
+          <div class="strength-wrap" aria-live="polite">
+            <div class="strength-track"><div id="strength-bar"></div></div>
+            <div id="strength-label"></div>
+          </div>
+          <span id="reg-password-error" class="field-error" aria-live="polite"></span>
+        </div>
+
+        <!-- Konfirmasi Password -->
+        <div class="form-group">
+          <label for="reg-confirm-password">Konfirmasi Password <span aria-hidden="true">*</span></label>
+          <div class="pw-wrapper">
+            <input
+              type="password" id="reg-confirm-password" name="confirm_password"
+              placeholder="Ulangi password" required autocomplete="new-password"
+            />
+            <button type="button" id="toggle-confirm" class="pw-toggle" aria-label="Tampilkan konfirmasi">
+              👁️
+            </button>
+          </div>
+          <span id="reg-confirm-password-error" class="field-error" aria-live="polite"></span>
+        </div>
+
+        <!-- Role -->
+        <div class="form-group">
+          <label>Saya adalah <span aria-hidden="true">*</span></label>
+          <!-- Diisi oleh register.js _buildRoleOptions() -->
+          <div id="role-options" role="radiogroup" aria-label="Pilih role kamu"></div>
+        </div>
+
+        <!-- Organisasi (hidden untuk admin) -->
+        <div class="form-group" id="org-group">
+          <label for="reg-organization">Nama Organisasi / Perusahaan</label>
+          <input
+            type="text" id="reg-organization" name="organization"
+            placeholder="PT. Sumber Organik Nusantara"
+            autocomplete="organization"
+          />
+        </div>
+
+        <!-- Syarat & Ketentuan -->
+        <div class="form-group form-check">
+          <label class="check-label">
+            <input type="checkbox" id="reg-agree-terms" required />
+            Saya menyetujui
+            <a href="/terms.html" target="_blank" rel="noopener">Syarat & Ketentuan</a>
+            dan
+            <a href="/privacy.html" target="_blank" rel="noopener">Kebijakan Privasi</a>
+            RESIK.
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          id="btn-register"
+          class="btn btn-primary btn-block"
+          data-default-text="Daftar Sekarang"
+        >
+          Daftar Sekarang
+        </button>
+
+      </form>
+
+      <!-- ── Divider ── -->
+      <div class="auth-divider"><span>atau</span></div>
+
+      <!-- ── Google Register ── -->
+      <button
+        id="btn-google-register"
+        class="btn btn-outline btn-block btn-google"
+        data-default-text="Daftar dengan Google"
+        type="button"
+      >
+        <img src="assets/img/google-icon.svg" alt="" width="18" height="18" />
+        Daftar dengan Google
+      </button>
+
+      <p class="auth-footer-text">
+        Sudah punya akun?
+        <a href="/login.html" class="link-primary">Masuk di sini</a>
+      </p>
+
+    </div><!-- /.auth-card -->
+  </main>
+
+  <!-- ══ Scripts ══ -->
+  <script src="assets/js/resik-supabase.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/register.js"></script>
+
+</body>
+</html>

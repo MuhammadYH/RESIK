@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <!-- Satu file CSS eksternal untuk semua halaman -->
+  <link rel="stylesheet" href="resik-main.css">
+  <script src="resik-supabase.js" defer></script>
+  <title>RESIK — Circular Food Waste Ecosystem</title>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="navbar">
+  <div class="nav-wrap">
+    <a href="index.html" class="nav-logo-wrap">
+      <img src="image_0.png" alt="RESIK Logo" class="nav-logo-img">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Beranda</a></li>
+      <li><a href="tentangKami.html">Tentang Kami</a></li>
+      <li><a href="solusi.html">Solusi</a></li>
+      <li><a href="kontak.html">Kontak Kami</a></li>
+    </ul>
+    <!-- Hamburger (mobile) -->
+    <button class="nav-hamburger" id="hamburgerBtn" aria-label="Buka menu">
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+    </button>
+    <div id="navAuthArea" aria-label="Autentikasi pengguna">
+      <a href="login.html" class="nav-btn rsik-nav-masuk">Masuk</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-header">
+    <a href="index.html" class="drawer-logo">
+      <img src="image_0.png" alt="RESIK Logo">
+    </a>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <nav class="drawer-nav">
+    <a href="index.html" class="active">Beranda</a>
+    <a href="tentangKami.html">Tentang Kami</a>
+    <a href="solusi.html">Solusi</a>
+    <a href="kontak.html">Kontak Kami</a>
+  </nav>
+  <div class="drawer-cta">
+    <a href="login.html">Masuk</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     HERO
+═══════════════════════════════════ -->
+<section class="hero">
+  <div class="container hero-grid">
+
+    <div>
+      <div class="hero-pill anim d1">
+        <div class="hero-pill-dot">
+          <svg viewBox="0 0 16 16"><path d="M8 3v5l3 2"/><circle cx="8" cy="8" r="6"/></svg>
+        </div>
+        Circular Food Waste Ecosystem — Pacet, Mojokerto
+      </div>
+
+      <h1 class="anim d2">
+        Ubah Limbah<br>Makanan Jadi<br><span class="hl">Sumber Daya</span>
+      </h1>
+
+      <p class="anim d3">
+        RESIK menghubungkan hotel, restoran, dan kawasan wisata dengan pengolah limbah organik melalui Smart Bin IoT dan marketplace ekonomi sirkular terintegrasi.
+      </p>
+
+      <div class="hero-actions anim d4">
+        <a href="#cara-kerja" class="btn-primary">
+          Lihat Cara Kerja
+          <svg viewBox="0 0 16 16"><path d="M3 8h10M8 3l5 5-5 5"/></svg>
+        </a>
+        <a href="kontak.html" class="btn-ghost">
+          Jadwalkan Demo
+          <svg viewBox="0 0 16 16"><path d="M3 8h10M8 3l5 5-5 5"/></svg>
+        </a>
+      </div>
+
+      <div class="hero-tags-strip anim d4">
+        <span class="hero-tag-chip">
+          <svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4"/><path d="M6 4v2l1.5 1.5"/></svg>
+          Pemantauan Real-Time
+        </span>
+        <span class="hero-tag-chip">
+          <svg viewBox="0 0 12 12"><path d="M2 10L5 7l2 2 3-5"/></svg>
+          Data Terukur & Akurat
+        </span>
+        <span class="hero-tag-chip">
+          <svg viewBox="0 0 12 12"><path d="M6 2v3M6 10V7M2 6h3M10 6H7"/></svg>
+          Pengolahan Berkelanjutan
+        </span>
+      </div>
+    </div>
+
+    <!-- Phone Mockup Visual -->
+    <div class="hero-visual anim d3">
+      <div class="hero-phone-wrap">
+        <div class="app-bar">
+          <div class="app-bar-left">
+            <div class="app-bar-title">Dashboard RESIK</div>
+            <div class="app-bar-brand">Smart Bin Monitor</div>
+          </div>
+          <div class="app-bar-stat">
+            <strong id="stat-efisiensi">78%</strong>
+            <span>Efisiensi Hari Ini</span>
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-section-label">Status Smart Bin</div>
+          <div class="bin-list">
+            <div class="bin-row">
+              <div class="bin-icon" style="background:#fef3e2">
+                <svg viewBox="0 0 24 24" style="stroke:#e67e22"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+              </div>
+              <div class="bin-info">
+                <div class="bin-name" id="bin-name-0">Restoran Pacet Indah</div>
+                <div class="bin-loc" id="bin-loc-0">60L — Outdoor</div>
+              </div>
+              <div class="bin-fill">
+                <div class="bin-pct" id="bin-pct-0" style="color:#e67e22">87%</div>
+                <div class="fill-bar-wrap"><div class="fill-bar" id="bin-bar-0" style="width:87%;background:#e67e22"></div></div>
+              </div>
+            </div>
+            <div class="bin-row">
+              <div class="bin-icon" style="background:#e8f5ee">
+                <svg viewBox="0 0 24 24" style="stroke:#1b4d35"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+              </div>
+              <div class="bin-info">
+                <div class="bin-name" id="bin-name-1">Hotel Villa Pacet</div>
+                <div class="bin-loc" id="bin-loc-1">40L — Indoor</div>
+              </div>
+              <div class="bin-fill">
+                <div class="bin-pct" style="color:#1b4d35">42%</div>
+                <div class="fill-bar-wrap"><div class="fill-bar" style="width:42%;background:#3db870"></div></div>
+              </div>
+            </div>
+            <div class="bin-row">
+              <div class="bin-icon" style="background:#e8f5ee">
+                <svg viewBox="0 0 24 24" style="stroke:#1b4d35"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+              </div>
+              <div class="bin-info">
+                <div class="bin-name" id="bin-name-2">Pujasera Tahura</div>
+                <div class="bin-loc" id="bin-loc-2">20L — Indoor</div>
+              </div>
+              <div class="bin-fill">
+                <div class="bin-pct" style="color:#1b4d35">28%</div>
+                <div class="fill-bar-wrap"><div class="fill-bar" style="width:28%;background:#3db870"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="app-section-label">Ringkasan Bulan Ini</div>
+          <div class="app-stats">
+            <div class="app-stat">
+              <strong id="stat-limbah">1.24 ton</strong>
+              <span>Limbah Terolah</span>
+            </div>
+            <div class="app-stat">
+              <strong id="stat-nilai">Rp 8.4jt</strong>
+              <span>Nilai Produk</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating cards -->
+      <div class="float-card float-card-alert">
+        <div class="fc-head">
+          <div class="fc-dot"></div>
+          <div class="fc-title">Notifikasi Otomatis</div>
+        </div>
+        <div class="fc-body">Bin 60L di Restoran Pacet Indah hampir penuh. Penjemputan dijadwalkan.</div>
+        <div class="fc-tag">Waste Manager Dikirim →</div>
+      </div>
+
+      <div class="float-card float-card-eco">
+        <div class="eco-circle">
+          <svg viewBox="0 0 24 24"><path d="M12 22C6 22 2 18 2 12C2 6 6 2 12 2"/><path d="M12 2C18 2 22 6 22 12C22 15 20 18 17 20"/><path d="M8 12C8 9.8 9.8 8 12 8"/></svg>
+        </div>
+        <div class="eco-num" id="stat-emisi">22%</div>
+        <div class="eco-label">↓ Emisi Carbon</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── PARTNER STRIP ── -->
+<div class="strip">
+  <div class="container">
+    <div class="strip-inner">
+      <div class="strip-item">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+        Hotel & Resort
+      </div>
+      <div class="strip-divider"></div>
+      <div class="strip-item">
+        <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+        Restoran & Café
+      </div>
+      <div class="strip-divider"></div>
+      <div class="strip-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        Kawasan Wisata
+      </div>
+      <div class="strip-divider"></div>
+      <div class="strip-item">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Pujasera & Food Court
+      </div>
+      <div class="strip-divider"></div>
+      <div class="strip-item">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        Catering & Event
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     STATS
+═══════════════════════════════════ -->
+<div class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-n">125 Juta</div>
+        <div class="stat-l">Potensi orang dapat diberi makan</div>
+        <div class="stat-s">setara 47% populasi Indonesia</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-n">1.720,9 Mt</div>
+        <div class="stat-l">Dampak emisi CO₂e</div>
+        <div class="stat-s">setara 7,29% emisi GRK Indonesia</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-n">Rp 551 T</div>
+        <div class="stat-l">Kerugian ekonomi per tahun</div>
+        <div class="stat-s">setara 4–5% PDB Indonesia (Bappenas, 2021)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MASALAH
+═══════════════════════════════════ -->
+<section class="masalah" id="masalah">
+  <div class="container masalah-inner">
+    <div>
+      <div class="sec-label">Masalahnya</div>
+      <h2 class="sec-title">Food Waste Adalah Krisis yang Sering Diabaikan</h2>
+      <p class="sec-sub">Di Indonesia, Food Loss and Waste (FLW) mencapai 23–48 juta kg/tahun — setara 1–2 kwintal pangan per orang setiap tahun. Pada 2024, sekitar 40% dari total timbunan sampah merupakan sisa makanan.</p>
+      <p class="sec-sub" style="margin-top:16px">Tanpa sistem yang tepat, potensi ekonomi ini terbuang sia-sia ke TPA — menciptakan emisi gas rumah kaca dan kerugian ekonomi skala nasional yang tidak bisa diabaikan.</p>
+    </div>
+    <div class="masalah-visual">
+      <div class="masalah-visual-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <path d="M20 6C12 6 6 12 6 20s6 14 14 14 14-6 14-14S28 6 20 6z" stroke="#1b4d35" stroke-width="1.5" fill="none"/>
+          <path d="M14 20c3-5 6-7 6-7s3 2 6 7" stroke="#3db870" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M20 13v14" stroke="#3db870" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M28 14l5-5M30 20l6-2M28 26l5 4" stroke="#c0392b" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".8"/>
+        </svg>
+      </div>
+      <div class="masalah-stats">
+        <div class="m-stat"><div class="m-stat-n red">48 Juta</div><div class="m-stat-l">kg/tahun food waste di Indonesia</div></div>
+        <div class="m-stat"><div class="m-stat-n amber">40%</div><div class="m-stat-l">dari total sampah adalah sisa makanan (2024)</div></div>
+        <div class="m-stat"><div class="m-stat-n teal">184 kg</div><div class="m-stat-l">per jiwa per tahun — terbuang sia-sia</div></div>
+        <div class="m-stat"><div class="m-stat-n leaf">Rp 551T</div><div class="m-stat-l">kerugian ekonomi tahunan nasional</div></div>
+      </div>
+      <div class="masalah-quote">
+        <strong>Sebagian besar food waste berakhir di TPA tanpa pengolahan</strong> — menyebabkan pencemaran lingkungan dan hilangnya potensi ekonomi yang sangat besar bagi Indonesia.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     TIMELINE / CARA KERJA
+═══════════════════════════════════ -->
+<section class="timeline-section" id="cara-kerja">
+  <div class="container">
+    <div class="sec-head center">
+      <div class="sec-label">Cara Kerja</div>
+      <h2 class="sec-title">Ekosistem Closed-Loop<br>dalam 3 Langkah</h2>
+      <p class="sec-sub">Dari limbah makanan hingga produk bernilai ekonomi — semua terhubung dalam satu platform digital terintegrasi.</p>
+    </div>
+    <div class="timeline-grid">
+      <div class="timeline-step">
+        <div class="timeline-num">01</div>
+        <div class="timeline-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </div>
+        <h3>Smart Collection</h3>
+        <p>Smart Bin IoT RESIK terpasang di hotel, restoran, dan kawasan wisata. Sensor otomatis memantau level kepenuhan dan kualitas limbah secara real-time 24/7.</p>
+        <div class="timeline-arrow">
+          <svg viewBox="0 0 16 16"><path d="M3 8h10M8 3l5 5-5 5"/></svg>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-num">02</div>
+        <div class="timeline-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h2l2 4 2-6 2 4h2"/></svg>
+        </div>
+        <h3>Digital Platform</h3>
+        <p>Notifikasi otomatis dikirim ke Waste Manager saat bin penuh atau mendekati batas 24 jam. Pengangkutan dijadwalkan secara efisien melalui aplikasi RESIK.</p>
+        <div class="timeline-arrow">
+          <svg viewBox="0 0 16 16"><path d="M3 8h10M8 3l5 5-5 5"/></svg>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-num">03</div>
+        <div class="timeline-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M12 22v-9M3.27 6.96L12 12.01l8.73-5.05"/></svg>
+        </div>
+        <h3>Circular Marketplace</h3>
+        <p>Limbah diolah menjadi kompos, maggot BSF, atau eco-enzyme, lalu dipasarkan kepada petani, peternak, dan UMKM melalui Circular Waste Marketplace RESIK.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     DAMPAK
+═══════════════════════════════════ -->
+<section class="dampak" id="dampak">
+  <div class="container">
+    <div class="sec-head center">
+      <div class="sec-label">Dampak & Manfaat</div>
+      <h2 class="sec-title">Mengapa Perusahaan Memilih RESIK?</h2>
+      <p class="sec-sub">Solusi yang memberi dampak terukur — bagi lingkungan, reputasi, dan profitabilitas bisnis Anda secara bersamaan.</p>
+    </div>
+    <div class="dampak-grid">
+      <div class="dampak-card">
+        <div class="dampak-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 019 9"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h4>Kurangi Limbah ke TPA</h4>
+        <p>Alihkan food waste dari landfill secara signifikan dan terukur dengan laporan periodik yang siap diaudit.</p>
+      </div>
+      <div class="dampak-card">
+        <div class="dampak-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </div>
+        <h4>Dukung Target ESG</h4>
+        <p>Bantu perusahaan memenuhi komitmen lingkungan dan laporan sustainability yang kredibel dan selaras SDGs.</p>
+      </div>
+      <div class="dampak-card">
+        <div class="dampak-icon">
+          <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 12l2 2 4-4M9 7h6M9 17h4"/></svg>
+        </div>
+        <h4>Transparansi Data</h4>
+        <p>Monitoring real-time dan laporan akurat yang siap untuk audit internal maupun eksternal kapan saja.</p>
+      </div>
+      <div class="dampak-card">
+        <div class="dampak-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <h4>Nilai Ekonomi Nyata</h4>
+        <p>Waste diolah menjadi produk bernilai — kompos, biogas — yang menghasilkan revenue tambahan bagi bisnis.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     ECOSYSTEM
+═══════════════════════════════════ -->
+<section class="ecosystem-section" id="ekosistem">
+  <div class="container">
+    <div class="sec-head center">
+      <div class="sec-label" style="color:var(--leaf-bright)">Ekosistem</div>
+      <h2 class="sec-title" style="color:white">Siapa yang Terlibat?</h2>
+      <p class="sec-sub" style="color:rgba(255,255,255,.6);margin:0 auto">RESIK membangun rantai nilai ekonomi sirkular yang menghubungkan tiga pelaku utama dalam satu platform digital terintegrasi.</p>
+    </div>
+    <div class="ecosystem-grid">
+      <div class="eco-card">
+        <div class="eco-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h3>Food Waste Producer</h3>
+        <p>Hotel, restoran, café, katering, dan kawasan wisata kuliner menggunakan Smart Bin RESIK sebagai solusi pengelolaan limbah makanan yang efisien dan terukur.</p>
+        <span class="eco-tag">Hotel · Restoran · Pujasera · Katering</span>
+      </div>
+      <div class="eco-card">
+        <div class="eco-card-icon">
+          <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4a1 1 0 011 1v10a1 1 0 01-1 1H3"/><path d="M8 19v2M12 19v2M16 19v2"/></svg>
+        </div>
+        <h3>Waste Manager</h3>
+        <p>Pengelola limbah menerima notifikasi real-time, menjadwalkan pengangkutan, dan mengolah food waste menjadi produk bernilai ekonomi seperti kompos dan maggot BSF.</p>
+        <span class="eco-tag">Pengangkut · Pengolah Organik · UMKM</span>
+      </div>
+      <div class="eco-card">
+        <div class="eco-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <h3>Buyer / Pengguna Produk</h3>
+        <p>Petani, pelaku urban farming, peternak, dan masyarakat umum membeli produk hasil olahan seperti pupuk kompos dan eco-enzyme melalui Circular Waste Marketplace.</p>
+        <span class="eco-tag">Petani · Urban Farming · Peternak · UMKM</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     IMPACT
+═══════════════════════════════════ -->
+<section class="impact-section">
+  <div class="container">
+    <div class="sec-head center">
+      <div class="sec-label">Dampak Terukur</div>
+      <h2 class="sec-title">Keberlanjutan Skala Nyata</h2>
+      <p class="sec-sub">Infrastruktur cerdas yang dirancang untuk mengurangi emisi, meningkatkan efisiensi, dan mengubah cara industri pariwisata memandang limbah.</p>
+    </div>
+    <div class="impact-grid">
+      <div class="impact-card"><div class="impact-num">30%</div><p>Penurunan biaya operasional melalui optimasi jadwal pengangkutan berbasis data IoT real-time.</p></div>
+      <div class="impact-card"><div class="impact-num">22%</div><p>Pengurangan emisi karbon melalui sistem pengangkutan cerdas berbasis rute teroptimasi.</p></div>
+      <div class="impact-card"><div class="impact-num">99%</div><p>Uptime sistem rata-rata di seluruh lokasi deployment multi-site di kawasan wisata.</p></div>
+      <div class="impact-card"><div class="impact-num">2400+</div><p>Target Smart Bin yang diproyeksikan tersebar di kawasan wisata dan lingkungan komersial.</p></div>
+    </div>
+
+    <div style="text-align:center;margin-top:56px">
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:16px;text-transform:uppercase;letter-spacing:2px;font-weight:500">Selaras dengan SDGs</p>
+    </div>
+    <div class="sdg-strip">
+      <div class="sdg-pill" style="background:#e8f5ee;color:#1b4d35;border:1px solid #c0ddc8">
+        <svg viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M8 6v4M6 8h4"/></svg>
+        SDG 8 — Pertumbuhan Ekonomi
+      </div>
+      <div class="sdg-pill" style="background:#fff8e1;color:#8b6914;border:1px solid #e8d88a">
+        <svg viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M8 6v4M6 8h4"/></svg>
+        SDG 11 — Kota Berkelanjutan
+      </div>
+      <div class="sdg-pill" style="background:#fff0f0;color:#7a2020;border:1px solid #e8c0c0">
+        <svg viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M8 6v4M6 8h4"/></svg>
+        SDG 12 — Konsumsi Bertanggung Jawab
+      </div>
+      <div class="sdg-pill" style="background:#e6f4f1;color:#145a4a;border:1px solid #a8d8ce">
+        <svg viewBox="0 0 16 16"><path d="M8 2a6 6 0 100 12A6 6 0 008 2z"/><path d="M8 6v4M6 8h4"/></svg>
+        SDG 13 — Aksi Iklim
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     RESIKAPP
+═══════════════════════════════════ -->
+<section class="app-section" id="app">
+  <div class="container app-inner">
+    <div>
+      <div class="sec-label">ResikApp</div>
+      <h2 class="sec-title">Semua dalam Satu Platform</h2>
+      <p class="sec-sub">Pantau, kelola, dan analisis seluruh ekosistem food waste bisnis Anda secara real-time — dari satu dashboard yang terintegrasi penuh.</p>
+      <ul class="app-features">
+        <li><span class="feat-check"><svg viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3"/></svg></span>Monitoring volume sampah real-time</li>
+        <li><span class="feat-check"><svg viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3"/></svg></span>Dashboard data interaktif & terukur</li>
+        <li><span class="feat-check"><svg viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3"/></svg></span>Riwayat dan jadwal pengangkutan otomatis</li>
+        <li><span class="feat-check"><svg viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3"/></svg></span>Laporan sustainability perusahaan (ESG)</li>
+        <li><span class="feat-check"><svg viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3"/></svg></span>Analisis tren pengurangan limbah periodik</li>
+      </ul>
+      <div class="app-btns">
+        <a href="kontak.html" class="btn-app-primary">
+          <svg viewBox="0 0 16 16" style="width:14px;height:14px;stroke:var(--text);fill:none;stroke-width:2"><rect x="3" y="1" width="10" height="14" rx="2"/><path d="M7 12h2"/></svg>
+          Download ResikApp
+        </a>
+        <a href="kontak.html" class="btn-app-ghost">Lihat Demo</a>
+      </div>
+    </div>
+
+    <!-- App mockup screen -->
+    <div class="app-mockup-wrap">
+      <div class="app-screen">
+        <div class="app-screen-header">
+          <div class="app-screen-title">Dashboard Utama</div>
+          <div class="app-live-badge"><div class="app-live-dot"></div>Live</div>
+        </div>
+        <div class="app-metrics">
+          <div class="app-metric"><div class="amn">2,98</div><div class="aml">Ton bulan ini</div></div>
+          <div class="app-metric"><div class="amn">94%</div><div class="aml">Terolah</div></div>
+          <div class="app-metric"><div class="amn">↓12%</div><div class="aml">vs bulan lalu</div></div>
+        </div>
+        <div class="chart-label">Volume Mingguan (kg)</div>
+        <div class="app-bars">
+          <div class="bar bar-low"  style="height:38%"></div>
+          <div class="bar bar-low"  style="height:55%"></div>
+          <div class="bar bar-low"  style="height:47%"></div>
+          <div class="bar bar-high" style="height:78%"></div>
+          <div class="bar bar-low"  style="height:65%"></div>
+          <div class="bar bar-high" style="height:88%"></div>
+          <div class="bar bar-low"  style="height:60%"></div>
+        </div>
+        <div class="day-labels">
+          <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span>
+        </div>
+        <div class="app-info-row">
+          <div class="app-info-cell">
+            <div class="cin">18</div>
+            <div class="cil">Pengangkutan aktif</div>
+            <div class="cit">+3 hari ini ↑</div>
+          </div>
+          <div class="app-info-cell">
+            <div class="cin">Rp 4,2M</div>
+            <div class="cil">Nilai ekonomi bulan ini</div>
+            <div class="cit">+18% vs target ↑</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     CTA
+═══════════════════════════════════ -->
+<section class="cta-section" id="cta">
+  <div class="container">
+    <div class="cta-inner">
+      <h2>Mulai Transformasi<br>Pengelolaan Limbah Anda</h2>
+      <p>Bergabunglah dengan hotel, restoran, dan kawasan wisata yang telah mengadopsi sistem pengelolaan food waste berbasis ekonomi sirkular dan teknologi IoT.</p>
+      <div class="cta-actions">
+        <a href="kontak.html" class="btn-white">Request Demo Gratis</a>
+        <a href="solusi.html" class="btn-outline-white">Lihat Produk</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     FOOTER
+═══════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand fade-in">
+        <a href="index.html" class="footer-logo-wrap">
+          <img src="image_0.png" alt="RESIK Logo" class="footer-logo-img">
+        </a>
+        <p>Startup climate-tech yang fokus pada infrastruktur food waste cerdas dan operasional perkotaan yang berkelanjutan.</p>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.1s">
+        <h5>Produk</h5>
+        <ul>
+          <li><a href="#">RESIK Lite 20L</a></li>
+          <li><a href="#">RESIK Pro 40L</a></li>
+          <li><a href="#">RESIK Enterprise 60L</a></li>
+          <li><a href="#">Bandingkan Semua</a></li>
+        </ul>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.2s">
+        <h5>Perusahaan</h5>
+        <ul>
+          <li><a href="index.html">Beranda</a></li>
+          <li><a href="tentangKami.html">Tentang Kami</a></li>
+          <li><a href="solusi.html">Solusi</a></li>
+          <li><a href="#">Teknologi</a></li>
+          <li><a href="#">Laporan ESG</a></li>
+          <li><a href="#">Karier</a></li>
+        </ul>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.3s">
+        <h5>Dukungan</h5>
+        <ul>
+          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="kontak.html">Hubungi Kami</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Garansi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 RESIK — Rekayasa Efisiensi Sistem Industri Kepariwisataan. Seluruh hak dilindungi.</p>
+      <div class="social-links">
+        <button class="social-btn">𝕏</button>
+        <button class="social-btn">in</button>
+        <button class="social-btn">▶</button>
+        <button class="social-btn">ig</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll to Top Button -->
+<button id="scrollTop" aria-label="Kembali ke atas">↑</button>
+
+<script>
+/* ── Nav scroll shadow ── */
+const _nav = document.getElementById('navbar');
+const _scrollTop = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  if (_nav) _nav.classList.toggle('scrolled', window.scrollY > 40);
+  if (_scrollTop) _scrollTop.classList.toggle('show', window.scrollY > 400);
+});
+
+/* ── Scroll to top ── */
+if (_scrollTop) _scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* ── Hamburger / Mobile Drawer ── */
+const hamburgerBtn  = document.getElementById('hamburgerBtn');
+const mobileDrawer  = document.getElementById('mobileDrawer');
+const drawerOverlay = document.getElementById('drawerOverlay');
+const drawerClose   = document.getElementById('drawerClose');
+
+function openDrawer() {
+  mobileDrawer.classList.add('open');
+  drawerOverlay.classList.add('open');
+  hamburgerBtn.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  mobileDrawer.classList.remove('open');
+  drawerOverlay.classList.remove('open');
+  hamburgerBtn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+if (hamburgerBtn)  hamburgerBtn.addEventListener('click', openDrawer);
+if (drawerClose)   drawerClose.addEventListener('click', closeDrawer);
+if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+
+/* ── Scroll reveal ditangani oleh resik-shared.js ── */
+</script>
+
+<script>
+// ── Load data dari Supabase ke hero dashboard ──
+document.addEventListener('DOMContentLoaded', async () => {
+  // Tunggu resik-supabase.js siap
+  let attempts = 0;
+  while (typeof RESIK_DATA === 'undefined' && attempts < 20) {
+    await new Promise(r => setTimeout(r, 100));
+    attempts++;
+  }
+  if (typeof RESIK_DATA === 'undefined') return;
+
+  try {
+    // Load Smart Bin data
+    const bins = await RESIK_DATA.getBins();
+    bins.slice(0, 3).forEach((bin, i) => {
+      const nameEl = document.getElementById('bin-name-' + i);
+      const locEl  = document.getElementById('bin-loc-' + i);
+      const pctEl  = document.getElementById('bin-pct-' + i);
+      const barEl  = document.getElementById('bin-bar-' + i);
+      if (!nameEl) return;
+
+      const pct = bin.fill_pct ?? bin.fill ?? 0;
+      const isWarn = pct >= 75;
+      const color  = isWarn ? '#e67e22' : '#3db870';
+      const textColor = isWarn ? '#e67e22' : '#1b4d35';
+
+      if (nameEl) nameEl.textContent = bin.name;
+      if (locEl)  locEl.textContent  = (bin.capacity || '') + (bin.unit || 'L') + ' — ' + (bin.location || '');
+      if (pctEl)  { pctEl.textContent = pct + '%'; pctEl.style.color = textColor; }
+      if (barEl)  { barEl.style.width = pct + '%'; barEl.style.background = color; }
+    });
+
+    // Load ringkasan stats
+    const stats = await RESIK_DATA.getStats();
+    const limbahEl = document.getElementById('stat-limbah');
+    const nilaiEl  = document.getElementById('stat-nilai');
+    const efisEl   = document.getElementById('stat-efisiensi');
+    const emisiEl  = document.getElementById('stat-emisi');
+
+    if (limbahEl && stats.limbah_terolah_ton) limbahEl.textContent = stats.limbah_terolah_ton + ' ton';
+    if (nilaiEl  && stats.nilai_produk_jt)   nilaiEl.textContent  = 'Rp ' + stats.nilai_produk_jt + 'jt';
+    if (efisEl   && stats.efisiensi_pct)     efisEl.textContent   = stats.efisiensi_pct + '%';
+    if (emisiEl  && stats.emisi_turun_pct)   emisiEl.textContent  = stats.emisi_turun_pct + '%';
+
+  } catch (e) {
+    console.warn('RESIK hero data error:', e);
+  }
+});
+</script>
+<script src="resik-shared.js"></script>
+<script src="resik-auth-navbar.js" defer></script>
+</body>
+</html>

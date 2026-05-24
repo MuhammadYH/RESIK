@@ -1,0 +1,105 @@
+<!-- ════════════════════════════════════════════════════════
+     RESIK AUTH NAVBAR — HTML PATCHES
+     Berlaku untuk: index.html, tentangKami.html,
+                    solusi.html, kontak.html
+     ════════════════════════════════════════════════════════
+
+     PERUBAHAN YANG DIPERLUKAN PER HALAMAN:
+     ══════════════════════════════════════
+
+     LANGKAH 1 — Di dalam <head>, tambahkan CSS link:
+     (setelah <link rel="stylesheet" href="resik-main.css">)
+     ══════════════════════════════════════════════════════ -->
+
+  <link rel="stylesheet" href="resik-auth-additions.css">
+
+
+<!-- ══════════════════════════════════════════════════════
+     LANGKAH 2 — Dalam <nav>, ganti baris:
+
+       <a href="login.html" class="nav-btn">Masuk</a>
+
+     Dengan:
+     ══════════════════════════════════════════════════════ -->
+
+  <div id="navAuthArea" aria-label="Autentikasi pengguna">
+    <!-- Diisi otomatis oleh resik-auth-navbar.js -->
+    <!-- Fallback sementara JS belum load: -->
+    <a href="login.html" class="nav-btn rsik-nav-masuk">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="9" y2="12"/></svg>
+      Masuk
+    </a>
+  </div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     LANGKAH 3 — Sebelum </body>, tambahkan script:
+     (setelah resik-supabase.js dan resik-shared.js)
+     ══════════════════════════════════════════════════════ -->
+
+  <script src="resik-auth-navbar.js" defer></script>
+
+
+<!-- ══════════════════════════════════════════════════════
+     LANGKAH 4 — HAPUS inline drawer auth script yang lama
+     (jika ada di halaman tersebut)
+
+     Cari dan hapus blok ini dari setiap halaman:
+
+       <script>
+       /* ── Drawer: tampilkan profil via RESIK_AUTH ── */
+       document.addEventListener('DOMContentLoaded', async () => {
+         const profile = document.getElementById('drawerProfile');
+         const cta     = document.getElementById('drawerCta');
+         ...
+       });
+       </script>
+
+     Blok ini sudah digantikan sepenuhnya oleh resik-auth-navbar.js
+     ══════════════════════════════════════════════════════ -->
+
+
+<!-- ══════════════════════════════════════════════════════
+     CATATAN UNTUK login.html:
+     Tidak perlu perubahan — login.html tidak punya navbar.
+     Redirect setelah login sudah menuju admin/admin-dashboard.html
+     dan sudah benar.
+     ══════════════════════════════════════════════════════ -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     CONTOH LENGKAP: Blok nav setelah diubah
+     (berlaku sama untuk semua halaman)
+     ════════════════════════════════════════════════════════ -->
+
+<nav id="navbar">
+  <div class="nav-wrap">
+    <a href="index.html" class="nav-logo-wrap">
+      <img src="image_0.png" alt="RESIK Logo" class="nav-logo-img">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Beranda</a></li>
+      <li><a href="tentangKami.html">Tentang Kami</a></li>
+      <li><a href="solusi.html">Solusi</a></li>
+      <li><a href="kontak.html">Kontak Kami</a></li>
+    </ul>
+    <!-- Hamburger (mobile) -->
+    <button class="nav-hamburger" id="hamburgerBtn" aria-label="Buka menu">
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+    </button>
+
+    <!-- ✅ GANTI: <a href="login.html" class="nav-btn">Masuk</a> -->
+    <!-- ✅ DENGAN: -->
+    <div id="navAuthArea" aria-label="Autentikasi pengguna">
+      <!-- Fallback saat JS belum load -->
+      <a href="login.html" class="nav-btn rsik-nav-masuk">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="9" y2="12"/></svg>
+        Masuk
+      </a>
+    </div>
+    <!-- ✅ SELESAI -->
+
+  </div>
+</nav>

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <!-- Satu file CSS eksternal untuk semua halaman -->
+  <link rel="stylesheet" href="resik-main.css">
+  <script src="resik-supabase.js" defer></script>
+  <style>
+    /* ── Hero layout fix: center semua konten ── */
+    .hero {
+      position: relative;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+    }
+    .hero-content-wrap {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hero-content-wrap h1 { text-align: center; width: 100%; }
+    .hero-content-wrap .hero-sub {
+      text-align: center;
+      max-width: 520px;
+      margin: 0 auto 1.5rem;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── CTA buttons: center paksa ── */
+    .hero-cta {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: .75rem !important;
+      justify-content: center !important;
+      align-items: center !important;
+      flex-wrap: wrap;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Hero badges: fix icon size ── */
+    .hero-badges {
+      display: flex !important;
+      gap: .75rem !important;
+      justify-content: center !important;
+      align-items: center !important;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .hero-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: .5rem !important;
+    }
+    .hero-badge svg {
+      width: 18px !important;
+      height: 18px !important;
+      flex-shrink: 0;
+    }
+
+    /* ── CTA section fix ── */
+    .cta-section {
+      text-align: center !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .cta-section h2, .cta-section p { text-align: center; width: 100%; }
+    .cta-buttons {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: .75rem !important;
+      justify-content: center !important;
+      align-items: center !important;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+      width: 100%;
+    }
+
+    /* ── Fix: btn-outline-white tidak terlihat di background terang ── */
+    .cta-section .btn-outline-white {
+      color: #1e6b43 !important;
+      border: 2px solid #1e6b43 !important;
+      background: transparent !important;
+    }
+    .cta-section .btn-outline-white:hover {
+      background: #1e6b43 !important;
+      color: #fff !important;
+    }
+
+    /* ── Fix: ukuran social media di team card ── */
+    .team-card-body .social-links {
+      display: flex;
+      gap: .5rem;
+      margin-top: .75rem;
+    }
+    .team-card-body .social-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px !important;
+      height: 32px !important;
+      min-width: 32px !important;
+      min-height: 32px !important;
+      padding: 6px !important;
+      border-radius: 8px !important;
+      font-size: 13px !important;
+      background: #f0f7f2;
+      color: #2d6a35;
+      border: 1px solid #d0e8d4;
+      transition: background .2s, color .2s;
+    }
+    .team-card-body .social-btn:hover {
+      background: #2d6a35;
+      color: #fff;
+    }
+    .team-card-body .social-btn svg {
+      width: 16px !important;
+      height: 16px !important;
+      flex-shrink: 0;
+    }
+  </style>
+  <title>RESIK – Tentang Kami</title>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav id="navbar">
+  <div class="nav-wrap">
+    <a href="index.html" class="nav-logo-wrap">
+      <img src="image_0.png" alt="RESIK Logo" class="nav-logo-img">
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="tentangKami.html" class="active">Tentang Kami</a></li>
+      <li><a href="solusi.html">Solusi</a></li>
+      <li><a href="kontak.html">Kontak Kami</a></li>
+    </ul>
+    <!-- Hamburger (mobile) -->
+    <button class="nav-hamburger" id="hamburgerBtn" aria-label="Buka menu">
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+      <span class="hb-line"></span>
+    </button>
+    <a href="login.html" class="nav-btn">Masuk</a>
+  </div>
+</nav>
+
+<!-- Mobile Drawer -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-header">
+    <a href="index.html" class="drawer-logo">
+      <img src="image_0.png" alt="RESIK Logo">
+    </a>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <nav class="drawer-nav">
+    <a href="index.html">Beranda</a>
+    <a href="tentangKami.html" class="active">Tentang Kami</a>
+    <a href="solusi.html">Solusi</a>
+    <a href="kontak.html">Kontak Kami</a>
+  </nav>
+  <div class="drawer-cta">
+    <a href="login.html">Masuk</a>
+  </div>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero" id="tentang">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+
+  <!-- Floating illustrations – food waste & green city context -->
+  <img class="hero-illustration left"
+    src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=420&q=80&auto=format&fit=crop"
+    alt="Tangan merawat tanaman hijau – simbol keberlanjutan" aria-hidden="true"
+    style="border-radius:1.5rem;object-fit:cover;opacity:.18;filter:saturate(1.2);"
+    onerror="this.style.display='none'">
+  <img class="hero-illustration right"
+    src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=420&q=80&auto=format&fit=crop"
+    alt="Daur ulang sampah organik – kompos dan ekonomi sirkular" aria-hidden="true"
+    style="border-radius:1.5rem;object-fit:cover;opacity:.18;filter:saturate(1.2);"
+    onerror="this.style.display='none'">
+
+  <div class="hero-content-wrap">
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      Tentang Kami
+    </div>
+
+    <h1>Kami Hadir untuk<br><em>Bumi yang Lebih Bersih</em></h1>
+
+    <p class="hero-sub">
+      RESIK Foodwaste Solution hadir untuk mengatasi masalah sampah makanan yang terus meningkat di Indonesia melalui teknologi dan pendekatan ekonomi sirkular.
+    </p>
+
+    <div class="hero-cta">
+      <a href="#solusi" class="btn btn-green">Lihat Solusi Kami →</a>
+      <a href="#kontak" class="btn btn-outline-dark">Hubungi Kami</a>
+    </div>
+
+    <div class="hero-badges">
+      <span class="hero-badge">
+        <!-- Calendar icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Didirikan 2023
+      </span>
+      <span class="hero-badge">
+        <!-- Map pin icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-7.75-8-12a8 8 0 0116 0c0 4.25-8 12-8 12z"/><circle cx="12" cy="10" r="3"/></svg>
+        Beroperasi di Surabaya
+      </span>
+      <span class="hero-badge">
+        <!-- Globe icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        Berbasis di Indonesia
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ── PERJALANAN ── -->
+<section class="journey-section">
+  <div class="container">
+    <span class="section-label fade-up">Jejak Langkah</span>
+    <h2 class="section-title fade-up fade-up-1">Perjalanan Kami</h2>
+    <p class="section-desc fade-up fade-up-2">Dari riset awal hingga ekspansi nasional — perjalanan RESIK dalam mengubah sampah menjadi solusi.</p>
+    <div class="journey-grid">
+      <div class="timeline">
+        <div class="tl-item fade-up fade-up-1">
+          <div class="tl-dot"></div>
+          <div class="tl-label">2022</div>
+          <div class="tl-title">Riset &amp; Ideasi</div>
+          <div class="tl-desc">Memulai riset mendalam tentang permasalahan sampah makanan dan potensi solusi berbasis teknologi di Indonesia.</div>
+        </div>
+        <div class="tl-item fade-up fade-up-2">
+          <div class="tl-dot active"></div>
+          <div class="tl-label">2023 Q1</div>
+          <div class="tl-title">Pendirian RESIK</div>
+          <div class="tl-desc">RESIK resmi didirikan di Surabaya sebagai perusahaan teknologi pengelolaan sampah makanan pertama di kelasnya.</div>
+        </div>
+        <div class="tl-item fade-up fade-up-3">
+          <div class="tl-dot active"></div>
+          <div class="tl-label">2023 Q4</div>
+          <div class="tl-title">Peluncuran Produk</div>
+          <div class="tl-desc">Peluncuran produk dan layanan pertama, termasuk Smart Bin dan platform monitoring digital terintegrasi.</div>
+        </div>
+        <div class="tl-item fade-up fade-up-4">
+          <div class="tl-dot active"></div>
+          <div class="tl-label">2024 — Sekarang</div>
+          <div class="tl-title">Pertumbuhan &amp; Ekspansi</div>
+          <div class="tl-desc">Ekspansi ke lebih banyak mitra dan kota, memperkuat dampak lingkungan secara nasional.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="visimisi-grid">
+          <div class="vm-card dark fade-up fade-up-1">
+            <div class="vm-card-header">
+              <!-- Globe SVG -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+              Visi
+            </div>
+            <div class="vm-text">Menjadi solusi terdepan dalam pengelolaan sampah makanan untuk mewujudkan Bumi yang Lebih Bersih dan berkelanjutan bagi generasi mendatang.</div>
+          </div>
+          <div class="vm-card light fade-up fade-up-2">
+            <div class="vm-card-header">
+              <!-- Target SVG -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              Misi
+            </div>
+            <div class="vm-text">Menghadirkan teknologi cerdas, logistik efisien, dan sistem monitoring terintegrasi untuk mengubah sampah makanan menjadi nilai ekonomi dan lingkungan.</div>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-box fade-up fade-up-1">
+            <div class="stat-num" data-target="40" data-suffix="+">40+</div>
+            <div class="stat-lbl">Mitra Aktif</div>
+          </div>
+          <div class="stat-box fade-up fade-up-2">
+            <div class="stat-num" data-target="28" data-suffix="T">28T</div>
+            <div class="stat-lbl">CO₂e Dihindari</div>
+          </div>
+          <div class="stat-box fade-up fade-up-3">
+            <div class="stat-num" data-target="160" data-suffix="+">160+</div>
+            <div class="stat-lbl">Mitra Jaringan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SOLUSI ── -->
+<section class="solusi-section" id="solusi" style="background: linear-gradient(160deg, var(--green-bg) 0%, #e8f5e9 100%); position: relative; overflow: hidden;">
+  <!-- dot pattern overlay (sama seperti ex-visimisi) -->
+  <div style="position:absolute;inset:0;background:url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Ccircle cx=%2230%22 cy=%2230%22 r=%224%22 fill=%22%234a9e55%22 fill-opacity=%220.04%22/%3E%3C/svg%3E');pointer-events:none;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <span class="section-label fade-up">Produk &amp; Layanan</span>
+    <h2 class="section-title fade-up fade-up-1">Solusi Kami</h2>
+    <p class="section-desc fade-up fade-up-2">Ekosistem teknologi lengkap dari pengumpulan hingga pengolahan sampah makanan.</p>
+    <div class="solusi-grid">
+
+      <div class="solusi-card fade-up fade-up-1" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="10" y="20" width="24" height="18" rx="3"/>
+            <path d="M7 20h30"/>
+            <path d="M17 20v-5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v5"/>
+            <line x1="18" y1="27" x2="18" y2="34"/>
+            <line x1="26" y1="27" x2="26" y2="34"/>
+            <path d="M22 25.5 a2.5 2.5 0 0 1 3 0" stroke-width="1.6" opacity=".7"/>
+            <circle cx="22" cy="25.5" r="1" fill="#2d6a35" stroke="none"/>
+          </svg>
+        </div>
+        <div class="solusi-name" style="color:var(--text-dark);">Smart Bin</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Tempat sampah cerdas berbasis IoT yang memantau kapasitas secara real-time dan memberi notifikasi otomatis saat penuh.</div>
+      </div>
+
+      <div class="solusi-card fade-up fade-up-2" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="8" width="34" height="22" rx="3"/>
+            <line x1="17" y1="30" x2="17" y2="34"/>
+            <line x1="27" y1="30" x2="27" y2="34"/>
+            <line x1="12" y1="34" x2="32" y2="34"/>
+            <polyline points="10,24 16,17 22,20 28,13 38,16" stroke-width="2"/>
+            <circle cx="28" cy="13" r="1.8" fill="#2d6a35" stroke="none"/>
+          </svg>
+        </div>
+        <div class="solusi-name" style="color:var(--text-dark);">Monitoring Dashboard</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Platform digital terintegrasi untuk memantau, menganalisis, dan melaporkan dampak pengelolaan sampah secara akurat.</div>
+      </div>
+
+      <div class="solusi-card fade-up fade-up-3" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="16" width="24" height="14" rx="2"/>
+            <path d="M27 22h8l4 6v4h-12V22z"/>
+            <circle cx="10" cy="32" r="3.5"/>
+            <circle cx="34" cy="32" r="3.5"/>
+            <line x1="13.5" y1="32" x2="27" y2="32"/>
+            <rect x="29" y="24" width="6" height="5" rx="1"/>
+          </svg>
+        </div>
+        <div class="solusi-name" style="color:var(--text-dark);">Logistik Cerdas</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Sistem pengangkutan sampah yang efisien dengan rute optimal dan jadwal penjemputan berbasis data permintaan.</div>
+      </div>
+
+      <div class="solusi-card fade-up fade-up-1" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 8 L26 13 L23 13 A10 10 0 0 1 32 22"/>
+            <polyline points="24,10 26,13 23.5,15.5"/>
+            <path d="M32 23 A10 10 0 0 1 19 34 L17 34"/>
+            <polyline points="18.5,31.5 17,34 19.5,36"/>
+            <path d="M16 33 A10 10 0 0 1 12 22 A10 10 0 0 1 19 13 L21 13"/>
+            <polyline points="19.5,10.5 21,13 18.5,15.5"/>
+          </svg>
+        </div>
+        <div class="solusi-name" style="color:var(--text-dark);">Pengelolaan Sampah</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Proses pengolahan sampah makanan menjadi kompos, biogas, dan produk bernilai ekonomi lainnya secara berkelanjutan.</div>
+      </div>
+
+      <div class="solusi-card fade-up fade-up-2" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="13" y="5" width="18" height="34" rx="4"/>
+            <line x1="19" y1="38" x2="25" y2="38"/>
+            <line x1="17" y1="10" x2="27" y2="10"/>
+            <rect x="17" y="15" width="10" height="3" rx="1.5" stroke-width="1.6"/>
+            <line x1="17" y1="22" x2="22" y2="22" stroke-width="1.6"/>
+            <line x1="17" y1="26" x2="24" y2="26" stroke-width="1.6"/>
+            <line x1="17" y1="30" x2="20" y2="30" stroke-width="1.6"/>
+          </svg>
+        </div>
+        <div class="solusi-name" style="color:var(--text-dark);">ResikApp</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Aplikasi mobile untuk mitra, komunitas, dan individu dalam memantau kontribusi lingkungan mereka secara langsung.</div>
+      </div>
+
+      <div class="solusi-card fade-up fade-up-3" style="background:#fff;border-color:var(--green-pale);">
+        <div class="solusi-illus" style="background:var(--green-pastel);">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 28 L12 20 L20 20"/>
+            <path d="M40 28 L32 20 L24 20"/>
+            <path d="M20 20 Q22 17 24 20 Q26 23 24 26 Q22 29 20 26 Q18 23 20 20Z"/>
+            <path d="M12 28 Q14 26 16 28"/>
+            <path d="M32 28 Q30 26 28 28"/>
+            <path d="M20 26 L12 34"/>
+            <path d="M24 26 L32 34"/>
+          </svg>
+        </div>
+        <div class="solusi-name" style="color:var(--text-dark);">Kemitraan Strategis</div>
+        <div class="solusi-desc" style="color:var(--text-muted);">Program kolaborasi dengan restoran, hotel, dan institusi untuk membangun ekosistem pengelolaan sampah yang menyeluruh.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── TIM KAMI ── -->
+<section class="team-section" id="tim">
+  <div class="container">
+    <span class="section-label fade-up">Orang-Orang di Baliknya</span>
+    <h2 class="section-title fade-up fade-up-1">Tim Kami</h2>
+    <p class="section-desc fade-up fade-up-2">Para penggerak misi RESIK yang berdedikasi penuh terhadap masa depan lingkungan Indonesia.</p>
+    <div class="team-grid">
+
+      <div class="team-card fade-up fade-up-1">
+        <div class="team-card-img" style="background:linear-gradient(135deg,#d4edda,#a8d5b5);overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&q=80&auto=format&fit=crop&crop=faces"
+               alt="Aldi Ramadhana – CEO RESIK"
+               style="width:100%;height:100%;object-fit:cover;"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="team-avatar" style="display:none;">AR</div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-name">Aldi Ramadhana</div>
+          <div class="team-role">CEO</div>
+          <div class="team-bio">Berpengalaman dalam pengembangan bisnis sosial dan pemberdayaan komunitas lingkungan.</div>
+          <div class="social-links">
+            <a class="social-btn" href="#" title="Twitter/X">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L2.252 2.25H7.47l4.262 5.634L18.244 2.25z"/></svg>
+            </a>
+            <a class="social-btn" href="#" title="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a class="social-btn" href="#" title="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card fade-up fade-up-2">
+        <div class="team-card-img" style="background: linear-gradient(135deg,#c8e6c9,#e0f2e1);overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=300&q=80&auto=format&fit=crop&crop=faces"
+               alt="Dewi Puspita – CTO RESIK"
+               style="width:100%;height:100%;object-fit:cover;"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="team-avatar" style="background:#4a9e55;display:none;">DP</div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-name">Dewi Puspita</div>
+          <div class="team-role">CTO</div>
+          <div class="team-bio">Ahli teknologi IoT dan sistem monitoring real-time untuk manajemen sampah cerdas.</div>
+          <div class="social-links">
+            <a class="social-btn" href="#" title="Twitter/X">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L2.252 2.25H7.47l4.262 5.634L18.244 2.25z"/></svg>
+            </a>
+            <a class="social-btn" href="#" title="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a class="social-btn" href="#" title="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card fade-up fade-up-3">
+        <div class="team-card-img" style="background: linear-gradient(135deg,#d6ecd8,#b5d9b8);overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&h=300&q=80&auto=format&fit=crop&crop=faces"
+               alt="Aldi Brankam – COO RESIK"
+               style="width:100%;height:100%;object-fit:cover;"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="team-avatar" style="background:#1a3a1f;display:none;">AB</div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-name">Aldi Brankam</div>
+          <div class="team-role">COO</div>
+          <div class="team-bio">Mengoperasikan sistem logistik dan distribusi yang efisien untuk jaringan mitra RESIK.</div>
+          <div class="social-links">
+            <a class="social-btn" href="#" title="Twitter/X">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L2.252 2.25H7.47l4.262 5.634L18.244 2.25z"/></svg>
+            </a>
+            <a class="social-btn" href="#" title="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a class="social-btn" href="#" title="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card fade-up fade-up-4">
+        <div class="team-card-img" style="background: linear-gradient(135deg,#e8f5e9,#c8e6c9);overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=300&q=80&auto=format&fit=crop&crop=faces"
+               alt="Kuhun Supita – CMO RESIK"
+               style="width:100%;height:100%;object-fit:cover;"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="team-avatar" style="background:#2d6a35;display:none;">KS</div>
+        </div>
+        <div class="team-card-body">
+          <div class="team-name">Kuhun Supita</div>
+          <div class="team-role">CMO</div>
+          <div class="team-bio">Membangun kesadaran publik dan kemitraan strategis untuk dampak sosial yang lebih luas.</div>
+          <div class="social-links">
+            <a class="social-btn" href="#" title="Twitter/X">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L2.252 2.25H7.47l4.262 5.634L18.244 2.25z"/></svg>
+            </a>
+            <a class="social-btn" href="#" title="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a class="social-btn" href="#" title="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── NILAI PERUSAHAAN ── -->
+<section class="nilai-section" id="nilai">
+  <div class="container">
+    <span class="section-label fade-up">DNA Perusahaan</span>
+    <h2 class="section-title fade-up fade-up-1">Nilai Perusahaan</h2>
+    <p class="section-desc fade-up fade-up-2">Prinsip-prinsip yang menjadi kompas dalam setiap keputusan dan inovasi kami.</p>
+    <div class="nilai-grid">
+
+      <div class="nilai-card fade-up fade-up-1">
+        <div class="nilai-icon">
+          <!-- Leaf / sustainability line icon -->
+          <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Right leaf -->
+            <path d="M17 6 Q28 6 28 17 Q28 24 20 28 Q17 29 17 29"/>
+            <!-- Left leaf -->
+            <path d="M17 6 Q6 6 6 17 Q6 24 14 28 Q17 29 17 29"/>
+            <!-- Stem -->
+            <line x1="17" y1="29" x2="17" y2="34"/>
+            <!-- Veins -->
+            <path d="M17 20 Q14 18 11 20" stroke-width="1.4" opacity=".7"/>
+            <path d="M17 16 Q20 14 23 16" stroke-width="1.4" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="nilai-name">Sustainability</div>
+        <div class="nilai-desc">Mendorong keberlanjutan melalui pendekatan ekonomi sirkular yang memperhatikan lingkungan, sosial, dan ekonomi.</div>
+        <div class="tag-row"><span class="tag">Ekonomi Sirkular</span></div>
+      </div>
+
+      <div class="nilai-card fade-up fade-up-2">
+        <div class="nilai-icon">
+          <!-- Lightbulb / inovasi line icon -->
+          <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Bulb shape -->
+            <path d="M17 4 Q11 4 11 11 Q11 16 14 19 L14 23 L20 23 L20 19 Q23 16 23 11 Q23 4 17 4Z"/>
+            <!-- Base rings -->
+            <line x1="14" y1="25" x2="20" y2="25"/>
+            <line x1="14.5" y1="27.5" x2="19.5" y2="27.5"/>
+            <!-- Rays -->
+            <line x1="17" y1="1" x2="17" y2="2.5" stroke-width="1.6"/>
+            <line x1="9" y1="4" x2="10.2" y2="5.2" stroke-width="1.6"/>
+            <line x1="25" y1="4" x2="23.8" y2="5.2" stroke-width="1.6"/>
+            <line x1="6" y1="11" x2="7.5" y2="11" stroke-width="1.6"/>
+            <line x1="28" y1="11" x2="26.5" y2="11" stroke-width="1.6"/>
+            <!-- Filament inside -->
+            <path d="M15 13 Q17 10.5 19 13" stroke-width="1.4" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="nilai-name">Inovasi</div>
+        <div class="nilai-desc">Terus berinovasi menghadirkan solusi teknologi terkini untuk mengatasi tantangan persampahan secara efektif.</div>
+        <div class="tag-row"><span class="tag">Net Zero</span><span class="tag">Tech First</span></div>
+      </div>
+
+      <div class="nilai-card fade-up fade-up-3">
+        <div class="nilai-icon">
+          <!-- Eye / transparansi line icon -->
+          <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Eye outline -->
+            <path d="M3 17 Q10 8 17 8 Q24 8 31 17 Q24 26 17 26 Q10 26 3 17Z"/>
+            <!-- Iris -->
+            <circle cx="17" cy="17" r="5"/>
+            <!-- Pupil -->
+            <circle cx="17" cy="17" r="2" fill="#2d6a35" stroke="none"/>
+            <!-- Shine -->
+            <circle cx="19.5" cy="14.5" r="1" fill="white" stroke="none"/>
+          </svg>
+        </div>
+        <div class="nilai-name">Transparansi</div>
+        <div class="nilai-desc">Berkomitmen pada keterbukaan data dan pelaporan dampak yang akurat kepada semua pemangku kepentingan.</div>
+        <div class="tag-row"><span class="tag">Open Data</span><span class="tag">Sirkulasi</span></div>
+      </div>
+
+      <div class="nilai-card fade-up fade-up-4">
+        <div class="nilai-icon">
+          <!-- People / community line icon -->
+          <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#2d6a35" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Center person -->
+            <circle cx="17" cy="10" r="4"/>
+            <path d="M11 26 Q11 18 17 18 Q23 18 23 26"/>
+            <!-- Left person -->
+            <circle cx="7" cy="13" r="3"/>
+            <path d="M2 26 Q2 20 7 20 Q10 20 12 22" stroke-width="1.6" opacity=".7"/>
+            <!-- Right person -->
+            <circle cx="27" cy="13" r="3"/>
+            <path d="M32 26 Q32 20 27 20 Q24 20 22 22" stroke-width="1.6" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="nilai-name">Dampak Sosial</div>
+        <div class="nilai-desc">Menciptakan dampak sosial nyata yang dirasakan masyarakat luas melalui program pengelolaan sampah komunitas.</div>
+        <div class="tag-row"><span class="tag">Komunitas</span><span class="tag">Impact</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section" id="kontak">
+  <h2>Punya Semangat yang Sama?</h2>
+  <p>Bergabunglah bersama kami dalam misi besar menjadikan Indonesia bebas sampah makanan.</p>
+  <div class="cta-buttons">
+    <a href="kontak.html" class="btn btn-white">Hubungi Kami</a>
+    <a href="#" class="btn btn-outline-white">Lihat Peluang Kami</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand fade-in">
+        <a href="index.html" class="footer-logo-wrap">
+          <img src="image_0.png" alt="RESIK Logo" class="footer-logo-img">
+        </a>
+        <p>Startup climate-tech yang fokus pada infrastruktur food waste cerdas dan operasional perkotaan yang berkelanjutan.</p>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.1s">
+        <h5>Produk</h5>
+        <ul>
+          <li><a href="#">RESIK Lite 20L</a></li>
+          <li><a href="#">RESIK Pro 40L</a></li>
+          <li><a href="#">RESIK Enterprise 60L</a></li>
+          <li><a href="#">Bandingkan Semua</a></li>
+        </ul>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.2s">
+        <h5>Perusahaan</h5>
+        <ul>
+          <li><a href="index.html">Beranda</a></li>
+          <li><a href="tentangKami.html">Tentang Kami</a></li>
+          <li><a href="solusi.html">Solusi</a></li>
+          <li><a href="#">Teknologi</a></li>
+          <li><a href="#">Laporan ESG</a></li>
+          <li><a href="#">Karier</a></li>
+        </ul>
+      </div>
+      <div class="footer-col fade-in" style="transition-delay:.3s">
+        <h5>Dukungan</h5>
+        <ul>
+          <li><a href="#">Dokumentasi</a></li>
+          <li><a href="kontak.html">Hubungi Kami</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Garansi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 RESIK — Rekayasa Efisiensi Sistem Industri Kepariwisataan. Seluruh hak dilindungi.</p>
+      <div class="social-links">
+        <button class="social-btn">𝕏</button>
+        <button class="social-btn">in</button>
+        <button class="social-btn">▶</button>
+        <button class="social-btn">ig</button>
+      </div>
+    </div>
+  </div><!-- /.footer-inner -->
+</footer>
+
+<script>
+// ── Scroll animations ditangani oleh resik-shared.js ──
+
+// ── Active nav link & counter animation ditangani oleh resik-shared.js ──
+
+// ── Hamburger / Mobile Drawer ──
+const hamburgerBtn  = document.getElementById('hamburgerBtn');
+const mobileDrawer  = document.getElementById('mobileDrawer');
+const drawerOverlay = document.getElementById('drawerOverlay');
+const drawerClose   = document.getElementById('drawerClose');
+
+function openDrawer() {
+  mobileDrawer.classList.add('open');
+  drawerOverlay.classList.add('open');
+  hamburgerBtn.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  mobileDrawer.classList.remove('open');
+  drawerOverlay.classList.remove('open');
+  hamburgerBtn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+if (hamburgerBtn)  hamburgerBtn.addEventListener('click', openDrawer);
+if (drawerClose)   drawerClose.addEventListener('click', closeDrawer);
+if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+</script>
+<script src="resik-shared.js"></script>
+</body>
+</html>

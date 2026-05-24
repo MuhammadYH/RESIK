@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="resik-main.css">
+  <title>Masuk — RESIK</title>
+
+
+  <style>
+    /* ══════════════════════════════════════════════════════
+       AUTH PAGE — OVERRIDE & IMPROVEMENTS
+       v2 — Bug fix + Design refresh
+       ══════════════════════════════════════════════════════ */
+
+    /* ── BUG FIX: auth-card::before was intercepting pointer events
+          on the Daftar tab button. Fix: pointer-events: none ── */
+    .auth-card::before {
+      pointer-events: none; /* ← THE BUG FIX */
+    }
+
+    /* ── BUG FIX: input overflow — ensure all form elements respect card width ── */
+    .auth-card *, .auth-card *::before, .auth-card *::after {
+      box-sizing: border-box;
+    }
+
+    /* ── AUTH BODY — Light Mode ── */
+    body.auth-body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background:
+        radial-gradient(ellipse 70% 55% at 15% 0%, rgba(58,184,110,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 45% at 88% 95%, rgba(34,160,90,0.1) 0%, transparent 55%),
+        linear-gradient(160deg, #f0faf4 0%, #e8f7ef 40%, #f5fdf8 75%, #edf9f2 100%);
+      overflow-x: hidden;
+    }
+
+    /* Floating orbs — soft green tints */
+    body.auth-body::before,
+    body.auth-body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body.auth-body::before {
+      width: 560px; height: 560px;
+      background: radial-gradient(circle, rgba(58,184,110,0.1) 0%, transparent 70%);
+      top: -120px; left: -120px;
+      animation: floatOrb 14s ease-in-out infinite;
+    }
+    body.auth-body::after {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(34,160,90,0.08) 0%, transparent 70%);
+      bottom: -80px; right: -80px;
+      animation: floatOrb 18s ease-in-out infinite reverse;
+    }
+    @keyframes floatOrb {
+      0%, 100% { transform: translate(0, 0); }
+      33% { transform: translate(30px, -20px); }
+      66% { transform: translate(-20px, 30px); }
+    }
+    body.auth-body > * { position: relative; z-index: 1; }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 1.1rem 2rem;
+      animation: topbarSlide 0.5s ease both;
+      background: transparent !important; /* BUG FIX: override background dari resik-main.css */
+    }
+    @keyframes topbarSlide {
+      from { transform: translateY(-100%); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    .logo-wrapper { display: flex; align-items: center; }
+    .logo-img { height: 36px; width: auto; object-fit: contain; }
+    .back-link {
+      color: rgba(30,80,50,0.55);
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .2s;
+    }
+    .back-link:hover { color: #1a5c38; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem; left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: rgba(15,40,25,0.92);
+      color: white;
+      padding: 0.72rem 1.4rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+      font-weight: 500;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(58,184,110,0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 99999;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* ── AUTH CARD — Light ── */
+    .auth-card {
+      width: min(440px, calc(100vw - 2rem));
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border-radius: 24px;
+      padding: 2.75rem 2.5rem 2.25rem;
+      border: 1px solid rgba(58,184,110,0.15);
+      box-shadow:
+        0 2px 4px rgba(30,90,55,0.04),
+        0 12px 40px rgba(30,90,55,0.1),
+        0 40px 80px rgba(30,90,55,0.07),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      animation: cardIn 0.6s 0.2s cubic-bezier(.22,.68,0,1.2) both;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: visible;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(32px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Rotating border glow — light mode */
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 25px;
+      background: conic-gradient(
+        from var(--angle, 0deg),
+        transparent 0deg,
+        rgba(58,184,110,0.45) 60deg,
+        rgba(100,220,140,0.2) 120deg,
+        transparent 180deg,
+        rgba(58,184,110,0.15) 240deg,
+        transparent 360deg
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 1px;
+      animation: rotateBorder 6s linear infinite;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    @keyframes rotateBorder { to { --angle: 360deg; } }
+
+    /* ── TABS — Light ── */
+    .auth-tabs {
+      display: flex;
+      background: rgba(30,90,55,0.06);
+      border-radius: 50px;
+      padding: 4px;
+      margin-bottom: 2.25rem;
+      gap: 4px;
+      border: 1px solid rgba(58,184,110,0.15);
+      position: relative;
+      z-index: 10;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 0.6rem;
+      border-radius: 50px;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: rgba(30,80,50,0.45);
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: 0.01em;
+      position: relative;
+      z-index: 10;
+    }
+    .auth-tab:hover:not(.active) { color: rgba(20,70,40,0.75); }
+    .auth-tab.active {
+      background: linear-gradient(135deg, #2d8c55 0%, #1e6b40 100%);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(30,110,60,0.25);
+    }
+
+    /* ── PANELS ── */
+    .panel-auth { display: none; }
+    .panel-auth.active { display: block; animation: panelIn 0.3s ease both; }
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── TYPOGRAPHY — Light ── */
+    .panel-title {
+      font-family: var(--font-heading);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #0f3320;
+      letter-spacing: -0.9px;
+      margin-bottom: 0.3rem;
+      line-height: 1.15;
+    }
+    .panel-title .italic {
+      font-style: italic;
+      font-weight: 400;
+      color: #2d8c55;
+    }
+    .panel-sub {
+      font-size: 0.84rem;
+      color: rgba(20,70,45,0.6);
+      margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+
+    /* ── FORM — Light ── */
+    .form-group-auth {
+      margin-bottom: 1.05rem;
+    }
+    .form-label-auth {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgba(15,50,30,0.6);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .form-input-auth {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.72rem 1rem;
+      border: 1px solid rgba(58,184,110,0.2);
+      border-radius: 12px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: #0f3320;
+      background: rgba(255,255,255,0.75);
+      outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    .input-wrap { box-sizing: border-box; }
+    .input-wrap .form-input-auth { padding-right: 3rem; }
+    .form-input-auth::placeholder { color: rgba(30,80,50,0.3); }
+    .form-input-auth:focus {
+      border-color: rgba(45,140,85,0.55);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(58,184,110,0.12);
+    }
+    .form-input-auth.error {
+      border-color: rgba(220,60,60,0.5);
+      background: rgba(255,240,240,0.8);
+      box-shadow: 0 0 0 3px rgba(220,60,60,0.08);
+    }
+    .input-icon {
+      position: absolute;
+      right: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      color: rgba(30,80,50,0.4);
+      padding: 4px;
+      transition: color 0.15s;
+    }
+    .input-icon:hover { color: rgba(15,50,30,0.8); }
+
+    /* Errors */
+    .field-error {
+      display: none;
+      font-size: 0.75rem;
+      color: #c0392b;
+      margin-top: 0.35rem;
+      padding-left: 0.2rem;
+    }
+
+    /* ── GOOGLE BTN — Light ── */
+    .btn-google {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(58,184,110,0.2);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: rgba(15,50,30,0.8);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 1.25rem;
+    }
+    .btn-google:hover {
+      background: #fff;
+      border-color: rgba(45,140,85,0.35);
+      box-shadow: 0 4px 16px rgba(30,90,55,0.1);
+      transform: translateY(-1px);
+    }
+    .google-logo {
+      width: 18px; height: 18px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E") center/contain no-repeat;
+      flex-shrink: 0;
+    }
+
+    /* ── DIVIDER — Light ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: rgba(20,70,45,0.4);
+      font-size: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(58,184,110,0.15);
+    }
+
+    /* ── FORGOT / SWITCH — Light ── */
+    .forgot-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.25rem;
+      margin-top: -0.4rem;
+    }
+    .forgot-link {
+      font-size: 0.78rem;
+      color: rgba(30,100,60,0.55);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .forgot-link:hover { color: #2d8c55; }
+
+    /* ── SUBMIT BTN ── */
+    .btn-submit-auth {
+      width: 100%;
+      padding: 0.88rem;
+      background: linear-gradient(135deg, #2d8c55 0%, #1e6b40 100%);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.22s;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.01em;
+      box-shadow: 0 4px 15px rgba(20,80,40,0.35);
+    }
+    .btn-submit-auth::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.4s;
+    }
+    .btn-submit-auth:hover {
+      background: linear-gradient(135deg, #34a063 0%, #236040 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(20,80,40,0.45);
+    }
+    .btn-submit-auth:hover::after { transform: translateX(100%); }
+    .btn-submit-auth:active { transform: translateY(0); box-shadow: none; }
+    .btn-submit-auth.loading { pointer-events: none; opacity: 0.72; }
+
+    /* ── SWITCH HINT — Light ── */
+    .switch-hint {
+      text-align: center;
+      font-size: 0.82rem;
+      color: rgba(20,70,45,0.5);
+      margin-top: 1.25rem;
+    }
+    .switch-hint a {
+      color: #2d8c55;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .switch-hint a:hover { color: #1e6b40; text-decoration: underline; }
+
+    /* ── SUCCESS OVERLAY — Light ── */
+    .success-overlay {
+      display: none;
+      text-align: center;
+      padding: 1.5rem 0 0.5rem;
+      animation: panelIn 0.45s ease both;
+    }
+    .success-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 1rem;
+      animation: bounceIn 0.6s cubic-bezier(.22,.68,0,1.4) both;
+    }
+    @keyframes bounceIn {
+      from { transform: scale(0) rotate(-15deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    .success-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f3320;
+      margin-bottom: 0.6rem;
+    }
+    .success-desc {
+      font-size: 0.85rem;
+      color: rgba(20,70,45,0.6);
+      margin-bottom: 1.5rem;
+      line-height: 1.55;
+    }
+    .btn-go {
+      display: inline-block;
+      padding: 0.72rem 1.8rem;
+      background: linear-gradient(135deg, #2d8c55 0%, #1e6b40 100%);
+      color: white;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(20,80,40,0.2);
+    }
+    .btn-go:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(20,80,40,0.3); }
+
+    /* ── STEP INDICATOR — Light ── */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.75rem;
+    }
+    .step-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .step-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(30,90,55,0.15);
+      background: rgba(58,184,110,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: rgba(20,70,45,0.35);
+      transition: all 0.3s;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .step-dot.active {
+      border-color: #2d8c55;
+      background: rgba(58,184,110,0.12);
+      color: #1e6b40;
+      box-shadow: 0 0 0 4px rgba(58,184,110,0.1);
+    }
+    .step-dot.done {
+      border-color: rgba(45,140,85,0.4);
+      background: rgba(58,184,110,0.1);
+      color: #2d8c55;
+    }
+    .step-dot.done::after {
+      content: '✓';
+      position: absolute;
+      font-size: 0.7rem;
+    }
+    .step-dot.done { font-size: 0; }
+    .step-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: rgba(20,70,45,0.4);
+      white-space: nowrap;
+    }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: rgba(58,184,110,0.12);
+      margin: 0 0.5rem;
+      margin-bottom: 14px;
+      transition: background 0.3s;
+      border-radius: 2px;
+    }
+    .step-line.done { background: rgba(45,140,85,0.35); }
+
+    /* ── REGISTER STEPS ── */
+    .reg-step { display: none; }
+    .reg-step.active { display: block; animation: panelIn 0.3s ease both; }
+
+    /* ══════════════════════════════════════════════════════
+       ROLE CARDS — v4 Premium Eco-Tech Redesign
+       Clean SaaS · Glassmorphism · Lucide Icons
+       ══════════════════════════════════════════════════════ */
+
+    .role-section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(20,70,45,0.4);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .role-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(58,184,110,0.15);
+    }
+
+    /* ── Grid layout: 3 cards horizontal on desktop ── */
+    .role-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin-bottom: 1.1rem;
+    }
+
+    /* ── Card base — Light ── */
+    .role-option {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0;
+      padding: 1.2rem 0.8rem 1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(58,184,110,0.18);
+      background: rgba(255,255,255,0.65);
+      cursor: pointer;
+      transition:
+        transform 0.28s cubic-bezier(.22,.68,0,1.2),
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.28s ease;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      min-height: 128px;
+    }
+
+    /* Subtle top highlight */
+    .role-option::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    /* Shimmer sweep on hover */
+    .role-option::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg,
+        transparent 20%,
+        rgba(58,184,110,0.04) 48%,
+        transparent 75%);
+      transform: translateX(-120%);
+      transition: transform 0.6s ease;
+      pointer-events: none;
+    }
+    .role-option:hover::before { transform: translateX(120%); }
+
+    /* Hover */
+    .role-option:hover {
+      transform: translateY(-4px);
+      border-color: rgba(45,140,85,0.35);
+      background: rgba(255,255,255,0.9);
+      box-shadow:
+        0 12px 32px rgba(30,90,55,0.12),
+        0 2px 8px rgba(30,90,55,0.06);
+    }
+
+    /* Selected */
+    .role-option.selected {
+      border-color: rgba(45,140,85,0.5);
+      background: rgba(240,255,246,0.95);
+      box-shadow:
+        0 0 0 1px rgba(45,140,85,0.25),
+        0 10px 32px rgba(30,110,60,0.14),
+        0 2px 8px rgba(30,90,55,0.08);
+      transform: translateY(-3px);
+    }
+    .role-option.selected::after {
+      background: linear-gradient(90deg, transparent, rgba(100,210,140,0.4), transparent);
+    }
+
+    /* Hidden radio */
+    .role-option input[type="radio"] {
+      position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+    }
+
+    /* ── Icon container — Light ── */
+    .role-icon-wrap {
+      flex-shrink: 0;
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(58,184,110,0.2);
+      background: rgba(240,255,246,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+      transition: all 0.28s cubic-bezier(.22,.68,0,1.2);
+      position: relative;
+    }
+    /* Glow ring on selected */
+    .role-option.selected .role-icon-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 20px;
+      background: radial-gradient(circle, rgba(58,184,110,0.15) 0%, transparent 70%);
+      pointer-events: none;
+      animation: iconGlow 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes iconGlow {
+      from { opacity: 0.5; transform: scale(0.95); }
+      to   { opacity: 1;   transform: scale(1.05); }
+    }
+
+    .role-option:hover .role-icon-wrap {
+      border-color: rgba(45,140,85,0.35);
+      background: rgba(225,248,234,0.95);
+      transform: scale(1.08) translateY(-1px);
+    }
+    .role-option.selected .role-icon-wrap {
+      background: rgba(210,245,225,0.95);
+      border-color: rgba(45,140,85,0.45);
+      box-shadow: 0 4px 12px rgba(30,110,60,0.12);
+    }
+
+    .role-icon-wrap svg {
+      width: 22px; height: 22px;
+      stroke: rgba(30,100,60,0.45);
+      stroke-width: 1.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.28s ease, transform 0.35s cubic-bezier(.22,.68,0,1.5);
+    }
+    .role-option:hover .role-icon-wrap svg {
+      stroke: #1e6b40;
+    }
+    .role-option.selected .role-icon-wrap svg {
+      stroke: #1e6b40;
+      transform: scale(1.1) rotate(-4deg);
+    }
+
+    /* ── Text block — Light ── */
+    .role-text { flex: 1; min-width: 0; }
+    .role-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: rgba(15,50,30,0.85);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.3rem;
+      line-height: 1.2;
+      transition: color 0.2s;
+    }
+    .role-option.selected .role-name { color: #0f3320; }
+    .role-desc {
+      font-size: 0.685rem;
+      color: rgba(20,70,45,0.45);
+      line-height: 1.5;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+    .role-option:hover .role-desc { color: rgba(20,70,45,0.65); }
+    .role-option.selected .role-desc { color: rgba(20,90,50,0.65); }
+
+    /* ── Badge — Light ── */
+    .role-badge {
+      display: inline-block;
+      margin-top: 0.7rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      padding: 0.18rem 0.6rem;
+      border-radius: 20px;
+      border: 1px solid rgba(58,184,110,0.2);
+      color: rgba(30,100,55,0.5);
+      background: rgba(58,184,110,0.07);
+      text-transform: uppercase;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .role-option:hover .role-badge {
+      border-color: rgba(45,140,85,0.3);
+      color: rgba(20,100,50,0.75);
+      background: rgba(58,184,110,0.1);
+    }
+    .role-option.selected .role-badge {
+      color: #1e6b40;
+      background: rgba(58,184,110,0.16);
+      border-color: rgba(45,140,85,0.4);
+    }
+
+    /* ── Check mark — Light ── */
+    .role-check-mark {
+      position: absolute;
+      top: 10px; right: 10px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(58,184,110,0.25);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s cubic-bezier(.22,.68,0,1.4);
+      flex-shrink: 0;
+    }
+    .role-check-mark svg {
+      width: 9px; height: 9px;
+      stroke: transparent;
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s, transform 0.3s cubic-bezier(.22,.68,0,1.4);
+      transform: scale(0);
+    }
+    .role-option.selected .role-check-mark {
+      border-color: rgba(45,140,85,0.6);
+      background: rgba(58,184,110,0.15);
+    }
+    .role-option.selected .role-check-mark svg {
+      stroke: #1e6b40;
+      transform: scale(1);
+    }
+
+    /* ── Remove old styles ── */
+    .role-emoji { display: none; }
+    .role-radio-dot { display: none; }
+
+    /* ── Responsive: stack to 1 col on narrow mobile ── */
+    @media (max-width: 380px) {
+      .role-options { grid-template-columns: 1fr; }
+      .role-option { flex-direction: row; text-align: left; min-height: unset; padding: 0.9rem 1rem; }
+      .role-icon-wrap { margin-bottom: 0; margin-right: 0.9rem; }
+    }
+
+    /* ── NEXT / BACK BUTTONS — Light ── */
+    .btn-next {
+      background: linear-gradient(135deg, #2d8c55 0%, #1e6b40 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0.7rem 1.4rem;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(20,80,40,0.22);
+    }
+    .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(20,80,40,0.3); }
+    .btn-back {
+      background: rgba(58,184,110,0.08);
+      color: rgba(20,80,50,0.65);
+      border: 1px solid rgba(58,184,110,0.2);
+      border-radius: 12px;
+      padding: 0.7rem 1.2rem;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-back:hover { background: rgba(58,184,110,0.14); color: #1e5c38; }
+
+    /* ── FORM ROW (two columns) ── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    /* ── STEP NAV ── */
+    .step-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    /* ── CHECKBOX — Light ── */
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      margin-top: 0.25rem;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: #2d8c55;
+      flex-shrink: 0;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+    .checkbox-row label {
+      font-size: 0.79rem;
+      color: rgba(20,70,45,0.6);
+      line-height: 1.5;
+      cursor: pointer;
+    }
+    .checkbox-row label a {
+      color: #2d8c55;
+      text-decoration: none;
+    }
+    .checkbox-row label a:hover { text-decoration: underline; }
+
+    /* ── PASSWORD STRENGTH — Light ── */
+    .strength-bar {
+      display: flex;
+      gap: 4px;
+      margin-top: 0.45rem;
+      margin-bottom: 0.3rem;
+    }
+    .strength-seg {
+      flex: 1; height: 3px; border-radius: 3px;
+      background: rgba(58,184,110,0.12);
+      transition: background 0.25s;
+    }
+    .strength-hint {
+      font-size: 0.73rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      min-height: 1em;
+    }
+
+    /* ── ORG FIELD ── */
+    #orgField { animation: panelIn 0.25s ease both; }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .auth-card { padding: 2rem 1.5rem 1.75rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .role-options { flex-direction: column; }
+      .topbar { padding: 1rem 1.25rem; }
+    }
+  </style>
+</head>
+<body class="auth-body">
+
+<!-- Top bar -->
+<div class="topbar" style="justify-content:space-between;">
+  <a href="index.html" class="logo-link">
+    <div class="logo-wrapper">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABTgAAAGzCAYAAAAL0XjzAAEAAElEQVR4nOydd5wkR3m/n6rqNGF3by8pnHIACaGIACEESoBEzmAyCCSCABsRTDT4h3HEmJxsMNEiCAGyTTAgkWWRQWAQWAIsAeJOd7dhUoeq+v1R3b2ze7uX73b3tp77zGdud2Z7erqrq6u+9b7fV+DZJcIwJM9zjjzySM65z1n2iKMOo9ubZNWqMYqiINMZIyMjdHvT/OAHP2B6qksURRgEExMT/P53fxRbN3fAlBvUgAAhwBoQEoJAkucGLKgAdAFhNPM7qcDo8rUcpAQhBMZYrN3+/kspMcZ9uBACaxUASiqEEGitsVjAlK/boffO/L7C7ugDd4hc4Pdmgd97PB6Px+PxeDwej8fj8Xg8MwSLvQPLgTAMAdBak+c5QRBw0UUX2de+9jWsP2Q1Uhg2b91Ms9nACOj3uwghGB8dY7IzTRRFhFGCxZKludXaolRIEAT8+Hs/Issy/nd//n3uu+8+Xnzxxex75R0YSWB7CQDGnT3hy+RQbDkrCsJXMcjQLaRSFaklVYBCMJH7HEQc5Bk7kRLHb9m0iXePiNQ0SBOQp2sWOMLYGt4SWoZgCsSgVG6CJNLbVxjgQMBHYzI4RJuMuenHNXTr9TBCl5AWKS0fxJGBiAoAAAAASUVORK5CYII=" alt="RESIK" class="logo-img">
+    </div>
+  </a>
+  <a href="index.html" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 4L6 8l4 4"/>
+    </svg>
+    Kembali ke Beranda
+  </a>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Auth Card -->
+<div class="auth-card">
+
+  <!-- TABS -->
+  <div class="auth-tabs">
+    <button class="auth-tab active" onclick="switchTab('login')">Masuk</button>
+    <button class="auth-tab" onclick="switchTab('register')">Daftar</button>
+  </div>
+
+  <!-- ══ LOGIN ══ -->
+  <div class="panel-auth active" id="panel-login">
+
+    <div id="login-form-wrap">
+      <h2 class="panel-title">Selamat <span class="italic">datang</span> kembali</h2>
+      <p class="panel-sub">Masuk untuk melanjutkan perjalanan hijau kamu.</p>
+
+      <button class="btn-google" onclick="handleGoogle()">
+        <div class="google-logo"></div>
+        Lanjutkan dengan Google
+      </button>
+
+      <div class="divider">atau dengan email</div>
+
+      <div class="form-group-auth">
+        <label class="form-label-auth" for="loginEmail">Email</label>
+        <div class="input-wrap">
+          <input type="email" class="form-input-auth" id="loginEmail" placeholder="email@kamu.com" autocomplete="email">
+        </div>
+        <div class="field-error" id="loginEmailErr">Email tidak valid.</div>
+      </div>
+
+      <div class="form-group-auth">
+        <label class="form-label-auth" for="loginPass">Password</label>
+        <div class="input-wrap">
+          <input type="password" class="form-input-auth" id="loginPass" placeholder="Masukkan password" autocomplete="current-password">
+          <button type="button" class="input-icon" onclick="togglePass('loginPass', this)" aria-label="Tampilkan password">
+            <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+        <div class="field-error" id="loginPassErr">Password minimal 6 karakter.</div>
+      </div>
+
+      <div class="forgot-row">
+        <a href="#" class="forgot-link">Lupa password?</a>
+      </div>
+
+      <button type="button" class="btn-submit-auth" id="loginBtn" onclick="handleLogin()">Masuk ke ReFood</button>
+
+      <p class="switch-hint">Belum punya akun? <a onclick="switchTab('register')">Daftar gratis →</a></p>
+    </div>
+
+    <div class="success-overlay" id="login-success">
+      <span class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#2d8c55" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 20h10"/>
+          <path d="M12 20V10"/>
+          <path d="M12 10C12 10 8 9 6 6c4 0 6 2 6 4z"/>
+          <path d="M12 10C12 10 16 7 18 4c-4 1-6 3-6 6z"/>
+        </svg>
+      </span>
+      <div class="success-title">Berhasil masuk!</div>
+      <p class="success-desc">Selamat datang kembali. Siap menyelamatkan lebih banyak makanan hari ini?</p>
+      <a href="#" class="btn-go">Buka Dashboard →</a>
+    </div>
+
+  </div>
+
+  <!-- ══ REGISTER ══ -->
+  <div class="panel-auth" id="panel-register">
+
+    <div id="reg-content">
+      <h2 class="panel-title">Buat <span class="italic">akun</span> baru</h2>
+      <p class="panel-sub">Pilih peranmu dan mulai perjalanan zero-waste.</p>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step-wrap">
+          <div class="step-dot active" id="sdot1">1</div>
+          <span class="step-label" id="slabel1">Peran</span>
+        </div>
+        <div class="step-line" id="sline1"></div>
+        <div class="step-wrap">
+          <div class="step-dot" id="sdot2">2</div>
+          <span class="step-label" id="slabel2">Data</span>
+        </div>
+        <div class="step-line" id="sline2"></div>
+        <div class="step-wrap">
+          <div class="step-dot" id="sdot3">3</div>
+          <span class="step-label" id="slabel3">Password</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Role -->
+      <div class="reg-step active" id="step1">
+        <p class="role-section-label">Pilih peranmu</p>
+
+        <div class="role-options">
+
+          <!-- 1. Waste Provider -->
+          <label class="role-option" id="roleProvider" onclick="selectRole('provider')">
+            <input type="radio" name="role" value="provider">
+            <div class="role-check-mark">
+              <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+            </div>
+            <div class="role-icon-wrap">
+              <!-- Leaf / recycle: eco, sustainable -->
+              <svg viewBox="0 0 24 24">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/>
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+              </svg>
+            </div>
+            <div class="role-text">
+              <div class="role-name">Waste Provider</div>
+              <div class="role-desc">Setor food waste dari restoran, kantin & rumah tangga</div>
+            </div>
+            <span class="role-badge">Provider</span>
+          </label>
+
+          <!-- 2. Pengolah -->
+          <label class="role-option" id="rolePengolah" onclick="selectRole('pengolah')">
+            <input type="radio" name="role" value="pengolah">
+            <div class="role-check-mark">
+              <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+            </div>
+            <div class="role-icon-wrap">
+              <!-- Settings/gear: industrial modern, smart processing -->
+              <svg viewBox="0 0 24 24">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                <path d="M15 5l3 3"/>
+              </svg>
+            </div>
+            <div class="role-text">
+              <div class="role-name">Pengolah</div>
+              <div class="role-desc">Ubah food waste jadi produk bernilai — NGO, industri</div>
+            </div>
+            <span class="role-badge">Processor</span>
+          </label>
+
+          <!-- 3. User Umum / Buyer -->
+          <label class="role-option" id="roleBuyer" onclick="selectRole('buyer')">
+            <input type="radio" name="role" value="buyer">
+            <div class="role-check-mark">
+              <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+            </div>
+            <div class="role-icon-wrap">
+              <!-- Shopping bag outline: marketplace -->
+              <svg viewBox="0 0 24 24">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+            </div>
+            <div class="role-text">
+              <div class="role-name">User Umum</div>
+              <div class="role-desc">Beli produk eco-friendly hasil olahan food waste</div>
+            </div>
+            <span class="role-badge">Buyer</span>
+          </label>
+
+        </div>
+
+        <div class="field-error" id="roleErr" style="margin-bottom:0.75rem;">Pilih salah satu peran terlebih dahulu.</div>
+        <button type="button" class="btn-next" style="width:100%;" onclick="goStep(2)">Lanjut →</button>
+
+        <div class="divider" style="margin-top:1.1rem;">atau</div>
+        <button type="button" class="btn-google" onclick="handleGoogle()">
+          <div class="google-logo"></div>
+          Daftar dengan Google
+        </button>
+      </div>
+
+      <!-- Step 2: Data -->
+      <div class="reg-step" id="step2">
+        <div class="form-row">
+          <div class="form-group-auth">
+            <label class="form-label-auth" for="regFirst">Nama Depan *</label>
+            <input type="text" class="form-input-auth" id="regFirst" placeholder="Nama depan" autocomplete="given-name">
+            <div class="field-error" id="regFirstErr">Wajib diisi.</div>
+          </div>
+          <div class="form-group-auth">
+            <label class="form-label-auth" for="regLast">Nama Belakang</label>
+            <input type="text" class="form-input-auth" id="regLast" placeholder="Nama belakang" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="form-group-auth">
+          <label class="form-label-auth" for="regEmail">Email *</label>
+          <div class="input-wrap">
+            <input type="email" class="form-input-auth" id="regEmail" placeholder="email@kamu.com" autocomplete="email">
+          </div>
+          <div class="field-error" id="regEmailErr">Masukkan email yang valid.</div>
+        </div>
+
+        <div class="form-group-auth">
+          <label class="form-label-auth" for="regWA">Nomor WhatsApp</label>
+          <input type="tel" class="form-input-auth" id="regWA" placeholder="+62 8xx xxxx xxxx" autocomplete="tel">
+        </div>
+
+        <div id="orgField" style="display:none;">
+          <div class="form-group-auth">
+            <label class="form-label-auth" for="regOrg">Nama Organisasi *</label>
+            <input type="text" class="form-input-auth" id="regOrg" placeholder="Nama komunitas / NGO / lembaga">
+            <div class="field-error" id="regOrgErr">Wajib diisi untuk Pengolah.</div>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <button type="button" class="btn-back" onclick="goStep(1)">← Kembali</button>
+          <button type="button" class="btn-next" onclick="goStep(3)">Lanjut →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Password -->
+      <div class="reg-step" id="step3">
+        <div class="form-group-auth">
+          <label class="form-label-auth" for="regPass">Password *</label>
+          <div class="input-wrap">
+            <input type="password" class="form-input-auth" id="regPass" placeholder="Buat password kuat" autocomplete="new-password" oninput="checkStrength(this.value)">
+            <button type="button" class="input-icon" onclick="togglePass('regPass', this)" aria-label="Tampilkan password">
+              <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="strength-bar">
+            <div class="strength-seg" id="str1"></div>
+            <div class="strength-seg" id="str2"></div>
+            <div class="strength-seg" id="str3"></div>
+            <div class="strength-seg" id="str4"></div>
+          </div>
+          <div class="strength-hint" id="strHint"></div>
+          <div class="field-error" id="regPassErr">Password minimal 8 karakter.</div>
+        </div>
+
+        <div class="form-group-auth">
+          <label class="form-label-auth" for="regPass2">Konfirmasi Password *</label>
+          <div class="input-wrap">
+            <input type="password" class="form-input-auth" id="regPass2" placeholder="Ulangi password" autocomplete="new-password">
+            <button type="button" class="input-icon" onclick="togglePass('regPass2', this)" aria-label="Tampilkan password">
+              <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="field-error" id="regPass2Err">Password tidak cocok.</div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="agreeTerms">
+          <label for="agreeTerms">Saya menyetujui <a href="#">Syarat & Ketentuan</a> dan <a href="#">Kebijakan Privasi</a> ReFood</label>
+        </div>
+        <div class="field-error" id="termsErr" style="margin-top:-0.5rem;margin-bottom:0.7rem;">Centang persetujuan untuk melanjutkan.</div>
+
+        <div class="step-nav">
+          <button type="button" class="btn-back" onclick="goStep(2)">← Kembali</button>
+          <button type="button" class="btn-next" id="regSubmitBtn" onclick="handleRegister()">Buat Akun <svg style="display:inline;vertical-align:-3px;" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-overlay" id="reg-success">
+      <span class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#2d8c55" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 20h10"/>
+          <path d="M12 20V10"/>
+          <path d="M12 10C12 10 8 9 6 6c4 0 6 2 6 4z"/>
+          <path d="M12 10C12 10 16 7 18 4c-4 1-6 3-6 6z"/>
+        </svg>
+      </span>
+      <div class="success-title">Akun berhasil dibuat!</div>
+      <p class="success-desc">Selamat datang di keluarga ReFood. Cek email kamu untuk verifikasi.</p>
+      <a href="#" class="btn-go">Mulai Sekarang →</a>
+    </div>
+
+    <p class="switch-hint" id="loginHint" style="margin-top:1.1rem;">Sudah punya akun? <a onclick="switchTab('login')">Masuk →</a></p>
+
+  </div>
+
+</div>
+
+<script src="assets/js/resik-supabase.js"></script>
+
+<script>
+  let currentStep = 1;
+  let selectedRole = null;
+
+  function switchTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+    });
+    document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+    document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+  }
+
+  function togglePass(id, btn) {
+    const inp = document.getElementById(id);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    const isHidden = inp.type === 'password';
+    btn.innerHTML = isHidden
+      ? `<svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`
+      : `<svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+  }
+
+  function selectRole(role) {
+    selectedRole = role;
+    // Deselect all role options dynamically (no hardcoded list)
+    document.querySelectorAll('.role-option').forEach(el => el.classList.remove('selected'));
+    // Select the clicked one
+    const selected = document.getElementById('role' + role.charAt(0).toUpperCase() + role.slice(1));
+    if (selected) selected.classList.add('selected');
+    const radio = document.querySelector('input[name="role"][value="' + role + '"]');
+    if (radio) radio.checked = true;
+    // Show org field for pengolah and provider (not buyer/admin)
+    const needsOrg = role === 'pengolah' || role === 'provider';
+    document.getElementById('orgField').style.display = needsOrg ? 'block' : 'none';
+    const orgLabel = document.querySelector('label[for="regOrg"]');
+    if (orgLabel) orgLabel.textContent = role === 'provider' ? 'Nama Usaha / Bisnis *' : 'Nama Organisasi *';
+    hideErr('roleErr');
+  }
+
+  function goStep(n) {
+    if (n > currentStep) {
+      if (currentStep === 1 && !validateStep1()) return;
+      if (currentStep === 2 && !validateStep2()) return;
+    }
+    document.querySelectorAll('.reg-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step' + n).classList.add('active');
+    for (let i = 1; i <= 3; i++) {
+      const dot = document.getElementById('sdot' + i);
+      dot.classList.toggle('active', i === n);
+      dot.classList.toggle('done', i < n);
+    }
+    for (let i = 1; i <= 2; i++) {
+      document.getElementById('sline' + i).classList.toggle('done', i < n);
+    }
+    currentStep = n;
+  }
+
+  function showErr(id) { document.getElementById(id).style.display = 'block'; }
+  function hideErr(id) { document.getElementById(id).style.display = 'none'; }
+
+  function setFieldErr(inputId, errId, show) {
+    const el = document.getElementById(inputId);
+    if (el) el.classList.toggle('error', show);
+    show ? showErr(errId) : hideErr(errId);
+  }
+
+  function validateStep1() {
+    if (!selectedRole) { showErr('roleErr'); return false; }
+    return true;
+  }
+
+  function validateStep2() {
+    let ok = true;
+    const first = document.getElementById('regFirst');
+    const email = document.getElementById('regEmail');
+    const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!first.value.trim()) { setFieldErr('regFirst', 'regFirstErr', true); ok = false; }
+    else { setFieldErr('regFirst', 'regFirstErr', false); }
+    if (!emailReg.test(email.value.trim())) { setFieldErr('regEmail', 'regEmailErr', true); ok = false; }
+    else { setFieldErr('regEmail', 'regEmailErr', false); }
+    if (selectedRole === 'pengolah' || selectedRole === 'provider') {
+      const org = document.getElementById('regOrg');
+      if (!org.value.trim()) { setFieldErr('regOrg', 'regOrgErr', true); ok = false; }
+      else { setFieldErr('regOrg', 'regOrgErr', false); }
+    }
+    return ok;
+  }
+
+  function checkStrength(val) {
+    const segs = ['str1','str2','str3','str4'].map(id => document.getElementById(id));
+    const hint = document.getElementById('strHint');
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const colors = ['#ef9a9a','#ffcc80','#a5d6a7','#4caf50'];
+    const labels = ['Lemah','Cukup','Kuat','Sangat kuat'];
+    const textColors = ['#ffab91','#ffcc80','#c8f0c8','#a5d6a7'];
+    segs.forEach((s, i) => { s.style.background = i < score ? colors[score - 1] : 'rgba(255,255,255,0.12)'; });
+    if (!val.length) { hint.textContent = ''; return; }
+    hint.textContent = labels[score - 1] || labels[0];
+    hint.style.color = textColors[score - 1] || textColors[0];
+  }
+
+  async function handleLogin() { 
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPass').value;
+
+    if (!email || !password) {
+      showToast('Isi email dan password.');
+      return;
+    }
+
+    const btn = document.getElementById('loginBtn');
+
+    btn.disabled = true;
+    btn.textContent = 'Memproses...';
+
+    try {
+
+      await RESIK_AUTH.login(email, password);
+
+      // hide login form
+      document.getElementById('login-form-wrap').style.display = 'none';
+
+      // show success card
+      const success = document.getElementById('login-success');
+      success.style.display = 'block';
+
+      // countdown text
+      const desc = success.querySelector('.success-desc');
+
+      let seconds = 3;
+
+      desc.innerHTML =
+        `Anda berhasil login.<br>
+        Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
+
+      const interval = setInterval(() => {
+        seconds--;
+
+        desc.innerHTML =
+          `Anda berhasil login.<br>
+          Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
+
+        if (seconds <= 0) {
+          clearInterval(interval);
+
+          window.location.href = 'admin/admin-dashboard.html';
+        }
+      }, 1000);
+
+    } catch (err) {
+
+      console.error(err);
+
+      showToast(err.message || 'Login gagal.');
+
+    } finally {
+
+      btn.disabled = false;
+      btn.textContent = 'Masuk ke ReFood';
+
+    }
+  }
+  
+  async function handleRegister() {
+    const firstName = document.getElementById('regFirst').value.trim();
+    const lastName  = document.getElementById('regLast').value.trim();
+    const email     = document.getElementById('regEmail').value.trim();
+    const password  = document.getElementById('regPass').value;
+    const password2 = document.getElementById('regPass2').value;
+    const organization = document.getElementById('regOrg')?.value?.trim() || null;
+
+    if (!selectedRole) {
+      showToast('Pilih role terlebih dahulu.');
+      return;
+    }
+
+    if (!firstName || !email || !password) {
+      showToast('Lengkapi data terlebih dahulu.');
+      return;
+    }
+
+    if (password.length < 8) {
+      showToast('Password minimal 8 karakter.');
+      return;
+    }
+
+    if (password !== password2) {
+      showToast('Konfirmasi password tidak cocok.');
+      return;
+    }
+
+    const btn = document.getElementById('regSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Membuat akun...';
+
+    try {
+
+      const auth = await RESIK_AUTH.register({
+        email,
+        password,
+        firstName,
+        lastName,
+        role: selectedRole,
+        organization
+      });
+
+      const user = auth.user;
+
+      const sb = await getSupabase();
+
+      // insert profile manual
+      const { error: profileError } = await sb
+        .from('profiles')
+        .insert({
+          id: user.id,
+          email,
+          first_name: firstName,
+          last_name: lastName,
+          role: selectedRole,
+          organization
+        });
+
+      if (profileError) throw profileError;
+
+      // hide register content
+      document.getElementById('reg-content').style.display = 'none';
+
+      // show success overlay
+      const success = document.getElementById('reg-success');
+
+      success.style.display = 'block';
+
+      const desc = success.querySelector('.success-desc');
+
+      let seconds = 3;
+
+      desc.innerHTML =
+        `Akun berhasil dibuat.<br>
+        Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
+
+      const interval = setInterval(() => {
+
+        seconds--;
+
+        desc.innerHTML =
+          `Akun berhasil dibuat.<br>
+          Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
+
+        if (seconds <= 0) {
+
+          clearInterval(interval);
+
+          window.location.href = 'admin/admin-dashboard.html';
+
+        }
+
+      }, 1000);
+
+    } catch (err) {
+      console.error(err);
+      showToast(err.message || 'Registrasi gagal.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Buat Akun <svg style="display:inline;vertical-align:-3px;" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>';
+    }
+  }
+
+  async function handleGoogle() {
+    try {
+      await RESIK_AUTH.loginWithGoogle();
+    } catch (err) {
+      console.error(err);
+      showToast('Google login gagal.');
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── LUPA PASSWORD ──
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.forgot-link')?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      if (!email) { showToast('Masukkan email login Anda terlebih dahulu.'); return; }
+      try {
+        await RESIK_AUTH_CORE.resetPassword(email);
+        showToast('✅ Link reset password dikirim ke ' + email);
+      } catch (err) {
+        showToast('❌ ' + (err.message || 'Gagal mengirim email reset.'));
+      }
+    });
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    const loginActive = document.getElementById('panel-login').classList.contains('active');
+    const regActive   = document.getElementById('panel-register').classList.contains('active');
+    if (loginActive && document.getElementById('login-form-wrap').style.display !== 'none') {
+      handleLogin();
+    } else if (regActive) {
+      if (currentStep === 1) goStep(2);
+      else if (currentStep === 2) goStep(3);
+      else if (currentStep === 3) handleRegister();
+    }
+  });
+</script>
+</body>
+</html>

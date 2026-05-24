@@ -1,0 +1,276 @@
+/* admin-riwayat.css — Riwayat Page Specific */
+
+/* ── STAT CARDS ROW ── */
+.riwayat-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+@media (max-width: 1200px) {
+  .riwayat-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .riwayat-stats { grid-template-columns: 1fr; }
+}
+
+/* Sparkline mini chart */
+.stat-sparkline {
+  margin-top: var(--space-3);
+}
+
+/* ── FILTER BAR ── */
+.riwayat-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.filter-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--bg-soft);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-3);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+  position: relative;
+}
+
+.filter-select-wrap:hover { border-color: var(--primary-green-light); }
+
+.filter-select-wrap select {
+  background: none;
+  border: none;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding-right: var(--space-4);
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 130px;
+}
+
+.filter-select-wrap .select-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.filter-select-wrap .chevron-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.filter-reset {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+.filter-reset:hover { background: var(--bg-soft); color: var(--text-primary); }
+
+/* ── ACTIVITY TABLE ── */
+.riwayat-table-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.riwayat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.riwayat-table th {
+  padding: var(--space-3) var(--space-5);
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-soft);
+  white-space: nowrap;
+}
+
+.riwayat-table td {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-color-soft);
+  vertical-align: middle;
+}
+
+.riwayat-table tbody tr {
+  transition: background var(--transition-fast);
+}
+.riwayat-table tbody tr:hover { background: #F9FFF9; }
+.riwayat-table tbody tr:last-child td { border-bottom: none; }
+
+/* Waktu column */
+.col-waktu { min-width: 130px; }
+.waktu-date { font-weight: 600; color: var(--text-primary); }
+.waktu-time { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+
+/* Jenis Aktivitas column */
+.col-jenis { min-width: 180px; }
+.jenis-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.jenis-icon {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+.jenis-icon.pengambilan { background: #E8F5E9; }
+.jenis-icon.smartbin    { background: #FFF3E0; }
+.jenis-icon.sensor      { background: #E8F5E9; }
+.jenis-icon.pengiriman  { background: #E3F2FD; }
+.jenis-icon.maintenance { background: #F3E5F5; }
+.jenis-icon.peringatan  { background: #FFEBEE; }
+.jenis-icon.laporan     { background: #E3F2FD; }
+
+.jenis-name { font-weight: 600; color: var(--text-primary); }
+
+/* Lokasi column */
+.col-lokasi { min-width: 200px; }
+.lokasi-name { font-weight: 500; color: var(--text-primary); }
+.lokasi-sub  { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+
+/* Detail column */
+.col-detail { min-width: 220px; }
+.detail-text { color: var(--text-secondary); line-height: 1.4; }
+
+/* Jumlah column */
+.col-jumlah { min-width: 100px; }
+.jumlah-val { font-weight: 700; color: var(--text-primary); }
+
+/* Status column */
+.col-status { min-width: 110px; }
+
+/* Oleh column */
+.col-oleh { min-width: 130px; }
+.oleh-name { font-weight: 600; color: var(--text-primary); }
+.oleh-role { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+
+/* Status badges override for riwayat */
+.status-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+.badge-selesai  { background: #E8F5E9; color: #2E7D32; }
+.badge-terkirim { background: #E3F2FD; color: #1565C0; }
+.badge-proses   { background: #FFF3E0; color: #E65100; }
+
+/* ── PAGINATION ── */
+.riwayat-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.riwayat-count {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.page-btn {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+  background: none;
+}
+
+.page-btn:hover { background: var(--bg-soft); color: var(--text-primary); }
+.page-btn.active {
+  background: var(--primary-green);
+  color: white;
+  border-color: var(--primary-green);
+  box-shadow: 0 2px 6px rgba(27,94,32,0.3);
+}
+.page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.page-btn.ellipsis { cursor: default; color: var(--text-muted); }
+.page-btn.ellipsis:hover { background: none; }
+
+/* ── SPARKLINE SVG ── */
+.sparkline-svg { display: block; }
+
+/* ── PAGE-LEVEL OVERFLOW CONTAINMENT ── */
+html, body                { overflow-x: hidden; max-width: 100%; }
+.admin-shell              { overflow-x: hidden; }
+.admin-main               { overflow-x: hidden; min-width: 0; }
+.admin-content            { overflow-x: hidden; min-width: 0; box-sizing: border-box; }
+
+/* ── TABLE WRAPPER ── */
+.riwayat-table-card       { min-width: 0; }
+.riwayat-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  contain: inline-size;
+}
+.riwayat-table            { min-width: 700px; }
+
+/* ── FILTER BAR ── */
+.riwayat-filter-bar       { min-width: 0; }
+.filter-select-wrap       { flex-shrink: 1; min-width: 0; }
+.filter-select-wrap select { min-width: 100px; max-width: 180px; }
+
+@media (max-width: 640px) {
+  .riwayat-filter-bar       { flex-direction: column; align-items: stretch; }
+  .filter-select-wrap       { width: 100%; }
+  .filter-select-wrap select { width: 100%; max-width: none; }
+  .filter-reset             { margin-left: 0; }
+}
+
+/* Trend badge in stat cards */
+.stat-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  margin-top: var(--space-2);
+}
+.stat-trend.up   { color: var(--success); }
+.stat-trend.down { color: var(--danger);  }

@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Bin — POROS Admin</title>
+  <link rel="stylesheet" href="css/admin-shared.css"/>
+  <link rel="stylesheet" href="css/admin-layout.css"/>
+  <link rel="stylesheet" href="css/admin-components.css"/>
+  <link rel="stylesheet" href="css/admin-dashboard.css"/>
+  <style>
+    /* ── SMART BIN PAGE ── */
+    .sb-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-5);
+      margin-bottom: var(--space-6);
+    }
+    @media (max-width: 1200px) { .sb-stat-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 600px)  { .sb-stat-grid { grid-template-columns: 1fr; } }
+
+    .sb-main-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: var(--space-6);
+    }
+    @media (max-width: 1100px) { .sb-main-grid { grid-template-columns: 1fr; } }
+
+    /* Sparkline */
+    .sparkline { display: block; }
+
+    /* Stat card mini trend line */
+    .stat-card { position: relative; overflow: hidden; }
+    .stat-card-chart {
+      position: absolute;
+      bottom: 0; right: 0;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    /* Table enhancements */
+    .capacity-cell { min-width: 140px; }
+    .capacity-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .capacity-bar-wrap .progress-bar { flex: 1; height: 8px; }
+    .capacity-pct {
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    .bin-icon-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      min-width: 220px;
+    }
+    .bin-avatar {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .bin-name {
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+    .bin-sub  { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; white-space: nowrap; }
+
+    /* ── Prevent page-level horizontal scroll ── */
+    html, body          { overflow-x: hidden; max-width: 100%; }
+    .admin-shell        { overflow-x: hidden; }
+    .admin-main         { overflow-x: hidden; min-width: 0; }
+    .admin-content      { overflow-x: hidden; min-width: 0; box-sizing: border-box; }
+    .sb-main-grid > *   { min-width: 0; }
+    .analytics-grid > * { min-width: 0; }
+
+    /* ── Scrollable table — contained inside the card ── */
+    .sb-table-wrap {
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      /* Clip so scroll bar stays inside the card, not the page */
+      contain: inline-size;
+    }
+    .sb-table-wrap .admin-table {
+      min-width: 760px;
+      width: max-content;
+    }
+    .sb-table-wrap .admin-table th,
+    .sb-table-wrap .admin-table td {
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .sb-table-wrap .admin-table td:first-child,
+    .sb-table-wrap .admin-table th:first-child {
+      position: sticky;
+      left: 0;
+      background: white;
+      z-index: 2;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.04);
+    }
+    .sb-table-wrap .admin-table tbody tr:hover td:first-child {
+      background: var(--bg-soft);
+    }
+
+    /* IoT signal */
+    .iot-signal {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 16px;
+    }
+    .iot-signal span {
+      width: 3px;
+      background: currentColor;
+      border-radius: 2px;
+      display: block;
+    }
+    .iot-signal span:nth-child(1) { height: 5px; }
+    .iot-signal span:nth-child(2) { height: 9px; }
+    .iot-signal span:nth-child(3) { height: 13px; }
+    .iot-signal span:nth-child(4) { height: 16px; }
+
+    .iot-online  { color: var(--primary-green); }
+    .iot-offline { color: var(--text-muted); }
+    .iot-offline span:nth-child(3),
+    .iot-offline span:nth-child(4) { opacity: 0.2; }
+
+    /* Peta placeholder */
+    .map-placeholder {
+      width: 100%;
+      height: 320px;
+      background: #EEF2EE;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .map-placeholder svg.map-bg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+    }
+    .map-pin {
+      position: absolute;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 3px solid white;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+      font-size: 14px;
+      transition: transform var(--transition-fast);
+    }
+    .map-pin:hover { transform: scale(1.15); }
+    .map-pin.aman    { background: var(--primary-green); }
+    .map-pin.hampir  { background: var(--accent-orange); }
+    .map-pin.penuh   { background: #C62828; }
+    .map-pin.offline { background: #9CA3AF; }
+
+    .map-legend {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      background: white;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      position: absolute;
+      top: var(--space-4); right: var(--space-4);
+    }
+    .map-legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    .map-legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .map-controls {
+      position: absolute;
+      bottom: var(--space-4); right: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .map-ctrl-btn {
+      width: 30px; height: 30px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Aktivitas */
+    .aktivitas-list { display: flex; flex-direction: column; }
+    .aktivitas-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--border-color-soft);
+    }
+    .aktivitas-item:last-child { border-bottom: none; }
+    .aktivitas-icon {
+      width: 34px; height: 34px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .aktivitas-body { flex: 1; }
+    .aktivitas-title { font-size: var(--font-size-sm); font-weight: 500; color: var(--text-primary); }
+    .aktivitas-sub   { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+    .aktivitas-time  { font-size: var(--font-size-xs); color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+
+    /* Analytics grid */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-5);
+      margin-top: var(--space-6);
+    }
+    @media (max-width: 900px) { .analytics-grid { grid-template-columns: 1fr; } }
+
+    /* Donut chart */
+    .donut-wrap { display: flex; align-items: center; gap: var(--space-5); }
+    .donut-legend { display: flex; flex-direction: column; gap: var(--space-2); }
+    .legend-item { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-xs); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .legend-label { color: var(--text-secondary); flex: 1; }
+    .legend-value { font-weight: 700; color: var(--text-primary); }
+
+    /* Weekly chart */
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 80px;
+      margin-top: var(--space-3);
+    }
+    .chart-bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+    .chart-bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      background: var(--primary-green-soft);
+      transition: background var(--transition-fast);
+      cursor: pointer;
+    }
+    .chart-bar:hover { background: var(--primary-green-mid); }
+    .chart-bar.active { background: var(--primary-green); }
+    .chart-bar-label { font-size: 10px; color: var(--text-muted); }
+
+    /* Efficiency gauge */
+    .gauge-wrap { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+    .gauge-num {
+      font-size: var(--font-size-3xl);
+      font-weight: 800;
+      color: var(--primary-green);
+      line-height: 1;
+    }
+    .gauge-label { font-size: var(--font-size-xs); color: var(--text-muted); }
+    .gauge-tag {
+      background: var(--primary-green-soft);
+      color: var(--primary-green);
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .filter-search { min-width: 0; flex: 1 1 160px; max-width: 280px; }
+    .filter-select { min-width: 0; flex-shrink: 0; }
+    .filter-select {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      font-family: var(--font-family);
+      cursor: pointer;
+    }
+    .filter-search {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--space-2) var(--space-4);
+      flex: 1;
+      max-width: 280px;
+    }
+    .filter-search input {
+      border: none;
+      background: none;
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+      width: 100%;
+      font-family: var(--font-family);
+    }
+    .filter-search input::placeholder { color: var(--text-muted); }
+
+    /* Suhu pill */
+    .suhu-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: #E3F2FD;
+      color: var(--accent-blue);
+    }
+
+    /* Mobile menu btn */
+    .mobile-menu-btn {
+      display: none;
+      width: 38px; height: 38px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+  </style>
+  <link rel="stylesheet" href="css/admin-navbar.css"/>
+</head>
+<body data-navbar-title="Smart Bin Monitoring">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="assets/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" data-page="admin-dashboard.html" href="admin-dashboard.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+        Dashboard
+      </a>
+      <a class="sidebar-nav-item active" data-page="admin-smart-bin.html" href="admin-smart-bin.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span>
+        Smart Bin
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-pengiriman.html" href="admin-pengiriman.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+        Pengiriman
+        <span class="nav-badge">Baru</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-riwayat.html" href="admin-riwayat.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        Riwayat
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-laporan.html" href="admin-laporan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        Laporan
+      </a>
+      <div class="sidebar-divider"></div>
+      <a class="sidebar-nav-item" data-page="admin-notifikasi.html" href="admin-notifikasi.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        Notifikasi
+        <span class="nav-badge">3</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-pengaturan.html" href="admin-pengaturan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        Pengaturan
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-bantuan.html" href="admin-bantuan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        Bantuan
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-3); display:flex; align-items:center; justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22c1.25-1.25 2.5-2.5 3.5-4 1.8-2.7 2.5-6 2.5-9 0 0 3 1 5 4 1.5 2.3 1.5 5 1.5 5s1.5-1 2-3c.8-3 0-6 0-6s3 2 4 5c.7 2 .5 4.5-.5 6.5C18.5 23 14 24 10 22"/><path d="M2 22c2-2 4-5 4-9"/></svg></div>
+      <h4>Kelola Sampah Organik Lebih Cerdas dan Berdampak</h4>
+      <p>Bersama POROS, kelola sampah organik secara efisien, transparan, dan memberikan manfaat nyata bagi masyarakat.</p>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name">Admin Pondok</div>
+        <div class="user-email">admin@darululum.id</div>
+      </div>
+      <svg class="user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- TOPBAR -->
+    <header class="admin-topbar"></header>
+
+    <!-- CONTENT -->
+    <div class="admin-content">
+
+      <!-- STAT CARDS -->
+      <div class="sb-stat-grid">
+
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Smart Bin Aktif</div>
+            <div class="stat-card-value" data-count="24" data-suffix=" unit">24 unit</div>
+            <div class="stat-card-sub">
+              <span class="trend up">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                3 unit dari kemarin
+              </span>
+            </div>
+          </div>
+          <div class="stat-card-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </div>
+          <svg class="stat-card-chart" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,35 14,28 28,30 42,18 56,22 70,10 80,14" fill="none" stroke="#2E7D32" stroke-width="2"/></svg>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Bin Hampir Penuh</div>
+            <div class="stat-card-value" data-count="7" data-suffix=" unit">7 unit</div>
+            <div class="stat-card-sub">
+              <span class="trend down">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 9 12 15 6 9"/></svg>
+                2 unit dari kemarin
+              </span>
+            </div>
+          </div>
+          <div class="stat-card-icon orange">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <svg class="stat-card-chart" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,20 14,26 28,18 42,24 56,30 70,22 80,28" fill="none" stroke="#F57C00" stroke-width="2"/></svg>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Total Sampah Hari Ini</div>
+            <div class="stat-card-value" data-count="482" data-suffix=" kg">482 kg</div>
+            <div class="stat-card-sub">
+              <span class="trend up">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                18% dari kemarin
+              </span>
+            </div>
+          </div>
+          <div class="stat-card-icon blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <svg class="stat-card-chart" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,30 14,24 28,26 42,16 56,12 70,8 80,6" fill="none" stroke="#1565C0" stroke-width="2"/></svg>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Efisiensi Pengangkutan</div>
+            <div class="stat-card-value" data-count="91" data-suffix="%">91%</div>
+            <div class="stat-card-sub">
+              <span class="trend up">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                7% dari kemarin
+              </span>
+            </div>
+          </div>
+          <div class="stat-card-icon purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+          <svg class="stat-card-chart" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,32 14,26 28,20 42,22 56,14 70,10 80,8" fill="none" stroke="#6A1B9A" stroke-width="2"/></svg>
+        </div>
+
+      </div><!-- /sb-stat-grid -->
+
+      <!-- MAIN 2-COL -->
+      <div class="sb-main-grid">
+
+        <!-- LEFT: Table + Analytics -->
+        <div style="display:flex; flex-direction:column; gap:var(--space-6);">
+
+          <!-- Table Card -->
+          <div class="card" style="padding:0; overflow:hidden;">
+            <div class="card-header" style="padding:var(--space-5) var(--space-6); border-bottom:1px solid var(--border-color-soft);">
+              <span class="card-title">Live Smart Bin Monitoring</span>
+              <a href="#" class="card-link">Lihat Semua</a>
+            </div>
+
+            <!-- Filter Bar -->
+            <div style="padding:var(--space-4) var(--space-6); border-bottom:1px solid var(--border-color-soft);">
+              <div class="filter-bar" style="margin-bottom:0;">
+                <div class="filter-search">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input type="text" placeholder="Cari lokasi smart bin..."/>
+                </div>
+                <select class="filter-select">
+                  <option>Semua Status</option>
+                  <option>Aman</option>
+                  <option>Hampir Penuh</option>
+                  <option>Penuh</option>
+                  <option>Offline</option>
+                </select>
+                <select class="filter-select">
+                  <option>Semua Jenis</option>
+                  <option>Organik Basah</option>
+                  <option>Organik Kering</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sb-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Lokasi Smart Bin</th>
+                    <th>Kapasitas Saat Ini</th>
+                    <th>Status Bin</th>
+                    <th>Jenis Sampah</th>
+                    <th>Suhu Sensor</th>
+                    <th>Last Update</th>
+                    <th>Koneksi IoT</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <!-- Row 1: Hampir Penuh -->
+                  <tr>
+                    <td>
+                      <div class="bin-icon-cell">
+                        <div class="bin-avatar" style="background:#FFF3E0; color:#F57C00;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                        </div>
+                        <div>
+                          <div class="bin-name">Pondok Pesantren Darul Ulum</div>
+                          <div class="bin-sub">60L · Outdoor · Bin-001</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="capacity-cell">
+                      <div class="capacity-bar-wrap">
+                        <div class="progress-bar"><div class="progress-bar-fill orange" style="width:87%;"></div></div>
+                        <span class="capacity-pct" style="color:#F57C00;">87%</span>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-warning">● Hampir Penuh</span></td>
+                    <td>
+                      <span style="color:#2E7D32; font-size:var(--font-size-xs); font-weight:600;">
+                        <svg style="display:inline;vertical-align:middle;margin-right:3px;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                        Organik Basah
+                      </span>
+                    </td>
+                    <td><span class="suhu-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> 32°C</span></td>
+                    <td>
+                      <div style="font-size:var(--font-size-xs); color:var(--text-primary); font-weight:500;">08:45 WIB</div>
+                      <div style="font-size:10px; color:var(--text-muted);">1 menit lalu</div>
+                    </td>
+                    <td>
+                      <div style="display:flex; align-items:center; gap:6px; color:var(--primary-green); font-size:var(--font-size-xs); font-weight:600;">
+                        <div class="iot-signal iot-online"><span></span><span></span><span></span><span></span></div>
+                        Online
+                      </div>
+                    </td>
+                    <td>
+                      <button class="btn btn-ghost btn-sm" style="color:var(--text-muted);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                    </td>
+                  </tr>
+
+                  <!-- Row 2: Normal -->
+                  <tr>
+                    <td>
+                      <div class="bin-icon-cell">
+                        <div class="bin-avatar" style="background:var(--primary-green-soft); color:var(--primary-green);">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                        </div>
+                        <div>
+                          <div class="bin-name">Pondok Pesantren Al Hikmah</div>
+                          <div class="bin-sub">40L · Indoor · Bin-002</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="capacity-cell">
+                      <div class="capacity-bar-wrap">
+                        <div class="progress-bar"><div class="progress-bar-fill" style="width:42%;"></div></div>
+                        <span class="capacity-pct">42%</span>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-success">● Normal</span></td>
+                    <td>
+                      <span style="color:#2E7D32; font-size:var(--font-size-xs); font-weight:600;">
+                        <svg style="display:inline;vertical-align:middle;margin-right:3px;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                        Organik Basah
+                      </span>
+                    </td>
+                    <td><span class="suhu-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> 30°C</span></td>
+                    <td>
+                      <div style="font-size:var(--font-size-xs); color:var(--text-primary); font-weight:500;">08:45 WIB</div>
+                      <div style="font-size:10px; color:var(--text-muted);">1 menit lalu</div>
+                    </td>
+                    <td>
+                      <div style="display:flex; align-items:center; gap:6px; color:var(--primary-green); font-size:var(--font-size-xs); font-weight:600;">
+                        <div class="iot-signal iot-online"><span></span><span></span><span></span><span></span></div>
+                        Online
+                      </div>
+                    </td>
+                    <td><button class="btn btn-ghost btn-sm" style="color:var(--text-muted);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+                  </tr>
+
+                  <!-- Row 3: Aman -->
+                  <tr>
+                    <td>
+                      <div class="bin-icon-cell">
+                        <div class="bin-avatar" style="background:#E3F2FD; color:#1565C0;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                        </div>
+                        <div>
+                          <div class="bin-name">Pondok Pesantren Nurul Huda</div>
+                          <div class="bin-sub">20L · Indoor · Bin-003</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="capacity-cell">
+                      <div class="capacity-bar-wrap">
+                        <div class="progress-bar"><div class="progress-bar-fill" style="width:28%; background:#1565C0;"></div></div>
+                        <span class="capacity-pct" style="color:#1565C0;">28%</span>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-info">● Aman</span></td>
+                    <td>
+                      <span style="color:#795548; font-size:var(--font-size-xs); font-weight:600;">
+                        <svg style="display:inline;vertical-align:middle;margin-right:3px;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/></svg>
+                        Organik Kering
+                      </span>
+                    </td>
+                    <td><span class="suhu-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> 29°C</span></td>
+                    <td>
+                      <div style="font-size:var(--font-size-xs); color:var(--text-primary); font-weight:500;">08:44 WIB</div>
+                      <div style="font-size:10px; color:var(--text-muted);">2 menit lalu</div>
+                    </td>
+                    <td>
+                      <div style="display:flex; align-items:center; gap:6px; color:var(--primary-green); font-size:var(--font-size-xs); font-weight:600;">
+                        <div class="iot-signal iot-online"><span></span><span></span><span></span><span></span></div>
+                        Online
+                      </div>
+                    </td>
+                    <td><button class="btn btn-ghost btn-sm" style="color:var(--text-muted);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+                  </tr>
+
+                  <!-- Row 4: Penuh -->
+                  <tr>
+                    <td>
+                      <div class="bin-icon-cell">
+                        <div class="bin-avatar" style="background:#FFEBEE; color:#C62828;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                        </div>
+                        <div>
+                          <div class="bin-name">Pondok Pesantren Al Falah</div>
+                          <div class="bin-sub">80L · Outdoor · Bin-004</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="capacity-cell">
+                      <div class="capacity-bar-wrap">
+                        <div class="progress-bar"><div class="progress-bar-fill red" style="width:96%;"></div></div>
+                        <span class="capacity-pct" style="color:#C62828;">96%</span>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-danger">● Penuh</span></td>
+                    <td>
+                      <span style="color:#2E7D32; font-size:var(--font-size-xs); font-weight:600;">
+                        <svg style="display:inline;vertical-align:middle;margin-right:3px;" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                        Organik Basah
+                      </span>
+                    </td>
+                    <td><span class="suhu-pill" style="background:#FFEBEE; color:#C62828;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> 33°C</span></td>
+                    <td>
+                      <div style="font-size:var(--font-size-xs); color:var(--text-primary); font-weight:500;">08:43 WIB</div>
+                      <div style="font-size:10px; color:var(--text-muted);">3 menit lalu</div>
+                    </td>
+                    <td>
+                      <div style="display:flex; align-items:center; gap:6px; color:var(--primary-green); font-size:var(--font-size-xs); font-weight:600;">
+                        <div class="iot-signal iot-online"><span></span><span></span><span></span><span></span></div>
+                        Online
+                      </div>
+                    </td>
+                    <td>
+                      <button class="btn btn-primary btn-sm" style="font-size:10px;">Jadwalkan</button>
+                    </td>
+                  </tr>
+
+                  <!-- Row 5: Offline -->
+                  <tr style="opacity:0.7;">
+                    <td>
+                      <div class="bin-icon-cell">
+                        <div class="bin-avatar" style="background:#F5F5F5; color:#9CA3AF;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                        </div>
+                        <div>
+                          <div class="bin-name">Pondok Pesantren Al Amin</div>
+                          <div class="bin-sub">40L · Indoor · Bin-005</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="capacity-cell">
+                      <div class="capacity-bar-wrap">
+                        <div class="progress-bar"><div class="progress-bar-fill" style="width:0; background:#E0E0E0;"></div></div>
+                        <span class="capacity-pct" style="color:var(--text-muted);">—</span>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-gray">● Offline</span></td>
+                    <td><span style="font-size:var(--font-size-xs); color:var(--text-muted);">—</span></td>
+                    <td><span style="font-size:var(--font-size-xs); color:var(--text-muted);">—</span></td>
+                    <td>
+                      <div style="font-size:var(--font-size-xs); color:var(--text-primary); font-weight:500;">08:30 WIB</div>
+                      <div style="font-size:10px; color:var(--text-muted);">15 menit lalu</div>
+                    </td>
+                    <td>
+                      <div style="display:flex; align-items:center; gap:6px; color:var(--text-muted); font-size:var(--font-size-xs); font-weight:600;">
+                        <div class="iot-signal iot-offline"><span></span><span></span><span></span><span></span></div>
+                        Offline
+                      </div>
+                    </td>
+                    <td><button class="btn btn-ghost btn-sm" style="color:var(--text-muted);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Analytics Row -->
+          <div class="analytics-grid">
+
+            <!-- Volume Mingguan -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Volume Sampah Mingguan</span>
+              </div>
+              <div>
+                <div style="font-size:var(--font-size-2xl); font-weight:800; color:var(--text-primary);">3.28 <span style="font-size:var(--font-size-base); font-weight:600;">ton</span></div>
+                <div style="font-size:var(--font-size-xs); color:var(--text-muted); margin-top:2px;">Total Sampah</div>
+                <span class="trend up" style="margin-top:var(--space-2); display:inline-flex;">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                  12% dari minggu lalu
+                </span>
+              </div>
+              <div class="chart-bars">
+                <div class="chart-bar-col"><div class="chart-bar" style="height:40px;"></div><span class="chart-bar-label">Sen</span></div>
+                <div class="chart-bar-col"><div class="chart-bar" style="height:55px;"></div><span class="chart-bar-label">Sel</span></div>
+                <div class="chart-bar-col"><div class="chart-bar" style="height:38px;"></div><span class="chart-bar-label">Rab</span></div>
+                <div class="chart-bar-col"><div class="chart-bar" style="height:65px;"></div><span class="chart-bar-label">Kam</span></div>
+                <div class="chart-bar-col"><div class="chart-bar active" style="height:72px;"></div><span class="chart-bar-label">Jum</span></div>
+                <div class="chart-bar-col"><div class="chart-bar" style="height:48px;"></div><span class="chart-bar-label">Sab</span></div>
+                <div class="chart-bar-col"><div class="chart-bar" style="height:30px;"></div><span class="chart-bar-label">Min</span></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-top:4px;">
+                <span>0</span><span>250</span><span>500</span><span>750</span><span>1000</span>
+              </div>
+            </div>
+
+            <!-- Bin Paling Aktif (Donut) -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Bin Paling Aktif</span>
+              </div>
+              <div class="donut-wrap">
+                <svg id="donut-aktif" width="120" height="120" viewBox="0 0 160 160" class="donut-svg flex-shrink:0;"></svg>
+                <div class="donut-legend">
+                  <div class="legend-item"><div class="legend-dot" style="background:#2E7D32;"></div><span class="legend-label">Darul Ulum</span><span class="legend-value">37%</span></div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#1565C0;"></div><span class="legend-label">Al Hikmah</span><span class="legend-value">29%</span></div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#F57C00;"></div><span class="legend-label">Nurul Huda</span><span class="legend-value">17%</span></div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#C62828;"></div><span class="legend-label">Al Falah</span><span class="legend-value">12%</span></div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#9CA3AF;"></div><span class="legend-label">Lainnya</span><span class="legend-value">5%</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Efisiensi -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Efisiensi Pengangkutan</span>
+              </div>
+              <div class="gauge-wrap" style="padding:var(--space-4) 0;">
+                <svg id="donut-efisiensi" width="120" height="120" viewBox="0 0 160 160"></svg>
+                <div style="text-align:center;">
+                  <div class="gauge-num">91%</div>
+                  <span class="gauge-tag">Sangat Efisien</span>
+                </div>
+                <span class="trend up">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                  7% dari minggu lalu
+                </span>
+              </div>
+            </div>
+
+          </div>
+
+        </div><!-- /left -->
+
+        <!-- RIGHT: Map + Aktivitas -->
+        <div style="display:flex; flex-direction:column; gap:var(--space-6);">
+
+          <!-- Map Card -->
+          <div class="card" style="padding:0; overflow:hidden;">
+            <div class="card-header" style="padding:var(--space-5) var(--space-6); border-bottom:1px solid var(--border-color-soft);">
+              <span class="card-title">Peta Lokasi Smart Bin</span>
+            </div>
+            <div style="padding:var(--space-4);">
+              <div class="map-placeholder">
+                <!-- Map background SVG roads -->
+                <svg class="map-bg" viewBox="0 0 340 320" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="340" height="320" fill="#EEF2EE"/>
+                  <!-- roads -->
+                  <line x1="0" y1="100" x2="340" y2="120" stroke="white" stroke-width="8"/>
+                  <line x1="0" y1="200" x2="340" y2="210" stroke="white" stroke-width="12"/>
+                  <line x1="120" y1="0" x2="130" y2="320" stroke="white" stroke-width="8"/>
+                  <line x1="220" y1="0" x2="240" y2="320" stroke="white" stroke-width="6"/>
+                  <line x1="0" y1="60" x2="120" y2="100" stroke="white" stroke-width="5"/>
+                  <line x1="240" y1="80" x2="340" y2="60" stroke="white" stroke-width="5"/>
+                  <!-- green areas -->
+                  <rect x="140" y="30" width="70" height="50" rx="6" fill="#C8E6C9" opacity="0.6"/>
+                  <rect x="30" y="140" width="80" height="50" rx="6" fill="#C8E6C9" opacity="0.5"/>
+                  <rect x="260" y="130" width="60" height="70" rx="6" fill="#C8E6C9" opacity="0.5"/>
+                </svg>
+                <!-- Pins -->
+                <div class="map-pin aman" style="left:52%; top:18%;" title="Nurul Huda — 28%"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+                <div class="map-pin aman" style="left:75%; top:30%;" title="Al Hikmah — 42%"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+                <div class="map-pin hampir" style="left:34%; top:52%;" title="Darul Ulum — 87%"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+                <div class="map-pin penuh" style="left:18%; top:68%;" title="Al Falah — 96%"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div>
+                <div class="map-pin offline" style="left:62%; top:72%;" title="Al Amin — Offline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></div>
+
+                <!-- Legend -->
+                <div class="map-legend">
+                  <div class="map-legend-item"><div class="map-legend-dot" style="background:var(--primary-green);"></div>Aman</div>
+                  <div class="map-legend-item"><div class="map-legend-dot" style="background:var(--accent-orange);"></div>Hampir Penuh</div>
+                  <div class="map-legend-item"><div class="map-legend-dot" style="background:#C62828;"></div>Penuh</div>
+                  <div class="map-legend-item"><div class="map-legend-dot" style="background:#9CA3AF;"></div>Offline</div>
+                </div>
+
+                <!-- Controls -->
+                <div class="map-controls">
+                  <div class="map-ctrl-btn">+</div>
+                  <div class="map-ctrl-btn">−</div>
+                  <div class="map-ctrl-btn" style="margin-top:4px;">⊙</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aktivitas Terbaru -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Aktivitas Terbaru</span>
+              <a href="#" class="card-link">Lihat Semua</a>
+            </div>
+            <div class="aktivitas-list">
+
+              <div class="aktivitas-item">
+                <div class="aktivitas-icon" style="background:#FFF3E0; color:#F57C00;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div class="aktivitas-body">
+                  <div class="aktivitas-title">Smart bin di Pondok Pesantren Al Falah penuh</div>
+                  <div class="aktivitas-sub">Kapasitas mencapai 96%</div>
+                </div>
+                <div class="aktivitas-time">08:43 WIB<br><span style="font-size:10px; color:var(--text-muted);">2 menit lalu</span></div>
+              </div>
+
+              <div class="aktivitas-item">
+                <div class="aktivitas-icon" style="background:var(--primary-green-soft); color:var(--primary-green);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </div>
+                <div class="aktivitas-body">
+                  <div class="aktivitas-title">Pengangkutan selesai di Pondok Pesantren Al Hikmah</div>
+                  <div class="aktivitas-sub">Sampah 68 kg berhasil diangkut</div>
+                </div>
+                <div class="aktivitas-time">08:30 WIB<br><span style="font-size:10px; color:var(--text-muted);">15 menit lalu</span></div>
+              </div>
+
+              <div class="aktivitas-item">
+                <div class="aktivitas-icon" style="background:#F5F5F5; color:#9CA3AF;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+                </div>
+                <div class="aktivitas-body">
+                  <div class="aktivitas-title">Sensor offline di Pondok Pesantren Al Amin</div>
+                  <div class="aktivitas-sub">Koneksi terputus lebih dari 10 menit</div>
+                </div>
+                <div class="aktivitas-time">08:30 WIB<br><span style="font-size:10px; color:var(--text-muted);">15 menit lalu</span></div>
+              </div>
+
+              <div class="aktivitas-item">
+                <div class="aktivitas-icon" style="background:var(--primary-green-soft); color:var(--primary-green);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                </div>
+                <div class="aktivitas-body">
+                  <div class="aktivitas-title">Maintenance selesai di Pondok Pesantren Darul Ulum</div>
+                  <div class="aktivitas-sub">Sensor dan sistem beroperasi normal</div>
+                </div>
+                <div class="aktivitas-time">08:15 WIB<br><span style="font-size:10px; color:var(--text-muted);">30 menit lalu</span></div>
+              </div>
+
+              <div class="aktivitas-item">
+                <div class="aktivitas-icon" style="background:#FFF3E0; color:#F57C00;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                </div>
+                <div class="aktivitas-body">
+                  <div class="aktivitas-title">Smart bin di Pondok Pesantren Darul Ulum hampir penuh</div>
+                  <div class="aktivitas-sub">Kapasitas mencapai 87%</div>
+                </div>
+                <div class="aktivitas-time">08:10 WIB<br><span style="font-size:10px; color:var(--text-muted);">35 menit lalu</span></div>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /right -->
+
+      </div><!-- /sb-main-grid -->
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-shell -->
+
+<script>
+'use strict';
+
+// Animate counters
+document.querySelectorAll('[data-count]').forEach(el => {
+  const target = parseFloat(el.dataset.count);
+  const suffix = el.dataset.suffix || '';
+  const duration = 800;
+  const start = performance.now();
+  function update(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = target * ease;
+    el.textContent = Number.isInteger(target) ? Math.round(current) + suffix : current.toFixed(2) + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+});
+
+// Donut helper
+function renderDonut(svgId, segments, centerText, centerSub) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const R = 55, CX = 80, CY = 80;
+  let total = segments.reduce((s, x) => s + x.value, 0);
+  let angle = -90;
+  svg.innerHTML = '';
+  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  bg.setAttribute('cx', CX); bg.setAttribute('cy', CY); bg.setAttribute('r', R);
+  bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', '#F0F0F0'); bg.setAttribute('stroke-width', '16');
+  svg.appendChild(bg);
+  segments.forEach(seg => {
+    const sweep = (seg.value / total) * 360;
+    const rad = a => a * Math.PI / 180;
+    const x1 = CX + R * Math.cos(rad(angle)), y1 = CY + R * Math.sin(rad(angle));
+    const x2 = CX + R * Math.cos(rad(angle + sweep)), y2 = CY + R * Math.sin(rad(angle + sweep));
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M ${x1} ${y1} A ${R} ${R} 0 ${sweep > 180 ? 1 : 0} 1 ${x2} ${y2}`);
+    path.setAttribute('fill', 'none'); path.setAttribute('stroke', seg.color);
+    path.setAttribute('stroke-width', '16'); path.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(path);
+    angle += sweep;
+  });
+  const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  t.setAttribute('x', CX); t.setAttribute('y', CY - 4);
+  t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', '20');
+  t.setAttribute('font-weight', '800'); t.setAttribute('fill', '#1A1A2E');
+  t.setAttribute('font-family', 'Plus Jakarta Sans, sans-serif');
+  t.textContent = centerText;
+  svg.appendChild(t);
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  s.setAttribute('x', CX); s.setAttribute('y', CY + 14);
+  s.setAttribute('text-anchor', 'middle'); s.setAttribute('font-size', '10');
+  s.setAttribute('fill', '#9CA3AF');
+  s.setAttribute('font-family', 'Plus Jakarta Sans, sans-serif');
+  s.textContent = centerSub;
+  svg.appendChild(s);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderDonut('donut-aktif', [
+    { value: 37, color: '#2E7D32' },
+    { value: 29, color: '#1565C0' },
+    { value: 17, color: '#F57C00' },
+    { value: 12, color: '#C62828' },
+    { value: 5,  color: '#9CA3AF' },
+  ], '24', 'Total Bin');
+
+  renderDonut('donut-efisiensi', [
+    { value: 91, color: '#2E7D32' },
+    { value: 9,  color: '#E8F5E9' },
+  ], '91%', 'Efisiensi');
+});
+
+// Mobile sidebar
+const sidebar = document.getElementById('adminSidebar');
+const overlay = document.getElementById('sidebarOverlay');
+const menuBtn = document.getElementById('mobileMenuBtn');
+menuBtn?.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('active'); });
+overlay?.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
+</script>
+<script src="js/admin-sidebar.js"></script>
+<script src="components/admin-navbar.js"></script>
+</body>
+</html>

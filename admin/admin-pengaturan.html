@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pengaturan — POROS Admin</title>
+
+  <link rel="stylesheet" href="css/admin-shared.css"/>
+  <link rel="stylesheet" href="css/admin-layout.css"/>
+  <link rel="stylesheet" href="css/admin-components.css"/>
+  <link rel="stylesheet" href="css/admin-pengaturan.css"/>
+  <link rel="stylesheet" href="css/admin-navbar.css"/>
+
+  <style>
+    /* ═══════════════════════════════════════════
+       MOBILE / TABLET SETTINGS — STYLE HP
+       Aktif di ≤ 1024px (tablet ke bawah)
+    ═══════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+
+      /* ── Sembunyikan settings-nav kiri (panel list) ── */
+      .settings-nav {
+        display: none !important;
+      }
+
+      /* ── settings-layout jadi 1 kolom ── */
+      .settings-layout {
+        display: block !important;
+        padding: 0 !important;
+        gap: 0 !important;
+      }
+
+      /* ── Panel konten disembunyikan saat mobile ── */
+      #settingsContent {
+        display: block;
+      }
+
+      .settings-panel {
+        display: none !important;
+      }
+
+      /* ── List menu ala pengaturan HP ── */
+      #mobileSettingsList {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-card, #fff);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 1px 4px rgba(0,0,0,.07);
+        margin: 12px 0;
+      }
+
+      .mobile-setting-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 15px 18px;
+        cursor: pointer;
+        border-bottom: 1px solid var(--border-light, #f0f0f0);
+        background: #fff;
+        transition: background .15s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .mobile-setting-item:last-child { border-bottom: none; }
+      .mobile-setting-item:active { background: #f5f5f5; }
+
+      .mobile-setting-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--primary-green-soft, #E8F5E9);
+        color: var(--primary-green, #2E7D32);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .mobile-setting-label {
+        flex: 1;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary, #1a1a1a);
+      }
+
+      .mobile-setting-chevron {
+        color: #bbb;
+        flex-shrink: 0;
+      }
+
+      .mobile-setting-divider {
+        height: 10px;
+        background: var(--bg-soft, #f5f7f5);
+      }
+
+      /* ── Header panel saat detail terbuka ── */
+      #mobileBackBar {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px 10px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary, #1a1a1a);
+        cursor: pointer;
+        background: var(--bg-soft, #f5f7f5);
+        border-bottom: 1px solid var(--border-light, #ececec);
+        margin-bottom: 4px;
+      }
+      #mobileBackBar svg { color: var(--primary-green, #2E7D32); }
+
+      /* ── Saat panel detail aktif ── */
+      body.mobile-panel-open #mobileSettingsList { display: none; }
+      body.mobile-panel-open .settings-panel.mobile-active { display: block !important; }
+      body.mobile-panel-open #mobileBackBar { display: flex; }
+
+      /* ── Bersihkan padding panel ── */
+      .settings-panel {
+        background: transparent;
+      }
+
+      /* ── Section lebih rapat di mobile ── */
+      .settings-section {
+        margin-bottom: 12px !important;
+        border-radius: 12px !important;
+      }
+
+      .settings-section-header {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    }
+
+    /* Desktop: sembunyikan elemen mobile */
+    @media (min-width: 1025px) {
+      #mobileSettingsList { display: none !important; }
+      #mobileBackBar { display: none !important; }
+    }
+  </style>
+</head>
+<body data-navbar-title="Pengaturan">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="assets/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" data-page="admin-dashboard.html" href="admin-dashboard.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+        Dashboard
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-smart-bin.html" href="admin-smart-bin.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span>
+        Smart Bin
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-pengiriman.html" href="admin-pengiriman.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+        Pengiriman
+        <span class="nav-badge">Baru</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-riwayat.html" href="admin-riwayat.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        Riwayat
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-laporan.html" href="admin-laporan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        Laporan
+      </a>
+      <div class="sidebar-divider"></div>
+      <a class="sidebar-nav-item" data-page="admin-notifikasi.html" href="admin-notifikasi.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        Notifikasi
+        <span class="nav-badge">3</span>
+      </a>
+      <a class="sidebar-nav-item active" data-page="admin-pengaturan.html" href="admin-pengaturan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        Pengaturan
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-bantuan.html" href="admin-bantuan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        Bantuan
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <div style="font-size:28px; margin-bottom:var(--space-3);">🌿</div>
+      <h4>Kelola Sampah Organik Lebih Cerdas dan Berdampak</h4>
+      <p>Bersama POROS, kelola sampah organik secara efisien, transparan, dan memberikan manfaat nyata bagi masyarakat.</p>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name">Admin Pondok</div>
+        <div class="user-email">admin@darululum.id</div>
+      </div>
+      <svg class="user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- TOPBAR -->
+    <header class="admin-topbar"></header>
+
+    <!-- CONTENT -->
+    <div class="admin-content">
+      <div class="settings-layout">
+
+        <!-- ── MOBILE BACK BAR ── -->
+        <div id="mobileBackBar" onclick="closeMobilePanel()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          <span id="mobileBackTitle">Pengaturan</span>
+        </div>
+
+        <!-- ── MOBILE SETTINGS LIST (ala pengaturan HP) ── -->
+        <div id="mobileSettingsList">
+          <!-- Grup 1 -->
+          <div class="mobile-setting-item" onclick="openMobilePanel('profil','Profil Akun')">
+            <div class="mobile-setting-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <span class="mobile-setting-label">Profil Akun</span>
+            <svg class="mobile-setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="mobile-setting-item" onclick="openMobilePanel('pondok','Informasi Pondok')">
+            <div class="mobile-setting-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <span class="mobile-setting-label">Informasi Pondok</span>
+            <svg class="mobile-setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="mobile-setting-divider"></div>
+
+          <div class="mobile-setting-item" onclick="openMobilePanel('notifikasi','Notifikasi')">
+            <div class="mobile-setting-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <span class="mobile-setting-label">Notifikasi</span>
+            <svg class="mobile-setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="mobile-setting-item" onclick="openMobilePanel('preferensi','Preferensi')">
+            <div class="mobile-setting-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </div>
+            <span class="mobile-setting-label">Preferensi</span>
+            <svg class="mobile-setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="mobile-setting-item" onclick="openMobilePanel('keamanan','Keamanan')">
+            <div class="mobile-setting-icon" style="background:#E8EAF6; color:#3949AB;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <span class="mobile-setting-label">Keamanan</span>
+            <svg class="mobile-setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="mobile-setting-divider"></div>
+
+          <div class="mobile-setting-item" onclick="openMobilePanel('integrasi','Integrasi')">
+            <div class="mobile-setting-icon" style="background:#E3F2FD; color:#1565C0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </div>
+            <span class="mobile-setting-label">Integrasi</span>
+            <svg class="mobile-setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="mobile-setting-item" onclick="openMobilePanel('tentang','Tentang')">
+            <div class="mobile-setting-icon" style="background:#F3E5F5; color:#6A1B9A;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <span class="mobile-setting-label">Tentang</span>
+            <svg class="mobile-setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="mobile-setting-item" onclick="openMobilePanel('bantuan','Bantuan')">
+            <div class="mobile-setting-icon" style="background:#FFF3E0; color:#E65100;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <span class="mobile-setting-label">Bantuan</span>
+            <svg class="mobile-setting-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <!-- SETTINGS NAV -->
+        <nav class="settings-nav" id="settingsNav">
+          <div class="settings-nav-item active" data-tab="profil">
+            <span class="snav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            Profil Akun
+          </div>
+          <div class="settings-nav-item" data-tab="pondok">
+            <span class="snav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+            Informasi Pondok
+          </div>
+          <div class="settings-nav-divider"></div>
+          <div class="settings-nav-item" data-tab="notifikasi">
+            <span class="snav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+            Notifikasi
+          </div>
+          <div class="settings-nav-item" data-tab="preferensi">
+            <span class="snav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+            Preferensi
+          </div>
+          <div class="settings-nav-item" data-tab="keamanan">
+            <span class="snav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+            Keamanan
+          </div>
+          <div class="settings-nav-divider"></div>
+          <div class="settings-nav-item" data-tab="integrasi">
+            <span class="snav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
+            Integrasi
+          </div>
+          <div class="settings-nav-item" data-tab="tentang">
+            <span class="snav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+            Tentang
+          </div>
+          <div class="settings-nav-item" data-tab="bantuan">
+            <span class="snav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+            Bantuan
+          </div>
+        </nav>
+
+        <!-- SETTINGS CONTENT -->
+        <div id="settingsContent">
+
+          <!-- ════════════ PROFIL AKUN ════════════ -->
+          <div class="settings-panel active" id="panel-profil">
+            <!-- Profile hero -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Profil Akun</div>
+                  <div class="settings-section-desc">Informasi akun admin yang terdaftar.</div>
+                </div>
+                <button class="btn btn-outline btn-sm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit Profil
+                </button>
+              </div>
+              <div class="settings-section-body">
+                <div class="profile-hero">
+                  <div class="profile-avatar-wrap">
+                    <div class="profile-avatar">
+                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="profile-avatar-edit">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="font-size:var(--font-size-lg); font-weight:800; color:var(--text-primary);">Admin Pondok</div>
+                    <div style="font-size:var(--font-size-sm); color:var(--text-muted); margin-top:2px;">admin@darululum.id</div>
+                    <span class="badge badge-success" style="margin-top:8px;">Administrator</span>
+                  </div>
+                </div>
+
+                <div class="profile-meta-grid">
+                  <div class="profile-meta-item">
+                    <div class="profile-meta-label">Nama Lengkap</div>
+                    <div class="profile-meta-value">Admin Pondok</div>
+                  </div>
+                  <div class="profile-meta-item">
+                    <div class="profile-meta-label">Email</div>
+                    <div class="profile-meta-value">admin@darululum.id</div>
+                  </div>
+                  <div class="profile-meta-item">
+                    <div class="profile-meta-label">No. Telepon</div>
+                    <div class="profile-meta-value">0812 3456 7890</div>
+                  </div>
+                  <div class="profile-meta-item">
+                    <div class="profile-meta-label">Jabatan</div>
+                    <div class="profile-meta-value">Administrator</div>
+                  </div>
+                  <div class="profile-meta-item">
+                    <div class="profile-meta-label">Username</div>
+                    <div class="profile-meta-value">admin_darululum</div>
+                  </div>
+                  <div class="profile-meta-item">
+                    <div class="profile-meta-label">Bergabung</div>
+                    <div class="profile-meta-value">12 Januari 2024</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ganti Password -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Ganti Password</div>
+                  <div class="settings-section-desc">Perbarui kata sandi akun Anda secara berkala.</div>
+                </div>
+              </div>
+              <div class="settings-section-body">
+                <div class="form-grid">
+                  <div class="form-group full">
+                    <label class="form-label">Password Saat Ini</label>
+                    <input type="password" class="form-input" placeholder="Masukkan password lama" value="••••••••••"/>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Password Baru</label>
+                    <input type="password" class="form-input" placeholder="Min. 8 karakter"/>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Konfirmasi Password</label>
+                    <input type="password" class="form-input" placeholder="Ulangi password baru"/>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-primary btn-sm">Simpan Password</button>
+                  <button class="btn btn-ghost btn-sm" style="color:var(--danger);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Logout Semua Perangkat
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════ INFORMASI PONDOK ════════════ -->
+          <div class="settings-panel" id="panel-pondok">
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Informasi Pondok</div>
+                  <div class="settings-section-desc">Informasi umum pondok pesantren.</div>
+                </div>
+                <button class="btn btn-outline btn-sm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit Informasi
+                </button>
+              </div>
+              <div class="settings-section-body">
+                <!-- Logo Upload -->
+                <div style="display:flex; align-items:center; gap:var(--space-4); padding:var(--space-4); background:var(--bg-soft); border-radius:var(--radius-md); margin-bottom:var(--space-5);">
+                  <div style="width:64px; height:64px; border-radius:var(--radius-md); background:var(--primary-green-soft); border:2px dashed var(--primary-green); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0;">🕌</div>
+                  <div>
+                    <div style="font-size:var(--font-size-sm); font-weight:600; color:var(--text-primary); margin-bottom:4px;">Logo Pondok</div>
+                    <div style="font-size:var(--font-size-xs); color:var(--text-muted); margin-bottom:var(--space-2);">PNG, JPG atau SVG. Maks 2MB.</div>
+                    <button class="btn btn-outline btn-sm">Upload Logo</button>
+                  </div>
+                </div>
+
+                <div class="info-row">
+                  <div class="info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+                  <div class="info-row-content"><div class="info-row-label">Nama Pondok</div><div class="info-row-value">Pondok Pesantren Darul Ulum</div></div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                  <div class="info-row-content"><div class="info-row-label">Alamat Lengkap</div><div class="info-row-value">Jl. Kyai Haji No. 123, Jombang, Jawa Timur</div></div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                  <div class="info-row-content"><div class="info-row-label">Email Kontak</div><div class="info-row-value">info@darululum.id</div></div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.29 6.29l1.14-1.14a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+                  <div class="info-row-content"><div class="info-row-label">No. Telepon</div><div class="info-row-value">(0321) 123456</div></div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                  <div class="info-row-content"><div class="info-row-label">Jumlah Santri</div><div class="info-row-value">1.250 orang</div></div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                  <div class="info-row-content"><div class="info-row-label">Penanggung Jawab</div><div class="info-row-value">KH. Abdul Rahman, M.Ag.</div></div>
+                </div>
+                <div class="info-row" style="align-items:flex-start;">
+                  <div class="info-row-icon" style="margin-top:2px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                  <div class="info-row-content"><div class="info-row-label">Deskripsi Singkat</div><div class="info-row-value" style="line-height:1.6;">Pondok Pesantren Darul Ulum adalah lembaga pendidikan Islam yang berkomitmen pada pengembangan santri dan pengelolaan lingkungan yang berkelanjutan.</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════ NOTIFIKASI ════════════ -->
+          <div class="settings-panel" id="panel-notifikasi">
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Pengaturan Notifikasi</div>
+                  <div class="settings-section-desc">Atur jenis pemberitahuan yang ingin Anda terima.</div>
+                </div>
+              </div>
+              <div class="settings-section-body">
+                <div class="toggle-group">
+                  <div class="toggle-row">
+                    <div class="toggle-row-left">
+                      <div class="toggle-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+                      <div>
+                        <div class="toggle-row-label">Notifikasi Pengiriman</div>
+                        <div class="toggle-row-desc">Pembaruan status pengiriman sampah organik</div>
+                        <div class="channel-chips">
+                          <div class="channel-chip active">📧 Email</div>
+                          <div class="channel-chip active">💬 WhatsApp</div>
+                          <div class="channel-chip">🔔 Push</div>
+                        </div>
+                      </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-row-left">
+                      <div class="toggle-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div>
+                      <div>
+                        <div class="toggle-row-label">Smart Bin Penuh</div>
+                        <div class="toggle-row-desc">Peringatan saat tempat sampah mendekati kapasitas penuh</div>
+                        <div class="channel-chips">
+                          <div class="channel-chip active">📧 Email</div>
+                          <div class="channel-chip active">💬 WhatsApp</div>
+                          <div class="channel-chip active">🔔 Push</div>
+                        </div>
+                      </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-row-left">
+                      <div class="toggle-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                      <div>
+                        <div class="toggle-row-label">Jadwal Penjemputan</div>
+                        <div class="toggle-row-desc">Pengingat sebelum jadwal penjemputan berlangsung</div>
+                        <div class="channel-chips">
+                          <div class="channel-chip active">📧 Email</div>
+                          <div class="channel-chip">💬 WhatsApp</div>
+                          <div class="channel-chip active">🔔 Push</div>
+                        </div>
+                      </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-row-left">
+                      <div class="toggle-row-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                      <div>
+                        <div class="toggle-row-label">Laporan Bulanan</div>
+                        <div class="toggle-row-desc">Ringkasan performa dan statistik bulanan</div>
+                        <div class="channel-chips">
+                          <div class="channel-chip active">📧 Email</div>
+                          <div class="channel-chip">💬 WhatsApp</div>
+                          <div class="channel-chip">🔔 Push</div>
+                        </div>
+                      </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-row-left">
+                      <div class="toggle-row-icon" style="background:#FFEBEE; color:#C62828;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                      <div>
+                        <div class="toggle-row-label">Error Sistem</div>
+                        <div class="toggle-row-desc">Pemberitahuan saat terjadi gangguan atau kesalahan sistem</div>
+                        <div class="channel-chips">
+                          <div class="channel-chip active">📧 Email</div>
+                          <div class="channel-chip active">💬 WhatsApp</div>
+                          <div class="channel-chip active">🔔 Push</div>
+                        </div>
+                      </div>
+                    </div>
+                    <label class="toggle-switch"><input type="checkbox" checked/><span class="toggle-track"></span></label>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-primary btn-sm">Simpan Pengaturan</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════ PREFERENSI ════════════ -->
+          <div class="settings-panel" id="panel-preferensi">
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Preferensi Tampilan</div>
+                  <div class="settings-section-desc">Atur tampilan dan pengalaman pengguna.</div>
+                </div>
+              </div>
+              <div class="settings-section-body">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Bahasa Sistem</label>
+                    <select class="form-select">
+                      <option selected>Bahasa Indonesia</option>
+                      <option>English</option>
+                      <option>العربية</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Mode Tampilan</label>
+                    <select class="form-select">
+                      <option selected>Terang</option>
+                      <option>Gelap</option>
+                      <option>Ikuti Sistem</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Format Tanggal</label>
+                    <select class="form-select">
+                      <option selected>DD/MM/YYYY</option>
+                      <option>MM/DD/YYYY</option>
+                      <option>YYYY-MM-DD</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Zona Waktu</label>
+                    <select class="form-select">
+                      <option selected>Asia/Jakarta (WIB, UTC+7)</option>
+                      <option>Asia/Makassar (WITA, UTC+8)</option>
+                      <option>Asia/Jayapura (WIT, UTC+9)</option>
+                    </select>
+                  </div>
+                  <div class="form-group full">
+                    <label class="form-label">Tampilan Dashboard Default</label>
+                    <select class="form-select">
+                      <option selected>Ringkasan Harian</option>
+                      <option>Status Smart Bin</option>
+                      <option>Jadwal Pengiriman</option>
+                      <option>Laporan Bulanan</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-primary btn-sm">Simpan Preferensi</button>
+                  <button class="btn btn-ghost btn-sm">Reset ke Default</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════ KEAMANAN ════════════ -->
+          <div class="settings-panel" id="panel-keamanan">
+            <!-- 2FA & Session -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Keamanan Akun</div>
+                  <div class="settings-section-desc">Kelola keamanan akses dan autentikasi.</div>
+                </div>
+              </div>
+              <div class="settings-section-body">
+                <div class="security-item">
+                  <div class="security-item-left">
+                    <div class="security-icon" style="background:#E8F5E9; color:#2E7D32;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+                    <div>
+                      <div class="security-title">Verifikasi 2 Langkah (2FA)</div>
+                      <div class="security-desc">Tambahkan lapisan keamanan ekstra menggunakan aplikasi autentikator.</div>
+                    </div>
+                  </div>
+                  <button class="btn btn-outline btn-sm">Aktifkan 2FA</button>
+                </div>
+                <div class="security-item">
+                  <div class="security-item-left">
+                    <div class="security-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                    <div>
+                      <div class="security-title">Batas Waktu Sesi</div>
+                      <div class="security-desc">Logout otomatis setelah tidak aktif selama periode tertentu.</div>
+                    </div>
+                  </div>
+                  <select class="form-select" style="width:140px;">
+                    <option>30 menit</option>
+                    <option selected>1 jam</option>
+                    <option>4 jam</option>
+                    <option>8 jam</option>
+                  </select>
+                </div>
+                <div class="security-item">
+                  <div class="security-item-left">
+                    <div class="security-icon" style="background:#FFF3E0; color:#E65100;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+                    <div>
+                      <div class="security-title">Keluar Semua Perangkat</div>
+                      <div class="security-desc">Akhiri semua sesi aktif di seluruh perangkat yang terhubung.</div>
+                    </div>
+                  </div>
+                  <button class="btn btn-sm" style="background:#FFEBEE; color:#C62828; border:none; font-weight:600;">Logout Semua</button>
+                </div>
+                <div class="security-item">
+                  <div class="security-item-left">
+                    <div class="security-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+                    <div>
+                      <div class="security-title">Backup Data</div>
+                      <div class="security-desc">Unduh cadangan data sistem terakhir.</div>
+                    </div>
+                  </div>
+                  <button class="btn btn-outline btn-sm">Download Backup</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Riwayat Login -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Riwayat Login</div>
+                  <div class="settings-section-desc">Aktivitas masuk terbaru ke akun Anda.</div>
+                </div>
+              </div>
+              <div class="settings-section-body">
+                <div class="login-row">
+                  <div class="icon-wrap icon-wrap-sm" style="background:var(--primary-green-soft); color:var(--primary-green);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  </div>
+                  <div style="flex:1;">
+                    <div class="login-device">Chrome di Windows 11</div>
+                    <div class="login-info">Jombang, Jawa Timur — 192.168.1.1</div>
+                  </div>
+                  <div>
+                    <div class="login-time">Hari ini, 09:32</div>
+                    <span class="badge badge-success" style="margin-top:4px;">Aktif Sekarang</span>
+                  </div>
+                </div>
+                <div class="login-row">
+                  <div class="icon-wrap icon-wrap-sm" style="background:var(--bg-soft);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  </div>
+                  <div style="flex:1;">
+                    <div class="login-device">Firefox di MacOS</div>
+                    <div class="login-info">Surabaya, Jawa Timur — 10.0.0.1</div>
+                  </div>
+                  <div class="login-time">Kemarin, 14:15</div>
+                </div>
+                <div class="login-row">
+                  <div class="icon-wrap icon-wrap-sm" style="background:var(--bg-soft);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  </div>
+                  <div style="flex:1;">
+                    <div class="login-device">Safari di iPhone</div>
+                    <div class="login-info">Jombang, Jawa Timur — 10.0.0.5</div>
+                  </div>
+                  <div class="login-time">20 Mei 2026, 11:00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════ INTEGRASI ════════════ -->
+          <div class="settings-panel" id="panel-integrasi">
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Integrasi Layanan</div>
+                  <div class="settings-section-desc">Hubungkan sistem POROS dengan layanan eksternal.</div>
+                </div>
+              </div>
+              <div class="settings-section-body">
+                <div class="integration-item">
+                  <div class="integration-icon">💬</div>
+                  <div class="integration-info">
+                    <div class="integration-name">WhatsApp Business</div>
+                    <div class="integration-desc">Kirim notifikasi otomatis via WhatsApp</div>
+                  </div>
+                  <div class="integration-actions">
+                    <span class="status-dot connected"></span>
+                    <span class="badge badge-success">Terhubung</span>
+                    <button class="btn btn-ghost btn-sm">Tes</button>
+                  </div>
+                </div>
+                <div class="integration-item">
+                  <div class="integration-icon">📧</div>
+                  <div class="integration-info">
+                    <div class="integration-name">Email SMTP</div>
+                    <div class="integration-desc">Konfigurasi server email untuk notifikasi</div>
+                  </div>
+                  <div class="integration-actions">
+                    <span class="status-dot connected"></span>
+                    <span class="badge badge-success">Aktif</span>
+                    <button class="btn btn-ghost btn-sm">Ubah</button>
+                  </div>
+                </div>
+                <div class="integration-item">
+                  <div class="integration-icon">📡</div>
+                  <div class="integration-info">
+                    <div class="integration-name">API Smart Bin</div>
+                    <div class="integration-desc">Sinkronisasi data sensor tempat sampah</div>
+                  </div>
+                  <div class="integration-actions">
+                    <span class="status-dot connected"></span>
+                    <span class="badge badge-success">Terhubung</span>
+                    <button class="btn btn-ghost btn-sm">Tes</button>
+                  </div>
+                </div>
+                <div class="integration-item">
+                  <div class="integration-icon">🗺️</div>
+                  <div class="integration-info">
+                    <div class="integration-name">Google Maps</div>
+                    <div class="integration-desc">Tampilkan lokasi Smart Bin di peta</div>
+                  </div>
+                  <div class="integration-actions">
+                    <span class="status-dot warning"></span>
+                    <span class="badge badge-warning">API Key Perlu Diperbarui</span>
+                    <button class="btn btn-outline btn-sm">Perbarui</button>
+                  </div>
+                </div>
+                <div class="integration-item">
+                  <div class="integration-icon">🔗</div>
+                  <div class="integration-info">
+                    <div class="integration-name">Webhook</div>
+                    <div class="integration-desc">Kirim event data ke URL eksternal</div>
+                  </div>
+                  <div class="integration-actions">
+                    <span class="status-dot disconnected"></span>
+                    <span class="badge badge-gray">Tidak Aktif</span>
+                    <button class="btn btn-outline btn-sm">Hubungkan</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- API Key -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">API Key</div>
+                  <div class="settings-section-desc">Gunakan kunci ini untuk akses API sistem POROS.</div>
+                </div>
+                <button class="btn btn-outline btn-sm">Buat Baru</button>
+              </div>
+              <div class="settings-section-body">
+                <div class="api-key-box">
+                  <div class="api-key-value" id="apiKeyValue">poros_live_sk_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0</div>
+                  <button class="btn btn-ghost btn-sm" onclick="toggleApiKey()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button class="btn btn-ghost btn-sm" onclick="copyApiKey()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+                <p style="font-size:var(--font-size-xs); color:var(--text-muted); margin-top:var(--space-2);">Jangan bagikan API Key ini kepada siapapun. Rotate secara berkala untuk keamanan optimal.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════ TENTANG ════════════ -->
+          <div class="settings-panel" id="panel-tentang">
+            <div class="settings-section">
+              <div class="about-app-hero">
+                <div class="app-logo-circle">🌿</div>
+                <div style="font-size:var(--font-size-xl); font-weight:800; color:var(--text-primary);">POROS</div>
+                <div style="font-size:var(--font-size-sm); color:var(--text-muted); margin-top:4px;">Foodwaste Solution</div>
+                <div class="app-version-badge">v2.4.1 — Stabil</div>
+              </div>
+              <div class="settings-section-body">
+                <div class="info-row">
+                  <div class="info-row-content">
+                    <div class="info-row-label">Nama Aplikasi</div>
+                    <div class="info-row-value">POROS — Smart Waste Management</div>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-content">
+                    <div class="info-row-label">Versi Sistem</div>
+                    <div class="info-row-value">2.4.1 (Build 20260422)</div>
+                  </div>
+                  <button class="btn btn-outline btn-sm">Cek Update</button>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-content">
+                    <div class="info-row-label">Deskripsi</div>
+                    <div class="info-row-value">Platform manajemen sampah organik berbasis IoT untuk pondok pesantren dan komunitas.</div>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-content">
+                    <div class="info-row-label">Developer / Tim</div>
+                    <div class="info-row-value">Tim POROS — Jombang, Jawa Timur</div>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-content">
+                    <div class="info-row-label">Kontak Bantuan</div>
+                    <div class="info-row-value">support@poros.id · (0321) 999888</div>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-row-content">
+                    <div class="info-row-label">Dokumen Legal</div>
+                    <div style="display:flex; gap:var(--space-3); margin-top:4px;">
+                      <a href="#" style="font-size:var(--font-size-sm); color:var(--primary-green); font-weight:600;">Kebijakan Privasi</a>
+                      <a href="#" style="font-size:var(--font-size-sm); color:var(--primary-green); font-weight:600;">Syarat & Ketentuan</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════ BANTUAN ════════════ -->
+          <div class="settings-panel" id="panel-bantuan">
+            <!-- Help Channels -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Pusat Bantuan</div>
+                  <div class="settings-section-desc">Kami siap membantu Anda kapan saja.</div>
+                </div>
+              </div>
+              <div class="settings-section-body">
+                <div class="help-channels">
+                  <div class="help-channel-card">
+                    <div class="help-channel-icon">📖</div>
+                    <div class="help-channel-name">Panduan Penggunaan</div>
+                    <div class="help-channel-desc">Dokumentasi lengkap fitur POROS</div>
+                  </div>
+                  <div class="help-channel-card">
+                    <div class="help-channel-icon">🎬</div>
+                    <div class="help-channel-name">Video Tutorial</div>
+                    <div class="help-channel-desc">Belajar lewat video langkah demi langkah</div>
+                  </div>
+                  <div class="help-channel-card">
+                    <div class="help-channel-icon">💬</div>
+                    <div class="help-channel-name">Chat Bantuan</div>
+                    <div class="help-channel-desc">Hubungi tim support secara langsung</div>
+                  </div>
+                  <div class="help-channel-card">
+                    <div class="help-channel-icon">📞</div>
+                    <div class="help-channel-name">Hubungi Admin</div>
+                    <div class="help-channel-desc">Bicara langsung via telepon atau WhatsApp</div>
+                  </div>
+                  <div class="help-channel-card">
+                    <div class="help-channel-icon">🐛</div>
+                    <div class="help-channel-name">Laporkan Bug</div>
+                    <div class="help-channel-desc">Temukan masalah? Bantu kami perbaiki</div>
+                  </div>
+                  <div class="help-channel-card">
+                    <div class="help-channel-icon">💡</div>
+                    <div class="help-channel-name">Saran & Masukan</div>
+                    <div class="help-channel-desc">Bagikan ide untuk pengembangan POROS</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Pertanyaan Umum (FAQ)</div>
+                  <div class="settings-section-desc">Jawaban atas pertanyaan yang sering ditanyakan.</div>
+                </div>
+              </div>
+              <div class="settings-section-body">
+                <div class="faq-item open">
+                  <div class="faq-question">
+                    Bagaimana cara menambahkan Smart Bin baru?
+                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="faq-answer">
+                    <div class="faq-answer-inner">Buka menu Smart Bin di sidebar, lalu klik tombol "Tambah Bin Baru". Masukkan informasi lokasi, kapasitas, dan ID sensor perangkat. Pastikan perangkat sudah terhubung ke jaringan WiFi pondok sebelum mendaftarkan.</div>
+                  </div>
+                </div>
+                <div class="faq-item">
+                  <div class="faq-question">
+                    Bagaimana cara mengubah jadwal pengiriman?
+                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="faq-answer">
+                    <div class="faq-answer-inner">Masuk ke menu Pengiriman, pilih jadwal yang ingin diubah, dan klik ikon edit. Anda dapat mengubah tanggal, waktu, dan petugas pengambil. Perubahan akan otomatis tersinkronisasi ke petugas terkait.</div>
+                  </div>
+                </div>
+                <div class="faq-item">
+                  <div class="faq-question">
+                    Notifikasi tidak masuk, apa yang harus dilakukan?
+                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="faq-answer">
+                    <div class="faq-answer-inner">Periksa pengaturan Notifikasi dan pastikan kanal yang diinginkan sudah diaktifkan. Untuk push notification, pastikan browser atau aplikasi memiliki izin notifikasi. Untuk WhatsApp, pastikan nomor telepon sudah terverifikasi di pengaturan Integrasi.</div>
+                  </div>
+                </div>
+                <div class="faq-item">
+                  <div class="faq-question">
+                    Bagaimana cara mengekspor laporan ke PDF?
+                    <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="faq-answer">
+                    <div class="faq-answer-inner">Buka menu Laporan, pilih rentang tanggal yang diinginkan, lalu klik tombol "Ekspor" di pojok kanan atas. Pilih format PDF atau Excel sesuai kebutuhan.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kirim Laporan Bug -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <div>
+                  <div class="settings-section-title">Kirim Laporan</div>
+                  <div class="settings-section-desc">Laporkan bug atau kirim masukan kepada tim POROS.</div>
+                </div>
+              </div>
+              <div class="settings-section-body">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Jenis Laporan</label>
+                    <select class="form-select">
+                      <option>Laporkan Bug</option>
+                      <option>Saran Fitur</option>
+                      <option>Keluhan Layanan</option>
+                      <option>Lainnya</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Prioritas</label>
+                    <select class="form-select">
+                      <option>Rendah</option>
+                      <option selected>Sedang</option>
+                      <option>Tinggi</option>
+                      <option>Kritis</option>
+                    </select>
+                  </div>
+                  <div class="form-group full">
+                    <label class="form-label">Judul</label>
+                    <input class="form-input" type="text" placeholder="Deskripsikan masalah secara singkat"/>
+                  </div>
+                  <div class="form-group full">
+                    <label class="form-label">Detail</label>
+                    <textarea class="form-textarea" placeholder="Ceritakan langkah-langkah yang menyebabkan masalah ini..."></textarea>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn-primary btn-sm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Kirim Laporan
+                  </button>
+                  <button class="btn btn-ghost btn-sm">Hubungi Support</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /settingsContent -->
+      </div><!-- /settings-layout -->
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-shell -->
+<script>
+'use strict';
+
+// ── Settings tab navigation ──
+(function() {
+  const navItems = document.querySelectorAll('.settings-nav-item[data-tab]');
+  const panels   = document.querySelectorAll('.settings-panel');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const tab = item.dataset.tab;
+
+      navItems.forEach(n => n.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+
+      item.classList.add('active');
+      const target = document.getElementById('panel-' + tab);
+      if (target) target.classList.add('active');
+    });
+  });
+})();
+
+// ── FAQ accordion ──
+document.querySelectorAll('.faq-question').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// ── Channel chip toggle ──
+document.querySelectorAll('.channel-chip').forEach(chip => {
+  chip.addEventListener('click', () => chip.classList.toggle('active'));
+});
+
+// ── API Key helpers ──
+let apiVisible = false;
+const apiMasked = '•'.repeat(40);
+const apiReal   = 'poros_live_sk_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0';
+
+function toggleApiKey() {
+  apiVisible = !apiVisible;
+  document.getElementById('apiKeyValue').textContent = apiVisible ? apiReal : apiMasked;
+}
+
+function copyApiKey() {
+  navigator.clipboard.writeText(apiReal).catch(() => {});
+  const btn = event.currentTarget;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  setTimeout(() => {
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  }, 2000);
+}
+
+// Init masked API key
+document.getElementById('apiKeyValue').textContent = apiMasked;
+
+// ── Mobile settings panel navigation ──
+function openMobilePanel(tab, title) {
+  // Hanya aktif di layar ≤ 1024px
+  if (window.innerWidth > 1024) return;
+  document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('mobile-active'));
+  const target = document.getElementById('panel-' + tab);
+  if (target) target.classList.add('mobile-active');
+  document.getElementById('mobileBackTitle').textContent = title;
+  document.body.classList.add('mobile-panel-open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeMobilePanel() {
+  document.body.classList.remove('mobile-panel-open');
+  document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('mobile-active'));
+}
+
+// Reset mobile state saat resize ke desktop
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 1024) {
+    document.body.classList.remove('mobile-panel-open');
+  }
+});
+
+// ── Mobile menu
+document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+  document.getElementById('adminSidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('active');
+});
+document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
+  document.getElementById('adminSidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+});
+</script>
+<script src="js/admin-sidebar.js"></script>
+<script src="components/admin-navbar.js"></script>
+</body>
+</html>
