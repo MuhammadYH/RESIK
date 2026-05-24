@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pengiriman — POROS Admin</title>
+
+  <link rel="stylesheet" href="css/admin-shared.css"/>
+  <link rel="stylesheet" href="css/admin-layout.css"/>
+  <link rel="stylesheet" href="css/admin-components.css"/>
+  <link rel="stylesheet" href="css/admin-pengiriman.css"/>
+  <link rel="stylesheet" href="css/admin-navbar.css"/>
+</head>
+<body data-navbar-title="Pengiriman">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- SIDEBAR (same markup, active handled by JS) -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="assets/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" data-page="admin-dashboard.html" href="admin-dashboard.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+        Dashboard
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-smart-bin.html" href="admin-smart-bin.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span>
+        Smart Bin
+      </a>
+      <a class="sidebar-nav-item active" data-page="admin-pengiriman.html" href="admin-pengiriman.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+        Pengiriman
+        <span class="nav-badge">Baru</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-riwayat.html" href="admin-riwayat.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        Riwayat
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-laporan.html" href="admin-laporan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        Laporan
+      </a>
+      <div class="sidebar-divider"></div>
+      <a class="sidebar-nav-item" data-page="admin-notifikasi.html" href="admin-notifikasi.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        Notifikasi
+        <span class="nav-badge">3</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-pengaturan.html" href="admin-pengaturan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        Pengaturan
+      </a>
+      <a class="sidebar-nav-item" data-page="admin-bantuan.html" href="admin-bantuan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        Bantuan
+      </a>
+    </nav>
+    <div class="sidebar-promo">
+      <div style="font-size:28px; margin-bottom:var(--space-3);">🌿</div>
+      <h4>Kelola Sampah Organik Lebih Cerdas dan Berdampak</h4>
+      <p>Bersama POROS, kelola sampah organik secara efisien, transparan, dan memberikan manfaat nyata bagi masyarakat.</p>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name">Admin Pondok</div>
+        <div class="user-email">admin@darululum.id</div>
+      </div>
+      <svg class="user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- TOPBAR -->
+    <header class="admin-topbar"></header>
+
+    <!-- CONTENT -->
+    <div class="admin-content">
+
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <div class="admin-tab active">Dashboard Pengiriman</div>
+        <div class="admin-tab">Jadwal</div>
+        <div class="admin-tab">Armada</div>
+        <div class="admin-tab">Pengemudi</div>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="grid-4 mb-6">
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Pengiriman Hari Ini</div>
+            <div class="stat-card-value" data-count="3">3</div>
+            <div class="stat-card-sub">jadwal</div>
+          </div>
+          <div class="stat-card-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Selesai Hari Ini</div>
+            <div class="stat-card-value" data-count="2">2</div>
+            <div class="stat-card-sub">pengiriman</div>
+          </div>
+          <div class="stat-card-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Sedang Berjalan</div>
+            <div class="stat-card-value" data-count="1">1</div>
+            <div class="stat-card-sub">pengiriman</div>
+          </div>
+          <div class="stat-card-icon blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Total Bulan Ini</div>
+            <div class="stat-card-value" data-count="18">18</div>
+            <div class="stat-card-sub">pengiriman</div>
+          </div>
+          <div class="stat-card-icon purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-col layout -->
+      <div class="grid-2">
+
+        <!-- Status Pengiriman Hari Ini -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Status Pengiriman Hari Ini</span>
+            <a href="#" class="card-link">Lihat Semua</a>
+          </div>
+
+          <div class="delivery-item status-berjalan">
+            <div class="delivery-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+            <div class="delivery-info">
+              <div class="delivery-name">Pondok Pesantren Darul Ulum</div>
+              <div class="delivery-time">Estimasi: 08:00 – 10:00 WIB</div>
+              <div class="delivery-meta">Armada: B 1234 KAA &nbsp;•&nbsp; Driver: Ahmad F.</div>
+            </div>
+            <div class="delivery-status">
+              <span class="badge badge-warning">Sedang Berjalan</span>
+              <div class="delivery-eta">ETA 08:45 WIB</div>
+            </div>
+            <div class="delivery-action">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </div>
+          </div>
+
+          <div class="delivery-item status-selesai">
+            <div class="delivery-icon" style="color:var(--primary-green);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="delivery-info">
+              <div class="delivery-name">Pondok Pesantren Al Hikmah</div>
+              <div class="delivery-time">08:30 WIB – 08:50 WIB</div>
+              <div class="delivery-meta">Armada: B 5678 KBB &nbsp;•&nbsp; Driver: Dedi K.</div>
+            </div>
+            <div class="delivery-status">
+              <span class="badge badge-success">Selesai</span>
+              <div class="delivery-eta">08:50 WIB</div>
+            </div>
+            <div class="delivery-action">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </div>
+          </div>
+
+          <div class="delivery-item status-terjadwal">
+            <div class="delivery-icon" style="color:var(--accent-orange);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="delivery-info">
+              <div class="delivery-name">Pondok Pesantren Nurul Huda</div>
+              <div class="delivery-time">10:00 – 11:00 WIB</div>
+              <div class="delivery-meta">Armada: B 9012 KCC &nbsp;•&nbsp; Driver: Rizky A.</div>
+            </div>
+            <div class="delivery-status">
+              <span class="badge badge-info">Terjadwal</span>
+              <div class="delivery-eta">10:00 WIB</div>
+            </div>
+            <div class="delivery-action">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ringkasan Pengiriman + Pengambilan Sampah -->
+        <div style="display:flex; flex-direction:column; gap:var(--space-5);">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Ringkasan Pengiriman (Bulan Ini)</span>
+              <a href="#" class="card-link">Lihat Laporan</a>
+            </div>
+            <div class="donut-wrap">
+              <svg id="donut-pengiriman" width="160" height="160" viewBox="0 0 160 160" class="donut-svg"></svg>
+              <div class="donut-legend">
+                <div class="legend-item">
+                  <div class="legend-dot" style="background:#2E7D32;"></div>
+                  <span class="legend-label">Selesai</span>
+                  <span class="legend-value">12 (67%)</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot" style="background:#F57C00;"></div>
+                  <span class="legend-label">Terjadwal</span>
+                  <span class="legend-value">4 (22%)</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot" style="background:#1565C0;"></div>
+                  <span class="legend-label">Dibatalkan</span>
+                  <span class="legend-value">2 (11%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Pengambilan Sampah</span>
+            </div>
+            <div class="pickup-stats">
+              <div class="pickup-stat">
+                <div class="ps-icon">💰</div>
+                <div>
+                  <div class="ps-value">1.24 ton</div>
+                  <div class="ps-label">Total Sampah Terambil</div>
+                </div>
+              </div>
+              <div class="pickup-stat">
+                <div class="ps-icon">📊</div>
+                <div>
+                  <div class="ps-value">69 kg</div>
+                  <div class="ps-label">Rata-rata per Pengiriman</div>
+                </div>
+              </div>
+              <div class="pickup-stat">
+                <div class="ps-icon">🌿</div>
+                <div>
+                  <div class="ps-value">~98 kg</div>
+                  <div class="ps-label">Pengurangan Emisi CO₂</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /grid-2 -->
+
+      <!-- Aktivitas Terbaru -->
+      <div class="card mt-6">
+        <div class="card-header">
+          <span class="card-title">Aktivitas Terbaru</span>
+          <a href="#" class="card-link">Lihat Semua</a>
+        </div>
+        <div class="activity-item">
+          <div class="icon-wrap icon-wrap-md" style="background:var(--primary-green-soft); color:var(--primary-green);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">Pengiriman dari Pondok Pesantren Darul Ulum</div>
+            <div class="activity-sub">Status berubah menjadi Sedang Berjalan</div>
+          </div>
+          <div class="activity-time">08:20 WIB</div>
+        </div>
+        <div class="activity-item">
+          <div class="icon-wrap icon-wrap-md" style="background:var(--primary-green-soft); color:var(--primary-green);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">Pengiriman dari Pondok Pesantren Al Hikmah selesai</div>
+            <div class="activity-sub">Sampah 68 kg berhasil diangkut</div>
+          </div>
+          <div class="activity-time">08:50 WIB</div>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-shell -->
+<script src="js/admin-dashboard.js"></script>
+<script src="js/admin-sidebar.js"></script>
+<script src="components/admin-navbar.js"></script>
+</body>
+</html>

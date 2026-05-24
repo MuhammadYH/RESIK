@@ -1,0 +1,108 @@
+/* admin-dashboard.css — Dashboard Page Specific */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.dashboard-grid-full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+/* Smart bin list item */
+.bin-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.bin-list-item:last-child { border-bottom: none; }
+
+.bin-list-info { flex: 1; }
+.bin-list-name { font-weight: 600; font-size: var(--font-size-sm); }
+.bin-list-meta { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+
+.bin-list-percent {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  min-width: 40px;
+  text-align: right;
+  color: var(--text-primary);
+}
+
+.bin-list-bar { width: 100px; }
+
+/* Stat mini items (Ringkasan) */
+.ringkasan-mini {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.ringkasan-item {
+  flex: 1;
+  background: var(--bg-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ringkasan-item .r-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.ringkasan-item .r-value {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.ringkasan-item .r-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+/* Feature highlights */
+.feature-row {
+  display: flex;
+  gap: var(--space-6);
+  margin-top: var(--space-5);
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.feature-item .f-icon {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.15);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+}
+
+.feature-item .f-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: white;
+}
+
+.feature-item .f-desc {
+  font-size: var(--font-size-xs);
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
