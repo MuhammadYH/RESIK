@@ -21,9 +21,9 @@ html, body                       { overflow-x: hidden; max-width: 100%; }
 
 /* ── CHART CONTAINERS ── */
 .bar-chart-wrap,
-.line-chart-wrap                 { min-width: 0; overflow: hidden; }
+.line-chart-wrap                 { min-width: 0; overflow: hidden; width: 100%; display: block; }
 .bar-chart-wrap canvas,
-.line-chart-wrap canvas          { max-width: 100%; }
+.line-chart-wrap canvas          { max-width: 100%; display: block; }
 
 /* ── INFO BANNER ── */
 .laporan-info-banner             { flex-wrap: wrap; }

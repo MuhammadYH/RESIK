@@ -43,25 +43,6 @@
   margin: 0;
 }
 
-/* ── Home button ──────────────────────────────────────────────────── */
-.navbar-home-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  flex-shrink: 0;
-  transition: background var(--transition-fast), color var(--transition-fast);
-  text-decoration: none;
-}
-
-.navbar-home-btn:hover {
-  background: var(--primary-green-soft);
-  color: var(--primary-green);
-}
-
 /* ── Search wrapper ───────────────────────────────────────────────── */
 .navbar-search-wrap {
   display: flex;

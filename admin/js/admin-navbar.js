@@ -30,13 +30,6 @@
         <h1 class="navbar-title">${title}</h1>
       </div>
 
-      <a href="../index.html" class="navbar-home-btn" aria-label="Ke Beranda">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
-          <polyline points="9 21 9 12 15 12 15 21"/>
-        </svg>
-      </a>
-
       <div class="navbar-search-wrap" id="navbarSearchWrap">
         <!-- Desktop: always-visible search box -->
         <div class="topbar-search navbar-search-desktop">

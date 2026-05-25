@@ -22,6 +22,11 @@
       pointer-events: none; /* ← THE BUG FIX */
     }
 
+    /* ── BUG FIX: input overflow — ensure all form elements respect card width ── */
+    .auth-card *, .auth-card *::before, .auth-card *::after {
+      box-sizing: border-box;
+    }
+
     /* ── AUTH BODY — Light Mode ── */
     body.auth-body {
       min-height: 100vh;
@@ -250,6 +255,7 @@
     }
     .form-input-auth {
       width: 100%;
+      box-sizing: border-box;
       padding: 0.72rem 1rem;
       border: 1px solid rgba(58,184,110,0.2);
       border-radius: 12px;
@@ -260,6 +266,7 @@
       outline: none;
       transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
     }
+    .input-wrap { box-sizing: border-box; }
     .input-wrap .form-input-auth { padding-right: 3rem; }
     .form-input-auth::placeholder { color: rgba(30,80,50,0.3); }
     .form-input-auth:focus {
@@ -938,7 +945,11 @@
         <label class="form-label-auth" for="loginPass">Password</label>
         <div class="input-wrap">
           <input type="password" class="form-input-auth" id="loginPass" placeholder="Masukkan password" autocomplete="current-password">
-          <button type="button" class="input-icon" onclick="togglePass('loginPass', this)" aria-label="Tampilkan password">👁</button>
+          <button type="button" class="input-icon" onclick="togglePass('loginPass', this)" aria-label="Tampilkan password">
+            <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
         </div>
         <div class="field-error" id="loginPassErr">Password minimal 6 karakter.</div>
       </div>
@@ -1119,7 +1130,11 @@
           <label class="form-label-auth" for="regPass">Password *</label>
           <div class="input-wrap">
             <input type="password" class="form-input-auth" id="regPass" placeholder="Buat password kuat" autocomplete="new-password" oninput="checkStrength(this.value)">
-            <button type="button" class="input-icon" onclick="togglePass('regPass', this)" aria-label="Tampilkan password">👁</button>
+            <button type="button" class="input-icon" onclick="togglePass('regPass', this)" aria-label="Tampilkan password">
+              <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
           </div>
           <div class="strength-bar">
             <div class="strength-seg" id="str1"></div>
@@ -1135,7 +1150,11 @@
           <label class="form-label-auth" for="regPass2">Konfirmasi Password *</label>
           <div class="input-wrap">
             <input type="password" class="form-input-auth" id="regPass2" placeholder="Ulangi password" autocomplete="new-password">
-            <button type="button" class="input-icon" onclick="togglePass('regPass2', this)" aria-label="Tampilkan password">👁</button>
+            <button type="button" class="input-icon" onclick="togglePass('regPass2', this)" aria-label="Tampilkan password">
+              <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
           </div>
           <div class="field-error" id="regPass2Err">Password tidak cocok.</div>
         </div>
@@ -1148,7 +1167,7 @@
 
         <div class="step-nav">
           <button type="button" class="btn-back" onclick="goStep(2)">← Kembali</button>
-          <button type="button" class="btn-next" id="regSubmitBtn" onclick="handleRegister()">Buat Akun 🌿</button>
+          <button type="button" class="btn-next" id="regSubmitBtn" onclick="handleRegister()">Buat Akun <svg style="display:inline;vertical-align:-3px;" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></button>
         </div>
       </div>
     </div>
@@ -1175,19 +1194,10 @@
 </div>
 
 <script src="assets/js/resik-supabase.js"></script>
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/session.js"></script>
+
 <script>
   let currentStep = 1;
   let selectedRole = null;
-
-  // ── CEK SESI AKTIF ──
-  document.addEventListener('DOMContentLoaded', async () => {
-    const existing = await RESIK_SESSION.checkSession();
-    if (existing?.profile) {
-      RESIK_AUTH_CORE.redirectByRole(existing.profile.role);
-    }
-  });
 
   function switchTab(tab) {
     document.querySelectorAll('.auth-tab').forEach((t, i) => {
@@ -1200,7 +1210,10 @@
   function togglePass(id, btn) {
     const inp = document.getElementById(id);
     inp.type = inp.type === 'password' ? 'text' : 'password';
-    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+    const isHidden = inp.type === 'password';
+    btn.innerHTML = isHidden
+      ? `<svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`
+      : `<svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
   }
 
   function selectRole(role) {
@@ -1286,85 +1299,178 @@
     hint.style.color = textColors[score - 1] || textColors[0];
   }
 
-  async function handleLogin() {
-    const email = document.getElementById('loginEmail');
-    const pass  = document.getElementById('loginPass');
-    let ok = true;
-    const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailOk = emailReg.test(email.value.trim());
-    setFieldErr('loginEmail', 'loginEmailErr', !emailOk);
-    if (!emailOk) ok = false;
-    const passOk = pass.value.length >= 6;
-    setFieldErr('loginPass', 'loginPassErr', !passOk);
-    if (!passOk) ok = false;
-    if (!ok) return;
+  async function handleLogin() { 
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPass').value;
+
+    if (!email || !password) {
+      showToast('Isi email dan password.');
+      return;
+    }
 
     const btn = document.getElementById('loginBtn');
-    btn.classList.add('loading');
-    btn.textContent = 'Memverifikasi...';
+
+    btn.disabled = true;
+    btn.textContent = 'Memproses...';
 
     try {
-      const { profile } = await RESIK_AUTH_CORE.loginUser(email.value.trim(), pass.value, false);
+
+      await RESIK_AUTH.login(email, password);
+
+      // hide login form
       document.getElementById('login-form-wrap').style.display = 'none';
-      document.getElementById('login-success').style.display = 'block';
-      setTimeout(() => RESIK_AUTH_CORE.redirectByRole(profile?.role ?? ''), 1200);
+
+      // show success card
+      const success = document.getElementById('login-success');
+      success.style.display = 'block';
+
+      // countdown text
+      const desc = success.querySelector('.success-desc');
+
+      let seconds = 3;
+
+      desc.innerHTML =
+        `Anda berhasil login.<br>
+        Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
+
+      const interval = setInterval(() => {
+        seconds--;
+
+        desc.innerHTML =
+          `Anda berhasil login.<br>
+          Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
+
+        if (seconds <= 0) {
+          clearInterval(interval);
+
+          window.location.href = 'admin/admin-dashboard.html';
+        }
+      }, 1000);
+
     } catch (err) {
-      btn.classList.remove('loading');
+
+      console.error(err);
+
+      showToast(err.message || 'Login gagal.');
+
+    } finally {
+
+      btn.disabled = false;
       btn.textContent = 'Masuk ke ReFood';
-      const msg = err.message || '';
-      const friendly = msg.includes('Invalid login') || msg.includes('invalid_credentials')
-        ? 'Email atau password tidak sesuai.' : msg || 'Terjadi kesalahan. Coba lagi.';
-      showToast('❌ ' + friendly);
+
     }
   }
-
+  
   async function handleRegister() {
-    const pass  = document.getElementById('regPass');
-    const pass2 = document.getElementById('regPass2');
-    const terms = document.getElementById('agreeTerms');
-    let ok = true;
-    const passOk = pass.value.length >= 8;
-    setFieldErr('regPass', 'regPassErr', !passOk);
-    if (!passOk) ok = false;
-    const matchOk = pass2.value && pass.value === pass2.value;
-    setFieldErr('regPass2', 'regPass2Err', !matchOk);
-    if (!matchOk) ok = false;
-    const termsOk = terms.checked;
-    termsOk ? hideErr('termsErr') : showErr('termsErr');
-    if (!termsOk) ok = false;
-    if (!ok) return;
+    const firstName = document.getElementById('regFirst').value.trim();
+    const lastName  = document.getElementById('regLast').value.trim();
+    const email     = document.getElementById('regEmail').value.trim();
+    const password  = document.getElementById('regPass').value;
+    const password2 = document.getElementById('regPass2').value;
+    const organization = document.getElementById('regOrg')?.value?.trim() || null;
+
+    if (!selectedRole) {
+      showToast('Pilih role terlebih dahulu.');
+      return;
+    }
+
+    if (!firstName || !email || !password) {
+      showToast('Lengkapi data terlebih dahulu.');
+      return;
+    }
+
+    if (password.length < 8) {
+      showToast('Password minimal 8 karakter.');
+      return;
+    }
+
+    if (password !== password2) {
+      showToast('Konfirmasi password tidak cocok.');
+      return;
+    }
 
     const btn = document.getElementById('regSubmitBtn');
-    btn.textContent = 'Membuat akun...';
     btn.disabled = true;
-
-    const firstName = document.getElementById('regFirst').value.trim();
-    const lastName  = (document.getElementById('regLast') || {}).value?.trim() || '';
-    const email     = document.getElementById('regEmail').value.trim();
-    const role      = selectedRole;
-    const orgEl     = document.getElementById('regOrg');
-    const org       = (role === 'pengolah' || role === 'provider') && orgEl ? orgEl.value.trim() || null : null;
+    btn.textContent = 'Membuat akun...';
 
     try {
-      await RESIK_AUTH_CORE.registerUser({ email, password: pass.value, firstName, lastName, role, organization: org });
+
+      const auth = await RESIK_AUTH.register({
+        email,
+        password,
+        firstName,
+        lastName,
+        role: selectedRole,
+        organization
+      });
+
+      const user = auth.user;
+
+      const sb = await getSupabase();
+
+      // insert profile manual
+      const { error: profileError } = await sb
+        .from('profiles')
+        .insert({
+          id: user.id,
+          email,
+          first_name: firstName,
+          last_name: lastName,
+          role: selectedRole,
+          organization
+        });
+
+      if (profileError) throw profileError;
+
+      // hide register content
       document.getElementById('reg-content').style.display = 'none';
-      document.getElementById('reg-success').style.display = 'block';
-      document.getElementById('loginHint').style.display = 'none';
+
+      // show success overlay
+      const success = document.getElementById('reg-success');
+
+      success.style.display = 'block';
+
+      const desc = success.querySelector('.success-desc');
+
+      let seconds = 3;
+
+      desc.innerHTML =
+        `Akun berhasil dibuat.<br>
+        Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
+
+      const interval = setInterval(() => {
+
+        seconds--;
+
+        desc.innerHTML =
+          `Akun berhasil dibuat.<br>
+          Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
+
+        if (seconds <= 0) {
+
+          clearInterval(interval);
+
+          window.location.href = 'admin/admin-dashboard.html';
+
+        }
+
+      }, 1000);
+
     } catch (err) {
-      btn.textContent = 'Buat Akun 🌿';
+      console.error(err);
+      showToast(err.message || 'Registrasi gagal.');
+    } finally {
       btn.disabled = false;
-      const msg = err.message || '';
-      const friendly = msg.includes('already registered') || msg.includes('already been registered')
-        ? 'Email sudah terdaftar. Silakan masuk.' : msg || 'Terjadi kesalahan. Coba lagi.';
-      showToast('❌ ' + friendly);
+      btn.innerHTML = 'Buat Akun <svg style="display:inline;vertical-align:-3px;" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>';
     }
   }
 
   async function handleGoogle() {
     try {
-      await RESIK_AUTH_CORE.loginWithGoogle();
+      await RESIK_AUTH.loginWithGoogle();
     } catch (err) {
-      showToast('❌ ' + (err.message || 'Google login gagal.'));
+      console.error(err);
+      showToast('Google login gagal.');
     }
   }
 

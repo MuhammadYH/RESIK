@@ -204,7 +204,11 @@
   gap: 0;
   border-bottom: 2px solid var(--border-color);
   margin-bottom: var(--space-6);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+
+.admin-tabs::-webkit-scrollbar { display: none; }
 
 .admin-tab {
   padding: var(--space-3) var(--space-5);
@@ -215,6 +219,8 @@
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
   transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .admin-tab:hover { color: var(--text-primary); }
@@ -298,10 +304,10 @@
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 900px) {
-  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
-  .grid-4 { grid-template-columns: 1fr; }
+  .grid-4, .grid-2 { grid-template-columns: 1fr; }
 }
 
 /* ── UTILITY ── */

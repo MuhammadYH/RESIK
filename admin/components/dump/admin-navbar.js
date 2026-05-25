@@ -30,13 +30,6 @@
         <h1 class="navbar-title">${title}</h1>
       </div>
 
-      <a href="../index.html" class="navbar-home-btn" aria-label="Ke Beranda">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
-          <polyline points="9 21 9 12 15 12 15 21"/>
-        </svg>
-      </a>
-
       <div class="navbar-search-wrap" id="navbarSearchWrap">
         <!-- Desktop: always-visible search box -->
         <div class="topbar-search navbar-search-desktop">
@@ -55,7 +48,7 @@
       </div>
 
       <!-- Mobile: expanded search bar (hidden by default) -->
-      <div class="navbar-search-expanded" id="navbarSearchExpanded" inert>
+      <div class="navbar-search-expanded" id="navbarSearchExpanded" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
@@ -94,14 +87,14 @@
 
     function openSearch() {
       expanded.classList.add('open');
-      expanded.removeAttribute('inert');
+      expanded.setAttribute('aria-hidden', 'false');
       titleWrap.classList.add('hidden');
       mobileInput.focus();
     }
 
     function closeSearch() {
       expanded.classList.remove('open');
-      expanded.setAttribute('inert', '');
+      expanded.setAttribute('aria-hidden', 'true');
       titleWrap.classList.remove('hidden');
       mobileInput.value = '';
     }
