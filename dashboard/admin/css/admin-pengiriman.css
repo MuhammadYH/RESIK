@@ -1,0 +1,97 @@
+/* admin-pengiriman.css — Pengiriman Page Specific */
+
+/* Delivery list item */
+.delivery-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-left: 3px solid transparent;
+  transition: background var(--transition-fast);
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.delivery-item:last-child { border-bottom: none; }
+.delivery-item:hover { background: var(--bg-soft); }
+
+.delivery-item.status-berjalan  { border-left-color: var(--accent-orange); }
+.delivery-item.status-selesai   { border-left-color: var(--primary-green); }
+.delivery-item.status-terjadwal { border-left-color: var(--accent-blue); }
+
+.delivery-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--bg-soft);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.delivery-info { flex: 1; }
+.delivery-name { font-weight: 600; font-size: var(--font-size-sm); }
+.delivery-time { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+.delivery-meta { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+
+.delivery-status { text-align: right; }
+.delivery-eta { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 4px; }
+
+.delivery-action { color: var(--text-muted); cursor: pointer; }
+.delivery-action:hover { color: var(--text-primary); }
+
+/* Donut chart placeholder */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.donut-svg { flex-shrink: 0; }
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-label { color: var(--text-secondary); flex: 1; }
+.legend-value { font-weight: 600; color: var(--text-primary); }
+
+/* Pickup stats */
+.pickup-stats {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-color-soft);
+}
+
+.pickup-stat {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.pickup-stat .ps-icon {
+  width: 36px; height: 36px;
+  background: var(--primary-green-soft);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--primary-green);
+  flex-shrink: 0;
+}
+
+.pickup-stat .ps-value { font-weight: 800; font-size: var(--font-size-base); color: var(--text-primary); }
+.pickup-stat .ps-label { font-size: var(--font-size-xs); color: var(--text-muted); }
