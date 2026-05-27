@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ── Jika sudah login, redirect langsung ──
   const existing = await RESIK_SESSION.checkSession();
   if (existing?.profile) {
-    RESIK_REDIRECT.afterLogin(existing.profile.role);
+    RESIK_AUTH_CORE.redirectByRole(existing.profile.role);
     return;
   }
 
@@ -132,7 +132,7 @@ async function _handleLogin() {
     if (returnUrl) {
       window.location.href = returnUrl;
     } else {
-      RESIK_REDIRECT.afterLogin(profile?.role ?? '');
+      RESIK_AUTH_CORE.redirectByRole(profile?.role ?? '');
     }
 
   } catch (err) {

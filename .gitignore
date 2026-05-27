@@ -1,4 +1,6 @@
 .env
 node_modules
 cloud/
-js - Copy/
+PANDUAN_RESIK_AI.md
+route-guide.txt
+prompting-bahan/
