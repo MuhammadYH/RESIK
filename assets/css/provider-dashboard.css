@@ -1,0 +1,136 @@
+/* provider-dashboard.css — Provider Dashboard Page Styles */
+
+/* ── Dashboard Grid ── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+}
+
+.dashboard-grid-full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Bin List (in card) ── */
+.bin-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.bin-list-item:last-child { border-bottom: none; }
+
+.bin-list-info { flex: 1; min-width: 0; }
+.bin-list-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bin-list-meta {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.bin-list-percent {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--primary-green);
+  flex-shrink: 0;
+}
+
+/* ── Ringkasan Mini ── */
+.ringkasan-mini {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.ringkasan-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-soft);
+  border-radius: var(--radius-md);
+}
+
+.r-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.r-value {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.r-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ── Aktivitas Terbaru ── */
+.aktivitas-list { display: flex; flex-direction: column; }
+.aktivitas-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.aktivitas-item:last-child { border-bottom: none; }
+.aktivitas-icon {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.aktivitas-body { flex: 1; }
+.aktivitas-title { font-size: var(--font-size-sm); font-weight: 500; color: var(--text-primary); }
+.aktivitas-sub   { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+.aktivitas-time  { font-size: var(--font-size-xs); color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+
+/* ── Quick Insight ── */
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+@media (max-width: 700px) {
+  .insight-grid { grid-template-columns: 1fr; }
+  .ringkasan-mini { grid-template-columns: 1fr; }
+}
+
+.insight-item {
+  padding: var(--space-4);
+  background: var(--bg-soft);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.insight-icon {
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: var(--space-2);
+}
+.insight-label {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.insight-desc {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}

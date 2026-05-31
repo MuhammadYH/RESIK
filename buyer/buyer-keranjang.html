@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="required-role" content="buyer"/>
+  <title>Keranjang — POROS</title>
+
+  <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-components.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-navbar.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-components.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-navbar.css"/>
+
+  <style>
+    /* ── Keranjang-specific ── */
+
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: var(--space-6);
+      align-items: start;
+    }
+
+    /* Cart Items */
+    .cart-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--gray-100);
+      transition: background .15s;
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item:hover { background: var(--gray-50); }
+
+    .cart-item-check {
+      flex-shrink: 0;
+      margin-top: 2px;
+      width: 18px; height: 18px;
+      accent-color: var(--primary-green);
+      cursor: pointer;
+    }
+
+    .cart-item-img {
+      width: 72px; height: 72px;
+      border-radius: var(--radius-md);
+      background: var(--gray-100);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .cart-item-info { flex: 1; min-width: 0; }
+    .cart-item-pondok {
+      font-size: var(--text-xs);
+      color: var(--gray-500);
+      margin-bottom: 2px;
+    }
+    .cart-item-name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: var(--space-1);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cart-item-price {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--primary-green);
+      margin-bottom: var(--space-3);
+    }
+    .cart-item-unit {
+      font-size: var(--text-xs);
+      color: var(--gray-500);
+      font-weight: 400;
+    }
+
+    .cart-item-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    /* Qty stepper */
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .qty-btn {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--gray-50);
+      color: var(--gray-600);
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background .15s;
+    }
+    .qty-btn:hover { background: var(--gray-100); color: var(--gray-900); }
+    .qty-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .qty-input {
+      width: 40px; height: 32px;
+      text-align: center;
+      border: none;
+      border-left: 1px solid var(--gray-200);
+      border-right: 1px solid var(--gray-200);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--gray-800);
+      background: var(--white);
+    }
+    .qty-input:focus { outline: none; background: var(--primary-green-bg); }
+
+    .cart-item-delete {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-md);
+      color: var(--gray-400);
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: background .15s, color .15s;
+    }
+    .cart-item-delete:hover { background: #FEE2E2; color: #DC2626; }
+
+    /* Cart header (select all) */
+    .cart-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--gray-100);
+      background: var(--gray-50);
+    }
+    .cart-header label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--gray-700);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .cart-count-text {
+      font-size: var(--text-xs);
+      color: var(--gray-500);
+      margin-left: auto;
+    }
+
+    /* Summary card */
+    .summary-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: sticky;
+      top: calc(60px + var(--space-6));
+    }
+    .summary-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .summary-header h3 {
+      font-size: var(--text-md);
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+    .summary-body { padding: var(--space-5); }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--text-sm);
+      color: var(--gray-600);
+      margin-bottom: var(--space-3);
+    }
+    .summary-row.total {
+      border-top: 1px solid var(--gray-200);
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      font-size: var(--text-md);
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+    .summary-row.total span:last-child { color: var(--primary-green); }
+    .summary-note {
+      font-size: var(--text-xs);
+      color: var(--gray-500);
+      margin-bottom: var(--space-5);
+      line-height: 1.5;
+    }
+    .btn-checkout {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      background: var(--primary-green);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+    .btn-checkout:hover { background: var(--primary-green-dark); }
+    .btn-checkout:disabled { background: var(--gray-300); cursor: not-allowed; }
+    .btn-lanjut-belanja {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      background: none;
+      color: var(--primary-green);
+      border: 1px solid var(--primary-green);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: var(--space-3);
+      transition: background .15s;
+    }
+    .btn-lanjut-belanja:hover { background: var(--primary-green-bg); }
+
+    /* Empty state */
+    .cart-empty {
+      padding: var(--space-12) var(--space-6);
+      text-align: center;
+    }
+    .cart-empty-icon {
+      width: 72px; height: 72px;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto var(--space-4);
+      color: var(--gray-400);
+    }
+    .cart-empty h3 {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: var(--space-2);
+    }
+    .cart-empty p {
+      font-size: var(--text-sm);
+      color: var(--gray-500);
+      margin-bottom: var(--space-5);
+    }
+
+    /* Voucher input */
+    .voucher-row {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    .voucher-input {
+      flex: 1;
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: var(--gray-800);
+      background: var(--white);
+    }
+    .voucher-input:focus { outline: 2px solid var(--primary-green); border-color: transparent; }
+    .btn-pakai {
+      padding: var(--space-2) var(--space-4);
+      background: var(--primary-green-bg);
+      color: var(--primary-green);
+      border: 1px solid var(--primary-green);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .btn-pakai:hover { background: var(--primary-green); color: white; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: var(--space-6); right: var(--space-6);
+      background: var(--gray-800); color: white;
+      padding: var(--space-3) var(--space-5);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: none; }
+
+    @media (max-width: 768px) {
+      .cart-layout { grid-template-columns: 1fr; }
+      .summary-card { position: static; }
+    }
+  </style>
+</head>
+<body data-navbar-title="Keranjang">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+    <nav class="sidebar-nav">
+      <!-- Marketplace -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-marketplace.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </span>
+        Marketplace
+      </a>
+
+      <!-- Keranjang (active) -->
+      <a class="sidebar-nav-item active" href="/buyer/buyer-keranjang.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </span>
+        Keranjang
+        <span class="sidebar-cart-count" id="sidebarCartCount">0</span>
+      </a>
+
+      <!-- Pesanan Saya -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-pesanan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </span>
+        Pesanan Saya
+      </a>
+
+      <!-- Wishlist -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-wishlist.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </span>
+        Wishlist
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Notifikasi -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-notifikasi.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </span>
+        Notifikasi
+        <span class="nav-badge">2</span>
+      </a>
+
+      <!-- Pengaturan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-pengaturan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </span>
+        Pengaturan
+      </a>
+
+      <!-- Bantuan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-bantuan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </span>
+        Bantuan
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-2);display:flex;align-items:center;justify-content:center;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </div>
+      <h4>Gratis Ongkir Pembelian ≥ Rp 100.000</h4>
+      <p>Tambahkan produk ke keranjang dan nikmati gratis ongkir ke seluruh Jawa.</p>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name" data-user-name>Budi Santoso</div>
+        <div class="user-email" data-user-email>budi@email.com</div>
+      </div>
+      <svg class="user-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <header class="admin-topbar" id="adminTopbar"></header>
+
+    <!-- CONTENT -->
+    <div class="admin-content">
+      <div class="cart-layout" id="cartLayout">
+
+        <!-- Kolom Kiri: Daftar Item -->
+        <div>
+          <div class="buyer-card" style="padding:0;">
+            <div class="cart-header">
+              <label>
+                <input type="checkbox" id="checkAll" class="cart-item-check" onchange="toggleAll(this)" checked/>
+                Pilih Semua
+              </label>
+              <span class="cart-count-text" id="cartCountText">0 produk</span>
+            </div>
+            <div id="cartList"></div>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: Ringkasan -->
+        <div>
+          <div class="summary-card">
+            <div class="summary-header">
+              <h3>Ringkasan Belanja</h3>
+            </div>
+            <div class="summary-body">
+              <!-- Voucher -->
+              <div class="voucher-row">
+                <input type="text" class="voucher-input" id="voucherInput" placeholder="Kode voucher"/>
+                <button class="btn-pakai" onclick="pakaVoucher()">Pakai</button>
+              </div>
+
+              <div class="summary-row">
+                <span>Subtotal (<span id="summaryQty">0</span> produk)</span>
+                <span id="summarySubtotal">Rp 0</span>
+              </div>
+              <div class="summary-row">
+                <span>Ongkos Kirim</span>
+                <span id="summaryOngkir" style="color:var(--primary-green);">Gratis</span>
+              </div>
+              <div class="summary-row" id="diskonRow" style="display:none;">
+                <span>Diskon Voucher</span>
+                <span id="summaryDiskon" style="color:#DC2626;">-Rp 0</span>
+              </div>
+              <div class="summary-row total">
+                <span>Total</span>
+                <span id="summaryTotal">Rp 0</span>
+              </div>
+              <p class="summary-note">Harga sudah termasuk pajak. Pengiriman ke seluruh Indonesia.</p>
+              <button class="btn-checkout" id="btnCheckout" onclick="checkout()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                Checkout
+              </button>
+              <button class="btn-lanjut-belanja" onclick="window.location='/buyer/buyer-marketplace.html'">
+                Lanjut Belanja
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Empty state (hidden by default) -->
+      <div class="cart-empty" id="cartEmpty" style="display:none;">
+        <div class="cart-empty-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </div>
+        <h3>Keranjangmu masih kosong</h3>
+        <p>Temukan produk organik pilihan dan tambahkan ke keranjang.</p>
+        <button class="btn-checkout" style="width:auto;padding:var(--space-3) var(--space-6);" onclick="window.location='/buyer/buyer-marketplace.html'">
+          Mulai Belanja
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/session.js"></script>
+<script src="/assets/js/buyer-sidebar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // ── Supabase init ──
+  const SUPABASE_URL     = window.SUPABASE_URL     || 'https://vcxwphzxavolrbsafroa.supabase.co';
+  const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjeHdwaHp4YXZvbHJic2Fmcm9hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNzM4NjQsImV4cCI6MjA5NDg0OTg2NH0.OOW5l0QgcNRPp5Q4qBIaK6uotvTdo91zt2uV5ON6rx0';
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ── Ambil roleId buyer dari Supabase session → tabel profiles ──
+  async function getBuyerRoleId() {
+    try {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (session?.user) {
+        const { data: profile } = await _supabase
+          .from('profiles')
+          .select('role_id')
+          .eq('id', session.user.id)
+          .single();
+        if (profile?.role_id) return String(profile.role_id);
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  // ── State ──
+  let cartItems = [];   // data dari Supabase (array of merged cart+product)
+  let voucherDiskon = 0;
+
+  // ── Helpers ──
+  function formatRp(n) {
+    return 'Rp ' + n.toLocaleString('id-ID');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ── Load Keranjang dari Supabase ──
+  async function loadCart() {
+    try {
+      const buyerRoleId = await getBuyerRoleId();
+
+      // 1. Ambil semua item keranjang milik buyer
+      const { data: cartRows, error: cartError } = await _supabase
+        .from('marketplace_cart')
+        .select('id, product_id, quantity')
+        .eq('buyer_role_id', buyerRoleId);
+
+      if (cartError) throw cartError;
+
+      if (!cartRows || cartRows.length === 0) {
+        cartItems = [];
+        renderCart();
+        return;
+      }
+
+      // 2. Ambil detail produk berdasarkan product_id dari keranjang
+      const productIds = cartRows.map(r => r.product_id);
+
+      const { data: productRows, error: productError } = await _supabase
+        .from('marketplace_products')
+        .select('id, product_name, seller_name, image_url, price, unit, stock')
+        .in('id', productIds);
+
+      if (productError) throw productError;
+
+      // 3. Merge cart + product data
+      const productMap = {};
+      (productRows || []).forEach(p => { productMap[p.id] = p; });
+
+      cartItems = cartRows.map(cart => {
+        const product = productMap[cart.product_id] || {};
+        return {
+          cartId:   cart.id,                          // id di marketplace_cart
+          productId: cart.product_id,
+          name:     product.product_name || '(Produk tidak ditemukan)',
+          pondok:   product.seller_name  || '',
+          image:    product.image_url    || '',
+          price:    product.price        || 0,
+          unit:     product.unit         || '',
+          stock:    product.stock        || 0,
+          qty:      cart.quantity        || 1,
+          checked:  true,
+        };
+      });
+
+      renderCart();
+
+    } catch (err) {
+      console.error('loadCart error:', err);
+      showToast('Gagal memuat keranjang');
+    }
+  }
+
+  // ── Render Cart ──
+  function renderCart() {
+    const list = document.getElementById('cartList');
+
+    if (cartItems.length === 0) {
+      document.getElementById('cartLayout').style.display = 'none';
+      document.getElementById('cartEmpty').style.display  = 'block';
+      updateSidebarCount();
+      return;
+    }
+
+    document.getElementById('cartLayout').style.display = '';
+    document.getElementById('cartEmpty').style.display  = 'none';
+
+    list.innerHTML = cartItems.map((item, i) => `
+      <div class="cart-item" id="item-${item.cartId}">
+        <input type="checkbox" class="cart-item-check" ${item.checked ? 'checked' : ''}
+          onchange="toggleItem(${i}, this.checked)"/>
+        <div class="cart-item-img">
+          ${item.image
+            ? `<img src="${item.image}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='📦';"/>`
+            : '📦'
+          }
+        </div>
+        <div class="cart-item-info">
+          <div class="cart-item-pondok">${item.pondok}</div>
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">${formatRp(item.price)}<span class="cart-item-unit">${item.unit}</span></div>
+          <div class="cart-item-actions">
+            <div class="qty-stepper">
+              <button class="qty-btn" onclick="changeQty(${i}, -1)">−</button>
+              <input type="number" class="qty-input" value="${item.qty}" min="1" max="${item.stock || 99}" readonly/>
+              <button class="qty-btn" onclick="changeQty(${i}, 1)" ${item.qty >= (item.stock || 99) ? 'disabled' : ''}>+</button>
+            </div>
+            <button class="cart-item-delete" onclick="removeItem(${i})" title="Hapus">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div style="font-size:var(--text-sm);font-weight:700;color:var(--gray-800);white-space:nowrap;padding-top:var(--space-1);">
+          ${formatRp(item.price * item.qty)}
+        </div>
+      </div>
+    `).join('');
+
+    updateSummary();
+    updateCheckAll();
+  }
+
+  // ── Update Summary ──
+  function updateSummary() {
+    const checked  = cartItems.filter(i => i.checked);
+    const subtotal = checked.reduce((s, i) => s + i.price * i.qty, 0);
+    const ongkir   = subtotal >= 100000 ? 0 : 15000;
+    const total    = subtotal + ongkir - voucherDiskon;
+
+    document.getElementById('summaryQty').textContent       = checked.length;
+    document.getElementById('summarySubtotal').textContent  = formatRp(subtotal);
+    document.getElementById('summaryOngkir').textContent    = ongkir === 0 ? 'Gratis' : formatRp(ongkir);
+    document.getElementById('summaryOngkir').style.color    = ongkir === 0 ? 'var(--primary-green)' : 'var(--gray-800)';
+    document.getElementById('summaryTotal').textContent     = formatRp(Math.max(0, total));
+    document.getElementById('cartCountText').textContent    = cartItems.length + ' produk';
+
+    if (voucherDiskon > 0) {
+      document.getElementById('diskonRow').style.display   = 'flex';
+      document.getElementById('summaryDiskon').textContent = '-' + formatRp(voucherDiskon);
+    }
+
+    document.getElementById('btnCheckout').disabled = checked.length === 0;
+
+    updateSidebarCount();
+  }
+
+  // ── Update Sidebar Cart Count (total quantity) ──
+  function updateSidebarCount() {
+    const sidebarCount = document.getElementById('sidebarCartCount');
+    if (sidebarCount) {
+      const totalQty = cartItems.reduce((s, i) => s + i.qty, 0);
+      sidebarCount.textContent = totalQty;
+    }
+  }
+
+  // ── Checkbox ──
+  function updateCheckAll() {
+    const allChecked  = cartItems.every(i => i.checked);
+    const someChecked = cartItems.some(i => i.checked);
+    const cb = document.getElementById('checkAll');
+    cb.checked       = allChecked;
+    cb.indeterminate = !allChecked && someChecked;
+  }
+
+  function toggleAll(cb) {
+    cartItems.forEach(i => i.checked = cb.checked);
+    renderCart();
+  }
+
+  function toggleItem(idx, val) {
+    cartItems[idx].checked = val;
+    updateSummary();
+    updateCheckAll();
+  }
+
+  // ── Change Qty (update ke Supabase) ──
+  async function changeQty(idx, delta) {
+    const item    = cartItems[idx];
+    const newQty  = item.qty + delta;
+
+    if (delta < 0 && item.qty <= 1) {
+      // qty = 1 dan tekan minus → hapus item
+      await removeItem(idx);
+      return;
+    }
+
+    const maxQty = item.stock || 99;
+    if (newQty > maxQty) {
+      showToast(`Stok tersedia hanya ${maxQty} ${item.unit}`);
+      return;
+    }
+
+    try {
+      const { error } = await _supabase
+        .from('marketplace_cart')
+        .update({ quantity: newQty })
+        .eq('id', item.cartId);
+
+      if (error) throw error;
+
+      await loadCart();
+
+    } catch (err) {
+      console.error('changeQty error:', err);
+      showToast('Gagal memperbarui jumlah produk');
+    }
+  }
+
+  // ── Remove Item (delete dari Supabase) ──
+  async function removeItem(idx) {
+    const item = cartItems[idx];
+
+    try {
+      const { error } = await _supabase
+        .from('marketplace_cart')
+        .delete()
+        .eq('id', item.cartId);
+
+      if (error) throw error;
+
+      showToast(`"${item.name}" dihapus dari keranjang`);
+      await loadCart();
+
+    } catch (err) {
+      console.error('removeItem error:', err);
+      showToast('Gagal menghapus produk dari keranjang');
+    }
+  }
+
+  // ── Voucher ──
+  function pakaVoucher() {
+    const code = document.getElementById('voucherInput').value.trim().toUpperCase();
+    if (code === 'POROS10') {
+      voucherDiskon = 10000;
+      showToast('Voucher POROS10 berhasil dipakai! Diskon Rp 10.000');
+    } else if (code === '') {
+      showToast('Masukkan kode voucher terlebih dahulu');
+    } else {
+      voucherDiskon = 0;
+      showToast('Kode voucher tidak valid');
+    }
+    updateSummary();
+  }
+
+  // ── Checkout ──
+  function checkout() {
+    const checked = cartItems.filter(i => i.checked);
+    if (checked.length === 0) return;
+    showToast('Memproses checkout…');
+    setTimeout(() => { window.location = '/buyer/buyer-pesanan.html'; }, 1200);
+  }
+
+  // ── Mobile sidebar toggle ──
+  document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
+    document.getElementById('adminSidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+  });
+
+  // ── Init: load keranjang dari Supabase ──
+  loadCart();
+</script>
+  <script src="/assets/js/buyer-navbar.js"></script>
+</body>
+</html>

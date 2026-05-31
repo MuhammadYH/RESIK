@@ -48,7 +48,8 @@
     `;
     const logoWrap = navWrap.querySelector('.nav-logo-wrap');
     if (logoWrap) {
-      navWrap.insertBefore(btn, logoWrap);
+      // Sisipkan hamburger SETELAH logo, sebelum elemen berikutnya
+      logoWrap.insertAdjacentElement('afterend', btn);
     } else {
       navWrap.prepend(btn);
     }
@@ -78,6 +79,9 @@
 
     const drawer = document.createElement('div');
     drawer.className = 'mobile-drawer';
+
+    // Profile user diurus sepenuhnya oleh resik-supabase.js via pill button di .drawer-cta
+
     drawer.innerHTML = `
       <div class="drawer-header">
         <a href="01RESIK.html" class="drawer-logo">
@@ -93,6 +97,131 @@
       </div>
     `;
     document.body.appendChild(drawer);
+
+    // ── Inject CSS profile pill (drawer) — satu kali ──
+    if (!document.getElementById('resik-drawer-profile-style')) {
+      const ds = document.createElement('style');
+      ds.id = 'resik-drawer-profile-style';
+      ds.textContent = `
+        /* ── Drawer CTA area ── */
+        .drawer-cta { padding: 16px; position: relative; }
+
+        /* ── Profile pill button ── */
+        .drawer-profile-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 14px 6px 6px;
+          border-radius: 99px;
+          border: 1.5px solid #dde8e2;
+          background: #ffffff;
+          cursor: pointer;
+          font-family: 'DM Sans', sans-serif;
+          font-size: .88rem;
+          font-weight: 600;
+          color: #0e1b14;
+          transition: box-shadow .2s, border-color .2s;
+          position: relative;
+          white-space: nowrap;
+        }
+        .drawer-profile-pill:hover {
+          border-color: #3ab86e;
+          box-shadow: 0 4px 16px rgba(20,56,42,.10);
+        }
+
+        /* Avatar circle */
+        .drawer-profile-pill .dpp-avatar {
+          width: 32px; height: 32px;
+          border-radius: 50%;
+          background: #e8f5ee;
+          border: 2px solid #c8edda;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0;
+          overflow: hidden;
+        }
+        .drawer-profile-pill .dpp-avatar svg {
+          width: 18px; height: 18px;
+          stroke: #1b4d35; fill: none;
+          stroke-width: 2; stroke-linecap: round;
+        }
+        .drawer-profile-pill .dpp-avatar img {
+          width: 100%; height: 100%;
+          object-fit: cover; border-radius: 50%;
+        }
+
+        /* Name & chevron */
+        .drawer-profile-pill .dpp-name {
+          max-width: 120px;
+          overflow: hidden; text-overflow: ellipsis;
+        }
+        .drawer-profile-pill .dpp-chevron {
+          width: 14px; height: 14px;
+          stroke: #5d7268; fill: none;
+          stroke-width: 2.2; stroke-linecap: round;
+          transition: transform .2s; flex-shrink: 0;
+        }
+        .drawer-profile-pill.open .dpp-chevron { transform: rotate(180deg); }
+
+        /* ── Dropdown ── */
+        .drawer-profile-dropdown {
+          display: none;
+          position: absolute;
+          bottom: calc(100% + 6px);
+          left: 16px; right: 16px;
+          background: #ffffff;
+          border: 1px solid #dde8e2;
+          border-radius: 14px;
+          box-shadow: 0 -8px 32px rgba(20,56,42,.12);
+          z-index: 9999;
+          padding: 8px;
+          animation: drawerDropIn .18s ease;
+        }
+        .drawer-profile-dropdown.open { display: block; }
+        @keyframes drawerDropIn {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .drawer-profile-dropdown .dpd-header {
+          padding: 10px 12px 8px;
+          border-bottom: 1px solid #edf3ef;
+          margin-bottom: 6px;
+        }
+        .drawer-profile-dropdown .dpd-header .dpd-name {
+          font-weight: 700; font-size: .88rem;
+          color: #0e1b14; font-family: 'DM Sans', sans-serif;
+        }
+        .drawer-profile-dropdown .dpd-header .dpd-email {
+          font-size: .75rem; color: #5d7268; margin-top: 2px;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .drawer-profile-dropdown a,
+        .drawer-profile-dropdown button {
+          display: flex; align-items: center; gap: 9px;
+          width: 100%; padding: 9px 12px; border-radius: 9px;
+          font-family: 'DM Sans', sans-serif; font-size: .86rem;
+          font-weight: 500; color: #0e1b14; text-decoration: none;
+          background: none; border: none; cursor: pointer;
+          text-align: left; transition: background .15s;
+          box-sizing: border-box;
+        }
+        .drawer-profile-dropdown a:hover,
+        .drawer-profile-dropdown button:hover { background: #f0faf4; }
+        .drawer-profile-dropdown .dpd-logout {
+          color: #c0392b; margin-top: 4px;
+          border-top: 1px solid #edf3ef; padding-top: 10px;
+        }
+        .drawer-profile-dropdown .dpd-logout:hover { background: #fff5f5; }
+        .drawer-profile-dropdown svg {
+          width: 15px; height: 15px;
+          stroke: currentColor; fill: none;
+          stroke-width: 2; stroke-linecap: round; flex-shrink: 0;
+        }
+      `;
+      document.head.appendChild(ds);
+    }
+
+    // Beritahu script lain bahwa drawer sudah siap
+    document.dispatchEvent(new CustomEvent('resik:drawerReady'));
 
     let isOpen = false;
     function openDrawer() {

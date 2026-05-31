@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="required-role" content="buyer"/>
+  <title>Marketplace — RESIK</title>
+
+  <!-- Shared admin design system -->
+  <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-components.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-navbar.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-components.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-navbar.css"/>
+
+  <!-- Auth & role guard -->
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/session.js"></script>
+  <script src="/assets/js/role-guard.js" data-role="buyer"></script>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ── BUYER MARKETPLACE ── */
+
+    /* Shared CSS vars fallback (in case admin-shared.css path is local) */
+    :root {
+      --primary-green: #2E7D32;
+      --primary-green-dark: #1B5E20;
+      --primary-green-soft: #E8F5E9;
+      --primary-gradient: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+      --accent-orange: #F57C00;
+      --accent-orange-soft: #FFF3E0;
+      --accent-blue: #1565C0;
+      --accent-blue-soft: #E3F2FD;
+      --text-primary: #1A1A1A;
+      --text-secondary: #555;
+      --text-muted: #999;
+      --text-white: #fff;
+      --bg-white: #fff;
+      --bg-soft: #F7F8FA;
+      --border-color: #E8EAED;
+      --border-color-soft: #F0F2F4;
+      --shadow-card: 0 1px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+      --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+      --font-family: 'Inter', system-ui, sans-serif;
+      --font-size-xs: 11px; --font-size-sm: 13px; --font-size-base: 15px;
+      --font-size-lg: 17px; --font-size-xl: 20px; --font-size-2xl: 24px;
+      --font-size-3xl: 30px; --font-size-4xl: 36px;
+      --transition-fast: 0.15s ease;
+      --transition-base: 0.25s ease;
+      --transition-slow: 0.4s ease;
+      --success: #2E7D32; --danger: #C62828; --warning: #E65100;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: hidden; max-width: 100%; }
+    body { font-family: var(--font-family); background: var(--bg-soft); color: var(--text-primary); }
+
+    /* ── BUYER SIDEBAR ── */
+    .buyer-sidebar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--primary-green);
+      color: white;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      margin-left: auto;
+    }
+
+    .sidebar-cart-count {
+      background: var(--accent-orange);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      margin-left: auto;
+    }
+
+    /* ── MARKETPLACE LAYOUT ── */
+    .mp-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: var(--space-6);
+      align-items: start;
+    }
+    @media (max-width: 1100px) { .mp-layout { grid-template-columns: 1fr; } }
+
+    /* ── FILTER SIDEBAR (left panel inside content) ── */
+    .mp-filter-panel {
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: var(--space-5);
+      position: sticky;
+      top: 80px;
+    }
+
+    .filter-section { margin-bottom: var(--space-5); }
+    .filter-section:last-child { margin-bottom: 0; }
+
+    .filter-section-title {
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: var(--space-3);
+    }
+
+    .filter-category-list { display: flex; flex-direction: column; gap: var(--space-1); }
+
+    .filter-category-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      text-align: left;
+      transition: all var(--transition-fast);
+      width: 100%;
+    }
+
+    .filter-category-btn:hover { background: var(--primary-green-soft); color: var(--primary-green); }
+    .filter-category-btn.active { background: var(--primary-green); color: white; }
+
+    .filter-category-btn .cat-count {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      opacity: 0.6;
+    }
+
+    .filter-category-btn.active .cat-count { opacity: 0.75; }
+
+    .filter-range {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .filter-range input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary-green);
+    }
+
+    .filter-range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+    }
+
+    .filter-check-list { display: flex; flex-direction: column; gap: var(--space-2); }
+
+    .filter-check-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .filter-check-item input { accent-color: var(--primary-green); }
+
+    /* ── PRODUCT AREA ── */
+    .mp-product-area {}
+
+    .mp-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+      flex-wrap: wrap;
+    }
+
+    .mp-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .mp-count {
+      font-size: var(--font-size-sm);
+      color: var(--text-muted);
+    }
+
+    .mp-count strong { color: var(--text-primary); }
+
+    .mp-sort {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .mp-view-toggle {
+      display: flex;
+      gap: 2px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 2px;
+    }
+
+    .mp-view-btn {
+      width: 32px; height: 32px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all var(--transition-fast);
+    }
+
+    .mp-view-btn.active { background: var(--bg-white); color: var(--primary-green); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+    /* ── PRODUCT GRID ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+    }
+
+    @media (max-width: 1400px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 700px)  { .product-grid { grid-template-columns: 1fr; } }
+
+    .product-grid.list-view {
+      grid-template-columns: 1fr;
+    }
+
+    /* ── PRODUCT CARD ── */
+    .product-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: rgba(46,125,50,0.2);
+    }
+
+    .product-card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--bg-soft);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-card-img-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+    }
+
+    /* Product image from Supabase Storage */
+    .product-card-img-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-card-img-inner.img-fallback {
+      font-size: 56px;
+      background: var(--bg-soft);
+    }
+
+    .product-card-badges {
+      position: absolute;
+      top: var(--space-3);
+      left: var(--space-3);
+      display: flex;
+      gap: var(--space-1);
+      flex-wrap: wrap;
+    }
+
+    .product-card-wishlist {
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-3);
+      width: 32px; height: 32px;
+      border-radius: var(--radius-full);
+      background: white;
+      border: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      color: var(--text-muted);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .product-card-wishlist:hover { color: var(--danger); border-color: var(--danger); }
+    .product-card-wishlist.active { color: var(--danger); border-color: var(--danger); background: #FFF0F0; }
+
+    .product-card-body {
+      padding: var(--space-4);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .product-card-seller {
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .product-card-name {
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-card-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+
+    .product-card-weight {
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+      background: var(--bg-soft);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .product-card-rating {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+    }
+
+    .product-card-rating .star { color: #F9A825; }
+
+    .product-stock-bar {
+      margin-top: auto;
+    }
+
+    .product-stock-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .product-card-footer {
+      padding: var(--space-3) var(--space-4);
+      border-top: 1px solid var(--border-color-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .product-price {
+      font-size: var(--font-size-base);
+      font-weight: 800;
+      color: var(--primary-green);
+    }
+
+    .product-price-unit {
+      font-size: var(--font-size-xs);
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .btn-add-cart {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-2) var(--space-3);
+      background: var(--primary-green);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-add-cart:hover { background: var(--primary-green-dark); transform: translateY(-1px); }
+    .btn-add-cart.added { background: var(--accent-orange); }
+
+    /* ── LIST VIEW variant ── */
+    .product-grid.list-view .product-card {
+      flex-direction: row;
+    }
+
+    .product-grid.list-view .product-card-img {
+      width: 140px;
+      min-width: 140px;
+      aspect-ratio: auto;
+      height: auto;
+    }
+
+    .product-grid.list-view .product-card-footer {
+      border-top: none;
+      border-left: 1px solid var(--border-color-soft);
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      padding: var(--space-4);
+      min-width: 120px;
+    }
+
+    /* ── CATEGORY CHIPS (mobile top bar) ── */
+    .mp-category-chips {
+      display: flex;
+      gap: var(--space-2);
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: var(--space-5);
+      padding-bottom: 2px;
+    }
+    .mp-category-chips::-webkit-scrollbar { display: none; }
+
+    .category-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-white);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .category-chip:hover { border-color: var(--primary-green); color: var(--primary-green); }
+    .category-chip.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
+
+    /* ── MARKETPLACE BANNER ── */
+    .mp-banner {
+      background: var(--primary-gradient);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6) var(--space-8);
+      margin-bottom: var(--space-6);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mp-banner::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 220px; height: 220px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+
+    .mp-banner::after {
+      content: '';
+      position: absolute;
+      bottom: -70px; right: 120px;
+      width: 300px; height: 300px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+
+    .mp-banner-text {}
+    .mp-banner-eyebrow { font-size: var(--font-size-xs); color: rgba(255,255,255,0.7); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+    .mp-banner-title { font-size: var(--font-size-2xl); font-weight: 800; line-height: 1.2; margin-bottom: var(--space-2); }
+    .mp-banner-sub { font-size: var(--font-size-sm); color: rgba(255,255,255,0.8); }
+
+    .mp-banner-stats {
+      display: flex;
+      gap: var(--space-6);
+      flex-shrink: 0;
+    }
+
+    .mp-banner-stat { text-align: center; }
+    .mp-banner-stat-val { font-size: var(--font-size-2xl); font-weight: 800; }
+    .mp-banner-stat-label { font-size: var(--font-size-xs); color: rgba(255,255,255,0.7); margin-top: 2px; }
+
+    @media (max-width: 768px) {
+      .mp-banner { flex-direction: column; padding: var(--space-5); }
+      .mp-banner-stats { gap: var(--space-4); }
+    }
+
+    /* ── PRODUCT DETAIL MODAL ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-box {
+      background: var(--bg-white);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      max-width: 760px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-5) var(--space-6);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-header h2 { font-size: var(--font-size-base); font-weight: 700; }
+
+    .modal-close {
+      width: 32px; height: 32px;
+      border: none;
+      background: var(--bg-soft);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all var(--transition-fast);
+    }
+
+    .modal-close:hover { background: var(--border-color); color: var(--text-primary); }
+
+    .modal-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+      padding: var(--space-6);
+    }
+
+    @media (max-width: 600px) { .modal-body { grid-template-columns: 1fr; } }
+
+    .modal-img {
+      background: var(--bg-soft);
+      border-radius: var(--radius-lg);
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 100px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    /* Modal image from Supabase Storage */
+    .modal-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-info {}
+    .modal-seller {
+      font-size: var(--font-size-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .modal-product-name {
+      font-size: var(--font-size-xl);
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: var(--space-3);
+      line-height: 1.3;
+    }
+
+    .modal-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+
+    .modal-price {
+      font-size: var(--font-size-2xl);
+      font-weight: 800;
+      color: var(--primary-green);
+    }
+
+    .modal-price-unit { font-size: var(--font-size-sm); color: var(--text-muted); }
+
+    .modal-desc {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: var(--space-4);
+    }
+
+    .modal-spec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+
+    .modal-spec-item {
+      background: var(--bg-soft);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+    }
+
+    .modal-spec-label { font-size: var(--font-size-xs); color: var(--text-muted); margin-bottom: 2px; }
+    .modal-spec-val { font-size: var(--font-size-sm); font-weight: 700; color: var(--text-primary); }
+
+    .modal-qty-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+
+    .qty-label { font-size: var(--font-size-sm); color: var(--text-secondary); font-weight: 600; }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .qty-btn {
+      width: 32px; height: 32px;
+      border: none;
+      background: var(--bg-soft);
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-primary);
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition-fast);
+    }
+
+    .qty-btn:hover { background: var(--primary-green-soft); }
+
+    .qty-input {
+      width: 48px;
+      text-align: center;
+      border: none;
+      border-left: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      padding: 0;
+      height: 32px;
+      background: white;
+    }
+
+    .modal-footer {
+      padding: var(--space-4) var(--space-6);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: var(--space-3);
+    }
+
+    /* ── CART MINI TOAST ── */
+    .cart-toast {
+      position: fixed;
+      bottom: var(--space-6);
+      right: var(--space-6);
+      background: var(--text-primary);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: var(--space-3) var(--space-5);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      box-shadow: var(--shadow-md);
+      z-index: 500;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .cart-toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── EMPTY STATE ── */
+    .mp-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--space-10) var(--space-6);
+    }
+
+    .mp-empty-icon {
+      width: 80px; height: 80px;
+      background: var(--bg-soft);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto var(--space-4);
+      font-size: 36px;
+    }
+
+    .mp-empty h3 { font-size: var(--font-size-base); font-weight: 700; margin-bottom: var(--space-2); }
+    .mp-empty p  { font-size: var(--font-size-sm); color: var(--text-muted); }
+
+    /* ── LOADING STATE ── */
+    .mp-loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--space-10) var(--space-6);
+      color: var(--text-muted);
+    }
+
+    .mp-loading-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--primary-green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto var(--space-4);
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── MOBILE FILTER TOGGLE ── */
+    .mp-filter-toggle {
+      display: none;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .mp-filter-toggle:hover { border-color: var(--primary-green); color: var(--primary-green); }
+
+    @media (max-width: 1100px) {
+      .mp-layout { grid-template-columns: 1fr; }
+      .mp-filter-panel { position: static; display: none; }
+      .mp-filter-panel.mobile-open { display: block; margin-bottom: var(--space-5); }
+      .mp-filter-toggle { display: flex; }
+    }
+
+    /* ── PAGINATION ── */
+    .mp-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      margin-top: var(--space-8);
+    }
+
+    .page-btn {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background: var(--bg-white);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .page-btn:hover { border-color: var(--primary-green); color: var(--primary-green); }
+    .page-btn.active { background: var(--primary-green); border-color: var(--primary-green); color: white; }
+    .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── STOCK INDICATOR ── */
+    .stock-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .stock-dot.in-stock    { background: var(--success); }
+    .stock-dot.low-stock   { background: var(--accent-orange); }
+    .stock-dot.out-stock   { background: var(--danger); }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border-color);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--success);
+      border-radius: var(--radius-full);
+      transition: width 0.4s ease;
+    }
+    .progress-bar-fill.orange { background: var(--accent-orange); }
+    .progress-bar-fill.red    { background: var(--danger); }
+  </style>
+</head>
+<body data-navbar-title="Marketplace">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- BUYER SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+
+    <nav class="sidebar-nav">
+      <!-- Marketplace (active - landing utama buyer) -->
+      <a class="sidebar-nav-item active" href="/buyer/buyer-marketplace.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </span>
+        Marketplace
+      </a>
+
+      <!-- Keranjang -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-keranjang.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </span>
+        Keranjang
+        <span class="sidebar-cart-count" id="sidebarCartCount">0</span>
+      </a>
+
+      <!-- Pesanan Saya -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-pesanan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </span>
+        Pesanan Saya
+      </a>
+
+      <!-- Wishlist -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-wishlist.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </span>
+        Wishlist
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Notifikasi -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-notifikasi.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </span>
+        Notifikasi
+        <span class="nav-badge">2</span>
+      </a>
+
+      <!-- Pengaturan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-pengaturan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </span>
+        Pengaturan
+      </a>
+
+      <!-- Bantuan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-bantuan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </span>
+        Bantuan
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-3); display:flex; align-items:center; justify-content:center;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 22c1.25-1.25 2.5-2.5 3.5-4 1.8-2.7 2.5-6 2.5-9 0 0 3 1 5 4 1.5 2.3 1.5 5 1.5 5s1.5-1 2-3c.8-3 0-6 0-6s3 2 4 5c.7 2 .5 4.5-.5 6.5C18.5 23 14 24 10 22"/>
+          <path d="M2 22c2-2 4-5 4-9"/>
+        </svg>
+      </div>
+      <h4>Beli Produk Olahan Limbah Organik</h4>
+      <p>Setiap pembelian membantu pondok pesantren mengelola sampah lebih baik dan bernilai ekonomi.</p>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name" id="buyerName">Ahmad Faruq</div>
+        <div class="user-email" id="buyerEmail">faruq@buyer.id</div>
+      </div>
+      <svg class="user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- TOPBAR -->
+    <header class="admin-topbar" id="adminTopbar"></header>
+
+    <!-- CONTENT -->
+    <div class="admin-content">
+
+      <!-- Hero Banner -->
+      <div class="mp-banner">
+        <div class="mp-banner-text">
+          <div class="mp-banner-eyebrow">Marketplace POROS</div>
+          <div class="mp-banner-title">Produk Olahan<br>Limbah Organik</div>
+          <div class="mp-banner-sub">Kompos, pupuk cair, biogas, dan produk unggulan lainnya langsung dari pondok pesantren.</div>
+        </div>
+        <div class="mp-banner-stats">
+          <div class="mp-banner-stat">
+            <div class="mp-banner-stat-val" id="statTotal">—</div>
+            <div class="mp-banner-stat-label">Produk Aktif</div>
+          </div>
+          <div class="mp-banner-stat">
+            <div class="mp-banner-stat-val" id="statSellers">—</div>
+            <div class="mp-banner-stat-label">Penjual</div>
+          </div>
+          <div class="mp-banner-stat">
+            <div class="mp-banner-stat-val" id="statRating">—</div>
+            <div class="mp-banner-stat-label">Rata-rata Rating</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Chips (mobile) -->
+      <div class="mp-category-chips" id="categoryChips">
+        <button class="category-chip active" data-cat="all" onclick="filterByCategory(this, 'all')">🛒 Semua</button>
+        <button class="category-chip" data-cat="kompos" onclick="filterByCategory(this, 'kompos')">🌱 Kompos</button>
+        <button class="category-chip" data-cat="pupuk-cair" onclick="filterByCategory(this, 'pupuk-cair')">💧 Pupuk Cair</button>
+        <button class="category-chip" data-cat="biogas" onclick="filterByCategory(this, 'biogas')">⚡ Biogas</button>
+        <button class="category-chip" data-cat="pakan" onclick="filterByCategory(this, 'pakan')">🐛 Pakan BSF</button>
+        <button class="category-chip" data-cat="media-tanam" onclick="filterByCategory(this, 'media-tanam')">🪴 Media Tanam</button>
+      </div>
+
+      <!-- Main layout: filter + product grid -->
+      <div class="mp-layout">
+
+        <!-- FILTER PANEL -->
+        <aside class="mp-filter-panel" id="filterPanel">
+
+          <div class="filter-section">
+            <div class="filter-section-title">Kategori</div>
+            <div class="filter-category-list">
+              <button class="filter-category-btn active" data-cat="all" onclick="filterByCategory(this, 'all')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                Semua Produk
+                <span class="cat-count" id="catCount-all">0</span>
+              </button>
+              <button class="filter-category-btn" data-cat="kompos" onclick="filterByCategory(this, 'kompos')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 22c1.25-1.25 2.5-2.5 3.5-4 1.8-2.7 2.5-6 2.5-9 0 0 3 1 5 4"/></svg>
+                Kompos
+                <span class="cat-count" id="catCount-kompos">0</span>
+              </button>
+              <button class="filter-category-btn" data-cat="pupuk-cair" onclick="filterByCategory(this, 'pupuk-cair')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+                Pupuk Cair
+                <span class="cat-count" id="catCount-pupuk-cair">0</span>
+              </button>
+              <button class="filter-category-btn" data-cat="biogas" onclick="filterByCategory(this, 'biogas')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Biogas
+                <span class="cat-count" id="catCount-biogas">0</span>
+              </button>
+              <button class="filter-category-btn" data-cat="pakan" onclick="filterByCategory(this, 'pakan')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+                Pakan BSF
+                <span class="cat-count" id="catCount-pakan">0</span>
+              </button>
+              <button class="filter-category-btn" data-cat="media-tanam" onclick="filterByCategory(this, 'media-tanam')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                Media Tanam
+                <span class="cat-count" id="catCount-media-tanam">0</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <div class="filter-section-title">Harga</div>
+            <div class="filter-range">
+              <input type="range" min="0" max="500000" value="500000" step="5000" id="priceRange" oninput="updatePriceLabel(this.value)"/>
+              <div class="filter-range-labels">
+                <span>Rp 0</span>
+                <span id="priceRangeLabel">Maks Rp 500rb</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <div class="filter-section-title">Ketersediaan Stok</div>
+            <div class="filter-check-list">
+              <label class="filter-check-item">
+                <input type="checkbox" id="cbInStock" checked onchange="applyFilters()"/>
+                <span>Stok Tersedia</span>
+              </label>
+              <label class="filter-check-item">
+                <input type="checkbox" id="cbLowStock" checked onchange="applyFilters()"/>
+                <span>Hampir Habis</span>
+              </label>
+              <label class="filter-check-item">
+                <input type="checkbox" id="cbOutStock" onchange="applyFilters()"/>
+                <span>Habis</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <div class="filter-section-title">Penjual</div>
+            <div class="filter-check-list" id="sellerCheckList">
+              <!-- Dynamically populated from DB -->
+            </div>
+          </div>
+
+          <button class="btn btn-outline w-full" style="margin-top:var(--space-2);" onclick="resetFilters()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
+            Reset Filter
+          </button>
+        </aside>
+
+        <!-- PRODUCT AREA -->
+        <div class="mp-product-area">
+
+          <!-- Toolbar -->
+          <div class="mp-toolbar">
+            <div class="mp-toolbar-left">
+              <button class="mp-filter-toggle" id="filterToggleBtn" onclick="toggleFilterPanel()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+                Filter
+              </button>
+              <span class="mp-count"><strong id="productCount">0</strong> produk ditemukan</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:var(--space-2);">
+              <select class="mp-sort" id="sortSelect" onchange="sortProducts(this.value)">
+                <option value="default">Urutan: Terbaru</option>
+                <option value="price-asc">Harga: Terendah</option>
+                <option value="price-desc">Harga: Tertinggi</option>
+                <option value="rating">Rating Tertinggi</option>
+                <option value="stock">Stok Terbanyak</option>
+              </select>
+              <div class="mp-view-toggle">
+                <button class="mp-view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Grid">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                </button>
+                <button class="mp-view-btn" id="listViewBtn" onclick="setView('list')" title="List">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Grid -->
+          <div class="product-grid" id="productGrid">
+            <!-- Loading state -->
+            <div class="mp-loading">
+              <div class="mp-loading-spinner"></div>
+              <p>Memuat produk...</p>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="mp-pagination" id="pagination"></div>
+
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-shell -->
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-backdrop" id="productModal" onclick="closeModalOnBackdrop(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-header">
+      <h2 id="modalTitle">Detail Produk</h2>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-img" id="modalImg">
+        <!-- image injected by JS -->
+      </div>
+      <div class="modal-info">
+        <div class="modal-seller" id="modalSeller">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span id="modalSellerName"></span>
+        </div>
+        <div class="modal-product-name" id="modalProductName"></div>
+        <div class="modal-price-row">
+          <div class="modal-price" id="modalPrice"></div>
+          <div class="modal-price-unit" id="modalPriceUnit"></div>
+        </div>
+        <p class="modal-desc" id="modalDesc"></p>
+        <div class="modal-spec-grid" id="modalSpecGrid"></div>
+        <div class="modal-qty-row">
+          <span class="qty-label">Jumlah:</span>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <input type="number" class="qty-input" id="qtyInput" value="1" min="1"/>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+          <span style="font-size:var(--font-size-xs); color:var(--text-muted);" id="modalStockInfo"></span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" style="flex:1;" onclick="closeModal()">Tutup</button>
+      <button class="btn btn-primary" style="flex:2;" id="modalAddCartBtn" onclick="addToCartFromModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Masukkan Keranjang
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Toast -->
+<div class="cart-toast" id="cartToast">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="cartToastMsg">Produk ditambahkan ke keranjang</span>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// SUPABASE CONFIG
+// ══════════════════════════════════════════════════
+const SUPABASE_URL = window.SUPABASE_URL || 'https://vcxwphzxavolrbsafroa.supabase.co';
+const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjeHdwaHp4YXZvbHJic2Fmcm9hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNzM4NjQsImV4cCI6MjA5NDg0OTg2NH0.OOW5l0QgcNRPp5Q4qBIaK6uotvTdo91zt2uV5ON6rx0';
+
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ══════════════════════════════════════════════════
+// HELPER: ambil roleId buyer dari Supabase session
+// Fallback bertingkat: Supabase → poros_session → JWT
+// ══════════════════════════════════════════════════
+async function getBuyerRoleId() {
+  try {
+    const { data: { session } } = await _supabase.auth.getSession();
+    if (session?.user) {
+      const { data: profile } = await _supabase
+        .from('profiles')
+        .select('role_id')
+        .eq('id', session.user.id)
+        .single();
+      if (profile?.role_id) return String(profile.role_id);
+    }
+  } catch (_) {}
+  return null;
+}
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let PRODUCTS = [];          // raw data from DB (field-mapped)
+let cart = {};
+let wishlist = {};
+let activeCategory = 'all';
+let currentView = 'grid';
+let currentProducts = [];
+let activeModal = null;
+
+// Pagination
+const PAGE_SIZE = 12;
+let currentPage = 1;
+
+// ══════════════════════════════════════════════════
+// HELPER: build image element (Supabase Storage or fallback)
+// ══════════════════════════════════════════════════
+function buildImgTag(imageUrl, altText, cls = '') {
+  if (imageUrl) {
+    return `<img src="${imageUrl}" alt="${escHtml(altText)}" class="${cls}"
+      onerror="this.parentElement.classList.add('img-fallback'); this.parentElement.innerHTML='🌱';"
+      loading="lazy"/>`;
+  }
+  return '🌱';
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════════════
+// LOAD PRODUCTS FROM SUPABASE
+// ══════════════════════════════════════════════════
+async function loadProducts() {
+  try {
+    const { data, error } = await _supabase
+      .from('marketplace_products')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    console.log('DATA FROM SUPABASE:', data);
+
+    // ── Field mapping ──
+    PRODUCTS = (data || []).map(row => ({
+      id:         row.id,
+      name:       row.product_name   || '',
+      seller:     row.seller_name    || '',
+      cat:        row.category       || '',
+      image:      row.image_url      || '',
+      price:      Number(row.price)  || 0,
+      unit:       row.unit           || '',
+      stock:      Number(row.stock)  || 0,
+      maxStock:   Number(row.stock)  || 100,   // use stock as maxStock (adjust if table has separate column)
+      rating:     Number(row.rating) || 0,
+      reviews:    Number(row.review_count) || 0,
+      badge:      row.badge_text     || '',
+      badgeType:  row.badge_type     || 'success',
+      desc:       row.description    || '',
+      spec:       parseSpec(row.specifications),
+    }));
+
+  } catch (err) {
+    console.error('Supabase loadProducts error:', err);
+    PRODUCTS = [];
+  }
+
+  currentProducts = [...PRODUCTS];
+  init();
+}
+
+// ── Parse specifications (supports JSON object or plain string) ──
+function parseSpec(raw) {
+  if (!raw) return {};
+  if (typeof raw === 'object') return raw;
+  try { return JSON.parse(raw); } catch { return { Keterangan: String(raw) }; }
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+function init() {
+  updateBannerStats();
+  updateCategoryCounts();
+  buildSellerFilter();
+  currentPage = 1;
+  renderProducts(currentProducts);
+  updateCartUI();
+  // Load cart count dari Supabase saat halaman init
+  loadCartCount();
+}
+
+// ══════════════════════════════════════════════════
+// BANNER STATS
+// ══════════════════════════════════════════════════
+function updateBannerStats() {
+  const total = PRODUCTS.length;
+  const sellers = new Set(PRODUCTS.map(p => p.seller)).size;
+  const avgRating = total
+    ? (PRODUCTS.reduce((s, p) => s + p.rating, 0) / total).toFixed(1)
+    : '—';
+
+  const elTotal   = document.getElementById('statTotal');
+  const elSellers = document.getElementById('statSellers');
+  const elRating  = document.getElementById('statRating');
+  if (elTotal)   elTotal.textContent   = total;
+  if (elSellers) elSellers.textContent = sellers;
+  if (elRating)  elRating.textContent  = avgRating + '★';
+}
+
+// ══════════════════════════════════════════════════
+// CATEGORY COUNTS
+// ══════════════════════════════════════════════════
+function updateCategoryCounts() {
+  const cats = ['kompos', 'pupuk-cair', 'biogas', 'pakan', 'media-tanam'];
+  const el = document.getElementById('catCount-all');
+  if (el) el.textContent = PRODUCTS.length;
+  cats.forEach(c => {
+    const el = document.getElementById(`catCount-${c}`);
+    if (el) el.textContent = PRODUCTS.filter(p => p.cat === c).length;
+  });
+}
+
+// ══════════════════════════════════════════════════
+// SELLER FILTER (dynamic)
+// ══════════════════════════════════════════════════
+function buildSellerFilter() {
+  const sellers = [...new Set(PRODUCTS.map(p => p.seller))].sort();
+  const list = document.getElementById('sellerCheckList');
+  if (!list) return;
+  list.innerHTML = sellers.map(s => `
+    <label class="filter-check-item">
+      <input type="checkbox" class="seller-cb" value="${escHtml(s)}" checked onchange="applyFilters()"/>
+      <span>${escHtml(s)}</span>
+    </label>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+// RENDER PRODUCTS
+// ══════════════════════════════════════════════════
+function renderProducts(products) {
+  const grid = document.getElementById('productGrid');
+  document.getElementById('productCount').textContent = products.length;
+
+  if (!products.length) {
+    grid.innerHTML = `
+      <div class="mp-empty">
+        <div class="mp-empty-icon">🔍</div>
+        <h3>Tidak ada produk ditemukan</h3>
+        <p>Coba ubah filter atau kata kunci pencarian Anda.</p>
+      </div>`;
+    renderPagination(0);
+    return;
+  }
+
+  // Pagination slice
+  const totalPages = Math.ceil(products.length / PAGE_SIZE);
+  currentPage = Math.min(currentPage, totalPages);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const paged = products.slice(start, start + PAGE_SIZE);
+
+  grid.innerHTML = paged.map(p => {
+    const stockPct   = p.maxStock > 0 ? Math.round((p.stock / p.maxStock) * 100) : 0;
+    const stockClass = p.stock === 0 ? 'out-stock' : p.stock <= 20 ? 'low-stock' : 'in-stock';
+    const stockLabel = p.stock === 0 ? 'Habis' : p.stock <= 20 ? 'Hampir habis' : 'Tersedia';
+    const badgeHtml  = p.badge ? `<span class="badge badge-${p.badgeType||'success'}">${escHtml(p.badge)}</span>` : '';
+    const inWish     = !!wishlist[p.id];
+    const imgInner   = buildImgTag(p.image, p.name);
+
+    return `
+    <div class="product-card" onclick="openModal('${p.id}')">
+      <div class="product-card-img">
+        <div class="product-card-img-inner">${imgInner}</div>
+        <div class="product-card-badges">${badgeHtml}</div>
+        <button class="product-card-wishlist ${inWish ? 'active' : ''}" id="wish-${p.id}"
+          onclick="event.stopPropagation(); toggleWishlist('${p.id}')" title="Wishlist">
+          <svg width="14" height="14" viewBox="0 0 24 24"
+            fill="${inWish ? '#C62828' : 'none'}"
+            stroke="${inWish ? '#C62828' : 'currentColor'}" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-seller">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          ${escHtml(p.seller)}
+        </div>
+        <div class="product-card-name">${escHtml(p.name)}</div>
+        <div class="product-card-meta">
+          <span class="product-card-weight">${escHtml(p.unit)}</span>
+          <span class="product-card-rating"><span class="star">★</span>${p.rating} (${p.reviews})</span>
+        </div>
+        <div class="product-stock-bar">
+          <div class="product-stock-label">
+            <span style="display:flex;align-items:center;gap:4px;">
+              <span class="stock-dot ${stockClass}"></span>${stockLabel}
+            </span>
+            <span>${p.stock} unit</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-bar-fill ${stockPct < 30 ? 'orange' : ''} ${stockPct === 0 ? 'red' : ''}"
+              style="width:${stockPct}%;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="product-card-footer">
+        <div>
+          <div class="product-price">Rp ${p.price.toLocaleString('id-ID')}</div>
+          <div style="font-size:var(--font-size-xs);color:var(--text-muted);">${escHtml(p.unit)}</div>
+        </div>
+        <button class="btn-add-cart ${cart[p.id] ? 'added' : ''}" id="cart-btn-${p.id}"
+          onclick="event.stopPropagation(); addToCart('${p.id}')"
+          ${p.stock === 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+          ${cart[p.id]
+            ? `✓ ${cart[p.id]}`
+            : `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Beli`}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+
+  renderPagination(products.length);
+}
+
+// ══════════════════════════════════════════════════
+// PAGINATION
+// ══════════════════════════════════════════════════
+function renderPagination(total) {
+  const container = document.getElementById('pagination');
+  if (!container) return;
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+
+  if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+  let html = `
+    <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>`;
+
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+  }
+
+  html += `
+    <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>`;
+
+  container.innerHTML = html;
+}
+
+function goToPage(page) {
+  currentPage = page;
+  renderProducts(currentProducts);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// legacy stub (called by old inline onclick if any)
+function changePage(btn, page) { goToPage(page); }
+
+// ══════════════════════════════════════════════════
+// FILTER BY CATEGORY
+// ══════════════════════════════════════════════════
+function filterByCategory(btn, cat) {
+  activeCategory = cat;
+  document.querySelectorAll('[data-cat]').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll(`[data-cat="${cat}"]`).forEach(el => el.classList.add('active'));
+  currentPage = 1;
+  applyFilters();
+}
+
+// ══════════════════════════════════════════════════
+// APPLY FILTERS
+// ══════════════════════════════════════════════════
+function applyFilters() {
+  const maxPrice = parseInt(document.getElementById('priceRange').value);
+
+  // Stock checkboxes
+  const cbIn  = document.getElementById('cbInStock')?.checked  ?? true;
+  const cbLow = document.getElementById('cbLowStock')?.checked ?? true;
+  const cbOut = document.getElementById('cbOutStock')?.checked ?? false;
+
+  // Seller checkboxes
+  const sellerCbs = [...document.querySelectorAll('.seller-cb')];
+  const activeSellers = sellerCbs.length
+    ? new Set(sellerCbs.filter(c => c.checked).map(c => c.value))
+    : null;
+
+  // Search
+  const searchVal = (document.getElementById('navSearchInput')?.value || '').toLowerCase();
+
+  let filtered = PRODUCTS.filter(p => {
+    // Category
+    if (activeCategory !== 'all' && p.cat !== activeCategory) return false;
+
+    // Price
+    if (p.price > maxPrice) return false;
+
+    // Stock status
+    const isOut  = p.stock === 0;
+    const isLow  = !isOut && p.stock <= 20;
+    const isIn   = !isOut && !isLow;
+    if (isIn  && !cbIn)  return false;
+    if (isLow && !cbLow) return false;
+    if (isOut && !cbOut) return false;
+
+    // Seller
+    if (activeSellers && !activeSellers.has(p.seller)) return false;
+
+    // Search
+    if (searchVal) {
+      const haystack = (p.name + ' ' + p.seller + ' ' + p.cat).toLowerCase();
+      if (!haystack.includes(searchVal)) return false;
+    }
+
+    return true;
+  });
+
+  currentProducts = filtered;
+  currentPage = 1;
+  sortProducts(document.getElementById('sortSelect').value, false);
+}
+
+function handleNavSearch(val) { applyFilters(); }
+
+// ══════════════════════════════════════════════════
+// SORT
+// ══════════════════════════════════════════════════
+function sortProducts(method, render = true) {
+  const arr = [...currentProducts];
+  if (method === 'price-asc')  arr.sort((a, b) => a.price  - b.price);
+  else if (method === 'price-desc') arr.sort((a, b) => b.price  - a.price);
+  else if (method === 'rating')     arr.sort((a, b) => b.rating - a.rating);
+  else if (method === 'stock')      arr.sort((a, b) => b.stock  - a.stock);
+  if (render) { currentProducts = arr; renderProducts(arr); }
+  else { currentProducts = arr; renderProducts(arr); }
+}
+
+// ══════════════════════════════════════════════════
+// VIEW TOGGLE
+// ══════════════════════════════════════════════════
+function setView(view) {
+  currentView = view;
+  const grid = document.getElementById('productGrid');
+  const gBtn = document.getElementById('gridViewBtn');
+  const lBtn = document.getElementById('listViewBtn');
+  if (view === 'grid') {
+    grid.classList.remove('list-view');
+    gBtn.classList.add('active');
+    lBtn.classList.remove('active');
+  } else {
+    grid.classList.add('list-view');
+    lBtn.classList.add('active');
+    gBtn.classList.remove('active');
+  }
+}
+
+// ══════════════════════════════════════════════════
+// CART — Supabase-backed (marketplace_cart)
+// ══════════════════════════════════════════════════
+
+// loadCartCount: baca marketplace_cart berdasarkan buyer_role_id,
+// hitung total quantity, update badge #sidebarCartCount
+async function loadCartCount() {
+  try {
+    const buyerRoleId = await getBuyerRoleId();
+    if (!buyerRoleId) return;
+
+    const { data, error } = await _supabase
+      .from('marketplace_cart')
+      .select('quantity')
+      .eq('buyer_role_id', buyerRoleId);
+
+    if (error) throw error;
+
+    const total = (data || []).reduce((sum, row) => sum + (Number(row.quantity) || 0), 0);
+
+    // Sync local cart state dari total DB agar updateCartUI tetap akurat
+    const badge = document.getElementById('cartBadge');
+    const sidebarCount = document.getElementById('sidebarCartCount');
+    if (badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none'; }
+    if (sidebarCount) sidebarCount.textContent = total;
+  } catch (err) {
+    console.error('loadCartCount error:', err);
+  }
+}
+
+// addToCart: dipanggil dari tombol "Beli" pada card produk
+async function addToCart(productId) {
+  try {
+    const buyerRoleId = await getBuyerRoleId();
+    if (!buyerRoleId) { showToast('Gagal: user tidak dikenali'); return; }
+
+    // Cek apakah sudah ada di cart
+    const { data: existing, error: fetchErr } = await _supabase
+      .from('marketplace_cart')
+      .select('id, quantity')
+      .eq('buyer_role_id', buyerRoleId)
+      .eq('product_id', productId)
+      .maybeSingle();
+
+    if (fetchErr) throw fetchErr;
+
+    if (existing) {
+      // UPDATE quantity + 1
+      const { error: updateErr } = await _supabase
+        .from('marketplace_cart')
+        .update({ quantity: existing.quantity + 1 })
+        .eq('id', existing.id);
+      if (updateErr) throw updateErr;
+      cart[productId] = existing.quantity + 1;
+    } else {
+      // INSERT baru dengan quantity = 1
+      const { error: insertErr } = await _supabase
+        .from('marketplace_cart')
+        .insert({ buyer_role_id: buyerRoleId, product_id: productId, quantity: 1 });
+      if (insertErr) throw insertErr;
+      cart[productId] = 1;
+    }
+
+    await loadCartCount();
+    renderProducts(currentProducts);
+    showToast('Ditambahkan ke keranjang');
+  } catch (err) {
+    console.error('addToCart error:', err);
+    showToast('Gagal menambahkan ke keranjang');
+  }
+}
+
+function updateCartUI() {
+  const total = Object.values(cart).reduce((a, b) => a + b, 0);
+  const badge = document.getElementById('cartBadge');
+  const sidebarCount = document.getElementById('sidebarCartCount');
+  if (badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none'; }
+  if (sidebarCount) sidebarCount.textContent = total;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('cartToast');
+  document.getElementById('cartToastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ══════════════════════════════════════════════════
+// WISHLIST
+// ══════════════════════════════════════════════════
+function toggleWishlist(id) {
+  wishlist[id] = !wishlist[id];
+  const btn = document.getElementById(`wish-${id}`);
+  if (btn) {
+    btn.classList.toggle('active', wishlist[id]);
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24"
+      fill="${wishlist[id] ? '#C62828' : 'none'}"
+      stroke="${wishlist[id] ? '#C62828' : 'currentColor'}" stroke-width="2">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>`;
+  }
+  showToast(wishlist[id] ? 'Ditambahkan ke wishlist' : 'Dihapus dari wishlist');
+}
+
+// ══════════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════════
+function openModal(id) {
+  const p = PRODUCTS.find(x => String(x.id) === String(id));
+  if (!p) return;
+  activeModal = p;
+
+  document.getElementById('modalTitle').textContent = p.name;
+
+  // Image: use <img> from Supabase Storage, fallback to emoji
+  const modalImgEl = document.getElementById('modalImg');
+  if (p.image) {
+    modalImgEl.innerHTML = `<img src="${escHtml(p.image)}" alt="${escHtml(p.name)}"
+      style="width:100%;height:100%;object-fit:cover;"
+      onerror="this.parentElement.innerHTML='🌱';this.parentElement.style.fontSize='100px';"
+      loading="lazy"/>`;
+    modalImgEl.style.fontSize = '';
+  } else {
+    modalImgEl.innerHTML = '🌱';
+    modalImgEl.style.fontSize = '100px';
+  }
+
+  document.getElementById('modalSellerName').textContent = p.seller;
+  document.getElementById('modalProductName').textContent = p.name;
+  document.getElementById('modalPrice').textContent = `Rp ${p.price.toLocaleString('id-ID')}`;
+  document.getElementById('modalPriceUnit').textContent = p.unit;
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('qtyInput').value = 1;
+  document.getElementById('qtyInput').max = p.stock;
+
+  const stockLabel = p.stock === 0 ? 'Stok habis' : `Stok: ${p.stock} unit tersedia`;
+  document.getElementById('modalStockInfo').textContent = stockLabel;
+
+  // Specifications
+  let specHtml = '';
+  if (p.spec && typeof p.spec === 'object') {
+    specHtml = Object.entries(p.spec).map(([k, v]) => `
+      <div class="modal-spec-item">
+        <div class="modal-spec-label">${escHtml(k)}</div>
+        <div class="modal-spec-val">${escHtml(v)}</div>
+      </div>`).join('');
+  }
+  document.getElementById('modalSpecGrid').innerHTML = specHtml;
+
+  const addBtn = document.getElementById('modalAddCartBtn');
+  if (p.stock === 0) {
+    addBtn.disabled = true;
+    addBtn.style.opacity = '0.5';
+    addBtn.textContent = 'Stok Habis';
+  } else {
+    addBtn.disabled = false;
+    addBtn.style.opacity = '1';
+    addBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Masukkan Keranjang`;
+  }
+
+  document.getElementById('productModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.remove('open');
+  document.body.style.overflow = '';
+  activeModal = null;
+}
+
+function closeModalOnBackdrop(e) {
+  if (e.target === document.getElementById('productModal')) closeModal();
+}
+
+function changeQty(delta) {
+  const input = document.getElementById('qtyInput');
+  const max = activeModal ? activeModal.stock : 99;
+  let val = parseInt(input.value) + delta;
+  val = Math.max(1, Math.min(val, max));
+  input.value = val;
+}
+
+async function addToCartFromModal() {
+  if (!activeModal) return;
+  const qty = parseInt(document.getElementById('qtyInput').value) || 1;
+  const productId = activeModal.id;
+  const productName = activeModal.name;
+
+  try {
+    const buyerRoleId = await getBuyerRoleId();
+    if (!buyerRoleId) { showToast('Gagal: user tidak dikenali'); return; }
+
+    // Cek apakah sudah ada di cart
+    const { data: existing, error: fetchErr } = await _supabase
+      .from('marketplace_cart')
+      .select('id, quantity')
+      .eq('buyer_role_id', buyerRoleId)
+      .eq('product_id', productId)
+      .maybeSingle();
+
+    if (fetchErr) throw fetchErr;
+
+    if (existing) {
+      // UPDATE quantity + qty dari input
+      const newQty = existing.quantity + qty;
+      const { error: updateErr } = await _supabase
+        .from('marketplace_cart')
+        .update({ quantity: newQty })
+        .eq('id', existing.id);
+      if (updateErr) throw updateErr;
+      cart[productId] = newQty;
+    } else {
+      // INSERT baru dengan quantity = qty dari input
+      const { error: insertErr } = await _supabase
+        .from('marketplace_cart')
+        .insert({ buyer_role_id: buyerRoleId, product_id: productId, quantity: qty });
+      if (insertErr) throw insertErr;
+      cart[productId] = qty;
+    }
+
+    await loadCartCount();
+    renderProducts(currentProducts);
+    showToast(`${qty}x ${productName} ditambahkan`);
+    closeModal();
+  } catch (err) {
+    console.error('addToCartFromModal error:', err);
+    showToast('Gagal menambahkan ke keranjang');
+  }
+}
+
+// ══════════════════════════════════════════════════
+// FILTER HELPERS
+// ══════════════════════════════════════════════════
+function updatePriceLabel(val) {
+  const num = parseInt(val);
+  const label = num >= 500000 ? 'Maks Rp 500rb' : `Maks Rp ${(num / 1000).toFixed(0)}rb`;
+  document.getElementById('priceRangeLabel').textContent = label;
+  applyFilters();
+}
+
+function resetFilters() {
+  activeCategory = 'all';
+  document.querySelectorAll('[data-cat]').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('[data-cat="all"]').forEach(el => el.classList.add('active'));
+  document.getElementById('priceRange').value = 500000;
+  document.getElementById('priceRangeLabel').textContent = 'Maks Rp 500rb';
+  document.getElementById('cbInStock').checked  = true;
+  document.getElementById('cbLowStock').checked = true;
+  document.getElementById('cbOutStock').checked = false;
+  document.querySelectorAll('.seller-cb').forEach(cb => cb.checked = true);
+  currentProducts = [...PRODUCTS];
+  currentPage = 1;
+  renderProducts(currentProducts);
+}
+
+// ══════════════════════════════════════════════════
+// MOBILE SIDEBAR / FILTER
+// ══════════════════════════════════════════════════
+function toggleFilterPanel() {
+  const panel = document.getElementById('filterPanel');
+  panel.classList.toggle('mobile-open');
+}
+
+document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
+  document.getElementById('adminSidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+});
+
+// ══════════════════════════════════════════════════
+// KEYBOARD
+// ══════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ══════════════════════════════════════════════════
+// BOOT — load from Supabase
+// ══════════════════════════════════════════════════
+loadProducts();
+</script>
+  <script src="/assets/js/buyer-navbar.js"></script>
+  <script src="/assets/js/buyer-sidebar.js"></script>
+</body>
+</html>

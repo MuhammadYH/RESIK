@@ -1503,10 +1503,19 @@ footer {
 
 /* Mobile nav */
 @media (max-width: 900px) {
-  .nav-links     { display: none !important; }
-  .nav-hamburger { display: flex !important; }
-  .nav-btn       { display: none !important; }
-  .footer-top    { grid-template-columns: 1fr 1fr; }
+  .nav-links                          { display: none !important; }
+  .nav-hamburger                      { display: flex !important; }
+  .nav-btn                            { display: none !important; }
+  /* Sembunyikan user profile pill di mobile — tampil di drawer */
+  .nav-user,
+  .nav-user-btn,
+  .nav-user-pill,
+  .nav-profile-btn,
+  .nav-account-btn,
+  .nav-right .user-btn,
+  [class*="nav-user"],
+  [class*="user-pill"]                { display: none !important; }
+  .footer-top                         { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 1060px) {

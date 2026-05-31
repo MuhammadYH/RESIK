@@ -1,0 +1,225 @@
+/* pengolah-analitik.css — Analytics page styles for role: Pengolah */
+
+/* ── Stat Grid ── */
+.analitik-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 1200px) { .analitik-stat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .analitik-stat-grid { grid-template-columns: 1fr; } }
+
+/* ── Main grid ── */
+.analitik-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--space-6);
+}
+@media (max-width: 1100px) { .analitik-main-grid { grid-template-columns: 1fr; } }
+
+.analitik-main-grid-full {
+  grid-column: 1 / -1;
+}
+
+/* ── Chart container ── */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.chart-bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.chart-bar-wrap {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 180px;
+}
+.chart-bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  transition: opacity 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.chart-bar:hover { opacity: 0.8; }
+.chart-bar.primary { background: var(--primary-green); }
+.chart-bar.secondary { background: var(--accent-blue, #1976D2); opacity: 0.45; }
+.chart-bar.tertiary { background: var(--accent-orange, #F57C00); opacity: 0.55; }
+
+.chart-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+  margin-top: var(--space-1);
+}
+
+/* ── Chart Y-axis labels ── */
+.chart-y-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 180px;
+  padding-right: var(--space-2);
+}
+.chart-y-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ── Chart Legend ── */
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* ── Donut Chart ── */
+.donut-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+.donut-svg-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.donut-center-val {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.donut-center-lbl {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.donut-items {
+  width: 100%;
+}
+.donut-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-color-soft);
+  font-size: var(--font-size-xs);
+}
+.donut-item:last-child { border-bottom: none; }
+.donut-item-dot {
+  width: 8px; height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+.donut-item-name { flex: 1; color: var(--text-secondary); }
+.donut-item-val { font-weight: 700; color: var(--text-primary); }
+
+/* ── Efisiensi gauge list ── */
+.efisiensi-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.efisiensi-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.efisiensi-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.efisiensi-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.efisiensi-val {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ── Trend mini-table ── */
+.trend-icon-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.trend-icon-wrap {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Period tabs (quick filter) ── */
+.period-tabs {
+  display: flex;
+  gap: var(--space-1);
+  background: var(--bg-soft);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+.period-tab {
+  padding: var(--space-1) var(--space-3);
+  border-radius: calc(var(--radius-md) - 2px);
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.period-tab.active,
+.period-tab:hover {
+  background: var(--bg-white);
+  color: var(--primary-green);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}

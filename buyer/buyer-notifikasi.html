@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="required-role" content="buyer"/>
+  <title>Notifikasi — POROS</title>
+  <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-components.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-navbar.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-components.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-navbar.css"/>
+  <style>
+    .notif-tabs-bar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--gray-100);flex-wrap:wrap;gap:var(--space-3);}
+    .notif-tabs-bar .buyer-tabs{margin-bottom:0;border-bottom:none;flex-shrink:0;}
+    .notif-mark-all{display:inline-flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);font-weight:600;color:var(--primary-green);cursor:pointer;padding:6px var(--space-3);border-radius:var(--radius-md);border:1px solid var(--primary-green-bg);background:var(--primary-green-bg);transition:background .15s;}
+    .notif-mark-all:hover{background:#C8E6C9;}
+    .notif-list-header{display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) var(--space-6);background:var(--gray-50);border-bottom:1px solid var(--gray-100);font-size:var(--text-xs);font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.05em;}
+    .notif-list{display:flex;flex-direction:column;}
+    .notif-item{display:flex;align-items:flex-start;gap:var(--space-4);padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--gray-100);transition:background .15s;cursor:pointer;position:relative;}
+    .notif-item:last-child{border-bottom:none;}
+    .notif-item:hover{background:var(--gray-50);}
+    .notif-item.unread{background:#F0FDF4;}
+    .notif-item.unread::before{content:'';position:absolute;left:var(--space-3);top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--primary-green);}
+    .notif-icon-wrap{width:40px;height:40px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+    .notif-icon-order{background:#DBEAFE;color:#1D4ED8;}
+    .notif-icon-promo{background:#FEF3C7;color:#B45309;}
+    .notif-icon-system{background:var(--gray-100);color:var(--gray-600);}
+    .notif-icon-success{background:#D1FAE5;color:#065F46;}
+    .notif-icon-warning{background:#FEE2E2;color:#991B1B;}
+    .notif-body{flex:1;min-width:0;}
+    .notif-title{font-size:var(--text-sm);font-weight:600;color:var(--gray-800);margin-bottom:3px;}
+    .notif-item.unread .notif-title{color:var(--primary-green-dark);}
+    .notif-desc{font-size:var(--text-xs);color:var(--gray-600);line-height:1.5;}
+    .notif-time{font-size:var(--text-xs);color:var(--gray-400);white-space:nowrap;flex-shrink:0;}
+    .notif-footer{padding:var(--space-4) var(--space-6);border-top:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;}
+    .notif-count-text{font-size:var(--text-sm);color:var(--gray-500);}
+    @media(max-width:600px){.notif-item{padding:var(--space-4);}.notif-item.unread::before{left:var(--space-2);}}
+  </style>
+</head>
+<body data-navbar-title="Notifikasi">
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo"><img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/></div>
+        <nav class="sidebar-nav">
+      <!-- Marketplace -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-marketplace.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </span>
+        Marketplace
+      </a>
+
+      <!-- Keranjang -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-keranjang.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </span>
+        Keranjang
+        <span class="sidebar-cart-count" id="sidebarCartCount">0</span>
+      </a>
+
+      <!-- Pesanan Saya -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-pesanan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </span>
+        Pesanan Saya
+      </a>
+
+      <!-- Wishlist -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-wishlist.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </span>
+        Wishlist
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Notifikasi -->
+      <a class="sidebar-nav-item active" href="/buyer/buyer-notifikasi.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </span>
+        Notifikasi
+        <span class="nav-badge">2</span>
+      </a>
+
+      <!-- Pengaturan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-pengaturan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </span>
+        Pengaturan
+      </a>
+
+      <!-- Bantuan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-bantuan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </span>
+        Bantuan
+      </a>
+    </nav>
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-2);display:flex;align-items:center;justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+      <h4>Jangan Lewatkan Update Pesananmu</h4>
+      <p>Aktifkan notifikasi agar kamu selalu tahu status pengiriman terbaru.</p>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="user-info"><div class="user-name" data-user-name>Budi Santoso</div><div class="user-email" data-user-email>budi@email.com</div></div>
+      <svg class="user-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+        <header class="admin-topbar" id="adminTopbar"></header>
+    <div class="admin-content">
+      <div class="buyer-card" style="padding:0;">
+        <div class="notif-tabs-bar">
+          <div class="buyer-tabs" style="margin-bottom:0;border-bottom:none;">
+            <button class="buyer-tab active" data-tab="semua">Semua</button>
+            <button class="buyer-tab" data-tab="belum">Belum Dibaca</button>
+            <button class="buyer-tab" data-tab="dibaca">Dibaca</button>
+          </div>
+          <button class="notif-mark-all" id="btnMarkAll">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Tandai semua dibaca
+          </button>
+        </div>
+        <div class="notif-list-header"><span>Notifikasi</span><span>Waktu</span></div>
+        <div class="notif-list" id="notifList"></div>
+        <div class="notif-footer">
+          <span class="notif-count-text" id="notifCountText"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/session.js"></script>
+<script src="/assets/js/role-guard.js"></script>
+<script src="/assets/js/buyer-sidebar.js"></script>
+<script>
+(function(){
+  const ICONS={
+    order:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+    promo:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+    success:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    warning:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+    system:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  };
+  let DATA=[
+    {id:1,type:'order',iconClass:'notif-icon-order',title:'Pesanan Sedang Dikirim',desc:'Pesanan PRS-2025-001 telah diambil kurir JNE dan sedang dalam perjalanan ke alamatmu.',time:'2 jam lalu',read:false},
+    {id:2,type:'promo',iconClass:'notif-icon-promo',title:'Promo Flash Sale! Diskon 20%',desc:'Dapatkan diskon 20% untuk semua produk kompos hari ini. Berlaku hingga pukul 23:59.',time:'5 jam lalu',read:false},
+    {id:3,type:'success',iconClass:'notif-icon-success',title:'Pembayaran Berhasil Dikonfirmasi',desc:'Pembayaran untuk pesanan PRS-2025-002 senilai Rp 75.000 telah berhasil dikonfirmasi.',time:'1 hari lalu',read:true},
+    {id:4,type:'order',iconClass:'notif-icon-order',title:'Pesanan Siap Dikirim',desc:'Pesanan PRS-2025-002 (Biochar Tanah Subur) sedang disiapkan oleh Pondok Nurul Huda.',time:'1 hari lalu',read:true},
+    {id:5,type:'system',iconClass:'notif-icon-system',title:'Verifikasi Alamat Pengiriman',desc:'Alamat pengiriman kamu berhasil diverifikasi dan siap digunakan untuk transaksi berikutnya.',time:'3 hari lalu',read:true},
+    {id:6,type:'warning',iconClass:'notif-icon-warning',title:'Stok Produk Favoritmu Hampir Habis',desc:'Kompos Premium Organik dari Darul Ulum tinggal tersisa 5 kg. Segera beli sebelum kehabisan!',time:'4 hari lalu',read:true},
+    {id:7,type:'promo',iconClass:'notif-icon-promo',title:'Produk Baru dari Pondok Al Falah',desc:'Media Tanam Steril kini hadir dengan kemasan baru dan harga lebih terjangkau. Cek sekarang!',time:'5 hari lalu',read:true},
+  ];
+  let activeTab='semua';
+
+  function getFiltered(){
+    if(activeTab==='belum') return DATA.filter(n=>!n.read);
+    if(activeTab==='dibaca') return DATA.filter(n=>n.read);
+    return DATA;
+  }
+
+  function render(){
+    const list=getFiltered();
+    const unreadCount=DATA.filter(n=>!n.read).length;
+    document.getElementById('sidebar-notif-badge').textContent=unreadCount;
+    document.getElementById('sidebar-notif-badge').style.display=unreadCount?'':'none';
+    document.getElementById('notifCountText').textContent=`Menampilkan ${list.length} dari ${DATA.length} notifikasi`;
+    const container=document.getElementById('notifList');
+    if(!list.length){
+      container.innerHTML=`<div class="empty-state" style="padding:var(--space-12) var(--space-6);"><div class="empty-state-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><h3>Tidak ada notifikasi</h3><p>Semua notifikasi sudah dibaca.</p></div>`;
+      return;
+    }
+    container.innerHTML=list.map(n=>`
+      <div class="notif-item ${n.read?'':'unread'}" data-id="${n.id}" onclick="markRead(${n.id})">
+        <div class="notif-icon-wrap ${n.iconClass}">${ICONS[n.type]||ICONS.system}</div>
+        <div class="notif-body">
+          <div class="notif-title">${n.title}${!n.read?'<span class="badge badge-green" style="margin-left:var(--space-2);font-size:10px;">Baru</span>':''}</div>
+          <div class="notif-desc">${n.desc}</div>
+        </div>
+        <div class="notif-time">${n.time}</div>
+      </div>`).join('');
+  }
+
+  window.markRead=function(id){
+    const item=DATA.find(n=>n.id===id);
+    if(item) item.read=true;
+    render();
+  };
+
+  document.getElementById('btnMarkAll').addEventListener('click',()=>{
+    DATA.forEach(n=>n.read=true);
+    render();
+  });
+
+  document.querySelectorAll('.buyer-tab[data-tab]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.buyer-tab[data-tab]').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTab=btn.dataset.tab;
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+  <script src="/assets/js/buyer-navbar.js"></script>
+</body>
+</html>

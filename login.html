@@ -1343,7 +1343,7 @@
         if (seconds <= 0) {
           clearInterval(interval);
 
-          window.location.href = 'admin/admin-dashboard.html';
+          window.location.href = '/redirect.html';
         }
       }, 1000);
 
@@ -1422,6 +1422,9 @@
 
       if (profileError) throw profileError;
 
+      // Login otomatis setelah register agar sesi aktif (sama seperti user yang masuk manual)
+      await RESIK_AUTH.login(email, password);
+
       // hide register content
       document.getElementById('reg-content').style.display = 'none';
 
@@ -1435,7 +1438,7 @@
       let seconds = 3;
 
       desc.innerHTML =
-        `Akun berhasil dibuat.<br>
+        `Akun berhasil dibuat &amp; Anda sudah masuk.<br>
         Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
 
       const interval = setInterval(() => {
@@ -1443,14 +1446,14 @@
         seconds--;
 
         desc.innerHTML =
-          `Akun berhasil dibuat.<br>
+          `Akun berhasil dibuat &amp; Anda sudah masuk.<br>
           Mengarahkan ke dashboard dalam <b>${seconds}</b> detik...`;
 
         if (seconds <= 0) {
 
           clearInterval(interval);
 
-          window.location.href = 'admin/admin-dashboard.html';
+          window.location.href = 'redirect.html';
 
         }
 

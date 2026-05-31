@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bantuan — POROS Provider</title>
+
+  <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-components.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-navbar.css"/>
+  <link rel="stylesheet" href="/assets/css/provider-bantuan.css"/>
+</head>
+<body data-navbar-title="Bantuan">
+
+<!-- Supabase client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/js/supabase-client.js"></script>
+
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/session.js"></script>
+<script src="/assets/js/role-check.js"></script>
+<script src="/assets/js/role-guard.js" data-role="provider"></script>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" data-page="provider-dashboard.html" href="/provider/provider-dashboard.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+        Dashboard
+      </a>
+      <a class="sidebar-nav-item" data-page="provider-smart-bin.html" href="/provider/provider-smart-bin.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span>
+        Smart Bin
+      </a>
+      <a class="sidebar-nav-item" data-page="provider-kontribusi.html" href="/provider/provider-kontribusi.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5.5"/><line x1="12" y1="12" x2="12" y2="2"/><line x1="12" y1="12" x2="20.66" y2="7"/></svg></span>
+        Kontribusi
+      </a>
+      <a class="sidebar-nav-item" data-page="provider-riwayat.html" href="/provider/provider-riwayat.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        Riwayat
+      </a>
+      <div class="sidebar-divider">
+        <svg width="120" height="12" viewBox="0 0 120 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;opacity:0.35;">
+          <path d="M2 6 C10 1, 18 11, 26 6 C34 1, 42 11, 50 6 C58 1, 66 11, 74 6 C82 1, 90 11, 98 6 C106 1, 114 11, 118 6" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <a class="sidebar-nav-item" data-page="provider-notifikasi.html" href="/provider/provider-notifikasi.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        Notifikasi
+        <span class="nav-badge sidebar-notif-badge">3</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="provider-pengaturan.html" href="/provider/provider-pengaturan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        Pengaturan
+      </a>
+      <a class="sidebar-nav-item active" data-page="provider-bantuan.html" href="/provider/provider-bantuan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        Bantuan
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-3);display:flex;align-items:center;justify-content:center;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22c1.25-1.25 2.5-2.5 3.5-4 1.8-2.7 2.5-6 2.5-9 0 0 3 1 5 4 1.5 2.3 1.5 5 1.5 5s1.5-1 2-3c.8-3 0-6 0-6s3 2 4 5c.7 2 .5 4.5-.5 6.5C18.5 23 14 24 10 22"/><path d="M2 22c2-2 4-5 4-9"/></svg>
+      </div>
+      <h4>Setor Sampah, Raih Manfaat</h4>
+      <p>Catat setiap setoran limbah organik Anda dan pantau kontribusi nyata bagi lingkungan bersama POROS.</p>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name" id="sidebarUserName"></div>
+        <div class="user-email" id="sidebarUserEmail"></div>
+      </div>
+      <svg class="user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="admin-main">
+    <header class="admin-topbar"></header>
+
+    <div class="admin-content">
+
+      <!-- ── HERO SEARCH ── -->
+      <div class="bantuan-hero">
+        <div class="hero-illustration">
+          <svg class="hero-illust-svg" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="65" cy="65" r="60" fill="#E8F5E9"/>
+            <circle cx="65" cy="52" r="28" fill="white" stroke="#A5D6A7" stroke-width="2"/>
+            <path d="M56 46a9 9 0 0 1 17.49 2.99C73.49 55 65 58 65 58" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="65" cy="65" r="3" fill="#2E7D32"/>
+            <path d="M30 95 Q65 75 100 95" stroke="#A5D6A7" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M40 105 Q65 88 90 105" stroke="#C8E6C9" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="hero-body">
+          <h2>Pusat Bantuan POROS</h2>
+          <p>Temukan panduan, jawaban FAQ, dan cara menghubungi tim support kami.</p>
+          <div class="hero-search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="bantuan-search" placeholder="Cari panduan atau pertanyaan…"/>
+          </div>
+        </div>
+        <div class="system-status-card">
+          <div class="status-check-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="status-title">Sistem Normal</div>
+          <div class="status-time">Update: 2 menit lalu</div>
+          <div style="margin-top:var(--space-3);display:flex;flex-direction:column;gap:var(--space-1);">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;">
+              <span style="color:var(--text-muted);">API Sensor</span>
+              <span style="color:#2E7D32;font-weight:700;">● Online</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;">
+              <span style="color:var(--text-muted);">Dashboard</span>
+              <span style="color:#2E7D32;font-weight:700;">● Online</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;">
+              <span style="color:var(--text-muted);">Notifikasi</span>
+              <span style="color:#2E7D32;font-weight:700;">● Online</span>
+            </div>
+          </div>
+          <div class="status-link">
+            Status lengkap
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PANDUAN CARDS ── -->
+      <div class="section-heading">
+        <h3>Panduan Penggunaan</h3>
+        <p>Pelajari cara menggunakan fitur-fitur POROS secara optimal</p>
+      </div>
+      <div class="panduan-grid" id="panduan-grid">
+        <!-- populated by JS -->
+      </div>
+
+      <!-- ── BOTTOM: FAQ + CONTACT ── -->
+      <div class="bantuan-bottom-grid">
+
+        <!-- FAQ -->
+        <div>
+          <div class="section-heading">
+            <h3>Pertanyaan yang Sering Ditanyakan</h3>
+            <p>Jawaban cepat untuk pertanyaan umum provider POROS</p>
+          </div>
+          <div class="faq-card">
+            <div id="faq-list">
+              <!-- populated by JS -->
+            </div>
+            <div class="faq-footer">
+              <span class="faq-see-all">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                Lihat semua pertanyaan
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <div class="section-heading">
+            <h3>Hubungi Tim Support</h3>
+            <p>Butuh bantuan lebih lanjut? Kami siap membantu</p>
+          </div>
+
+          <div class="contact-card">
+            <div class="contact-header">
+              <p>Tim support kami tersedia Senin–Jumat, pukul 08.00–17.00 WIB. Rata-rata waktu respons: &lt;2 jam.</p>
+            </div>
+            <div class="contact-options">
+              <a class="contact-option" href="https://wa.me/6281234567890" target="_blank" rel="noopener">
+                <div class="contact-option-icon wa">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                </div>
+                <div class="contact-option-info">
+                  <div class="contact-option-name">WhatsApp Support</div>
+                  <div class="contact-option-sub">Respons cepat, tersedia jam kerja</div>
+                </div>
+                <span class="contact-option-arrow">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+
+              <a class="contact-option" href="mailto:support@poros.id" target="_blank" rel="noopener">
+                <div class="contact-option-icon email">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1565C0" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <div class="contact-option-info">
+                  <div class="contact-option-name">Email Support</div>
+                  <div class="contact-option-sub">support@poros.id · Balasan 1×24 jam</div>
+                </div>
+                <span class="contact-option-arrow">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </a>
+            </div>
+
+            <div class="contact-notice">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Sertakan nama organisasi, kode bin, dan deskripsi masalah saat menghubungi support untuk penanganan lebih cepat.
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div class="card" style="margin-top:var(--space-5);">
+            <div class="card-header">
+              <span class="card-title">Tautan Cepat</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--space-1);">
+              <a href="#" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-2);border-radius:var(--radius-md);text-decoration:none;color:var(--text-secondary);font-size:var(--font-size-sm);transition:background 0.15s;" onmouseover="this.style.background='var(--bg-soft)'" onmouseout="this.style.background='transparent'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Dokumentasi API Provider
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <a href="#" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-2);border-radius:var(--radius-md);text-decoration:none;color:var(--text-secondary);font-size:var(--font-size-sm);transition:background 0.15s;" onmouseover="this.style.background='var(--bg-soft)'" onmouseout="this.style.background='transparent'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1565C0" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Video Tutorial Penggunaan
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <a href="#" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-2);border-radius:var(--radius-md);text-decoration:none;color:var(--text-secondary);font-size:var(--font-size-sm);transition:background 0.15s;" onmouseover="this.style.background='var(--bg-soft)'" onmouseout="this.style.background='transparent'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E65100" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                Riwayat Pembaruan Sistem
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+              <a href="#" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-2);border-radius:var(--radius-md);text-decoration:none;color:var(--text-secondary);font-size:var(--font-size-sm);transition:background 0.15s;" onmouseover="this.style.background='var(--bg-soft)'" onmouseout="this.style.background='transparent'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6A1B9A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Kebijakan Privasi & SLA
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Version info -->
+          <div style="margin-top:var(--space-5);padding:var(--space-4) var(--space-5);background:white;border:1px solid var(--border-color-soft);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:var(--font-size-xs);font-weight:700;color:var(--text-primary);">POROS Dashboard</div>
+              <div style="font-size:var(--font-size-xs);color:var(--text-muted);margin-top:2px;">v2.4.1 · Provider Edition</div>
+            </div>
+            <span class="badge badge-green">Terbaru</span>
+          </div>
+
+        </div>
+      </div>
+      <!-- /bantuan-bottom-grid -->
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-shell -->
+
+<script src="/assets/js/provider-bantuan.js"></script>
+<script src="/assets/js/provider-sidebar.js"></script>
+<script src="/assets/js/provider-navbar.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const context = await getUserContext();
+
+  if (!context) {
+    console.error('[ROLE CHECK] User context tidak ditemukan');
+    return;
+  }
+
+  console.log('[ROLE CHECK]', {
+    userId: context.userId,
+    role: context.role,
+    roleId: context.roleId
+  });
+});
+</script>
+</body>
+</html>

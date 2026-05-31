@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="required-role" content="pengolah"/>
+  <title>Dashboard — POROS Pengolah</title>
+
+  <!-- Shared / Base CSS (from project assets) -->
+  <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-components.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-navbar.css"/>
+  <!-- Role-specific CSS -->
+  <link rel="stylesheet" href="/assets/css/pengolah-dashboard.css"/>
+</head>
+<body data-navbar-title="Dashboard">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" data-page="pengolah-dashboard.html" href="/pengolah/pengolah-dashboard.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </span>
+        Dashboard
+      </a>
+      <a class="sidebar-nav-item" data-page="pengolah-operasional.html" href="/pengolah/pengolah-operasional.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        </span>
+        Operasional
+      </a>
+      <a class="sidebar-nav-item" data-page="pengolah-marketplace.html" href="/pengolah/pengolah-marketplace.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </span>
+        Marketplace
+      </a>
+      <div class="sidebar-divider"></div>
+      <a class="sidebar-nav-item" data-page="pengolah-notifikasi.html" href="/pengolah/pengolah-notifikasi.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </span>
+        Notifikasi
+        <span class="nav-badge" id="sidebar-notif-badge">2</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="pengolah-pengaturan.html" href="/pengolah/pengolah-pengaturan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </span>
+        Pengaturan
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-3); display:flex; align-items:center; justify-content:center;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22c1.25-1.25 2.5-2.5 3.5-4 1.8-2.7 2.5-6 2.5-9 0 0 3 1 5 4 1.5 2.3 1.5 5 1.5 5s1.5-1 2-3c.8-3 0-6 0-6s3 2 4 5c.7 2 .5 4.5-.5 6.5C18.5 23 14 24 10 22"/><path d="M2 22c2-2 4-5 4-9"/></svg>
+      </div>
+      <h4>Produksi Olahan Berkualitas Tinggi</h4>
+      <p>Kelola pasokan limbah, pantau produksi, dan jual hasil olahan organik secara efisien bersama POROS.</p>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name" id="sidebarUserName"></div>
+        <div class="user-email" id="sidebarUserEmail"></div>
+      </div>
+      <svg class="user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- TOPBAR (injected by pengolah-navbar.js) -->
+    <header class="admin-topbar"></header>
+
+    <!-- CONTENT -->
+    <div class="admin-content">
+
+      <!-- Error banner (hidden by default) -->
+      <div id="dashboard-error-msg" style="display:none; background:#FFEBEE; color:#C62828; border:1px solid #EF9A9A; border-radius:8px; padding:12px 16px; margin-bottom:var(--space-4); font-size:var(--font-size-sm); font-weight:500;"></div>
+
+      <!-- Banner -->
+      <div class="banner-card mb-6">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <p style="font-size:var(--font-size-sm); color:rgba(255,255,255,0.7); margin-bottom:4px;">Dashboard POROS — Pengolah</p>
+            <h2 style="font-size:var(--font-size-2xl); font-weight:800; color:white; margin-bottom:var(--space-3);">Ringkasan Pasokan & Operasional</h2>
+            <p style="font-size:var(--font-size-sm); color:rgba(255,255,255,0.85);">
+              <svg style="display:inline;vertical-align:middle;margin-right:4px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              Data real-time dari fasilitas Anda
+            </p>
+          </div>
+          <div style="text-align:right; flex-shrink:0;">
+            <div style="font-size:var(--font-size-4xl); font-weight:800; color:white; line-height:1;" id="stat-pending">—</div>
+            <div style="font-size:var(--font-size-sm); color:rgba(255,255,255,0.7);">Menunggu Diproses</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat Grid -->
+      <div class="pengolah-stat-grid">
+
+        <!-- Card 1: Pasokan Hari Ini -->
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Pasokan Hari Ini</div>
+            <div class="stat-card-value" id="stat-today-kg">—</div>
+            <div class="stat-card-sub">Total berat masuk hari ini</div>
+          </div>
+          <div class="stat-card-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          </div>
+        </div>
+
+        <!-- Card 2: Pasokan Bulan Ini -->
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Pasokan Bulan Ini</div>
+            <div class="stat-card-value" id="stat-month-kg">—</div>
+            <div class="stat-card-sub">Akumulasi bulan berjalan</div>
+          </div>
+          <div class="stat-card-icon orange">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+        </div>
+
+        <!-- Card 3: Provider Aktif -->
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Provider Aktif</div>
+            <div class="stat-card-value" id="stat-providers">—</div>
+            <div class="stat-card-sub">Sumber unik yang mengirim</div>
+          </div>
+          <div class="stat-card-icon blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+        </div>
+
+        <!-- Card 4: Menunggu Diproses -->
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Menunggu Diproses</div>
+            <div class="stat-card-value" id="stat-pending-card">—</div>
+            <div class="stat-card-sub">Status pending saat ini</div>
+          </div>
+          <div class="stat-card-icon purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+
+      </div><!-- /pengolah-stat-grid -->
+
+      <!-- Dashboard grid -->
+      <div class="pengolah-dashboard-grid">
+
+        <!-- Pasokan Terbaru (full-width) -->
+        <div class="card pengolah-dashboard-grid-full">
+          <div class="card-header">
+            <span class="card-title">Pasokan Limbah Terbaru</span>
+            <a class="card-link" href="/pengolah/pengolah-operasional.html">Lihat semua →</a>
+          </div>
+
+          <div class="admin-table-wrap" style="position:relative;">
+            <!-- Loading overlay -->
+            <div id="dashboard-loading-overlay" style="display:none; position:absolute; inset:0; background:rgba(255,255,255,0.7); z-index:10; align-items:center; justify-content:center;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-green)" stroke-width="2" style="animation:spin 1s linear infinite;">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
+            </div>
+
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Provider ID</th>
+                  <th>Lokasi</th>
+                  <th>Berat</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-table-body">
+                <!-- Diisi oleh pengolah-dashboard.js -->
+                <tr>
+                  <td colspan="5" style="text-align:center; color:var(--text-muted); padding:var(--space-8);">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite; vertical-align:middle; margin-right:6px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    Memuat data…
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /pengolah-dashboard-grid -->
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-shell -->
+
+<!-- CSS untuk spinner (dipakai inline di atas) -->
+<style>
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  /* Sync stat-pending antara banner dan card */
+</style>
+
+<!-- 1. Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- 2. Auth guard (includes Supabase init via getSupabase) -->
+<script src="/assets/js/resik-supabase.js"></script>
+<script src="/assets/js/pengolah-auth.js"></script>
+<!-- 4. Navbar & Sidebar -->
+<script src="/assets/js/pengolah-navbar.js"></script>
+<script src="/assets/js/pengolah-sidebar.js"></script>
+<!-- 5. Role check (provides getUserContext) -->
+<script src="/assets/js/role-check.js"></script>
+<!-- Global notification badge -->
+<script src="/assets/js/pengolah-notification-badge.js"></script>
+<!-- 6. Dashboard logic -->
+<script src="/assets/js/pengolah-dashboard.js"></script>
+
+<script>
+  // Sinkronisasi: stat-pending di banner = stat-pending-card di grid
+  // pengolah-dashboard.js mengisi 'stat-pending' (banner) dan 'stat-pending-card'
+  // secara terpisah lewat _setText — tidak perlu JS tambahan di sini.
+</script>
+</body>
+</html>

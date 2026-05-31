@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESIK Smart Bin Simulator</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/js/supabase-client.js"></script>
+
+<style>
+body{
+  font-family:Arial,sans-serif;
+  max-width:600px;
+  margin:40px auto;
+  padding:20px;
+}
+
+.card{
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:20px;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+}
+
+button{
+  padding:12px 20px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+<h2>RESIK Smart Bin Simulator</h2>
+
+<label>Bin ID</label>
+<input id="bin_id" value="BIN001">
+
+<label>Berat (kg)</label>
+<input id="weight_kg" type="number" value="10">
+
+<label>Kepenuhan (%)</label>
+<input id="fill_percent" type="number" value="50">
+
+<label>Jarak Sensor (cm)</label>
+<input id="distance_cm" type="number" value="20">
+
+<button onclick="sendData()">
+Kirim Data ke Smart Bin
+</button>
+
+<p id="result"></p>
+
+</div>
+
+<script>
+async function sendData() {
+
+  const payload = {
+    bin_id: document.getElementById('bin_id').value,
+    weight_kg: Number(document.getElementById('weight_kg').value),
+    fill_percent: Number(document.getElementById('fill_percent').value),
+    distance_cm: Number(document.getElementById('distance_cm').value),
+    updated_at: new Date().toISOString()
+  };
+
+  const { error } = await supabaseClient
+    .from('bins')
+    .upsert(payload,{
+      onConflict:'bin_id'
+    });
+
+  const result = document.getElementById('result');
+
+  if(error){
+    result.innerHTML = "❌ " + error.message;
+  }else{
+    result.innerHTML = "✅ Data berhasil dikirim";
+  }
+}
+</script>
+
+</body>
+</html>

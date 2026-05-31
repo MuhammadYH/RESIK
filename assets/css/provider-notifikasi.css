@@ -1,0 +1,157 @@
+/* provider-notifikasi.css — Alert Smart Bin & Sistem */
+
+.notif-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color-soft);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* ── Tabs bar ── */
+.notif-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-color-soft);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.notif-mark-all {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--primary-green);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+  white-space: nowrap;
+}
+.notif-mark-all:hover { background: var(--primary-green-soft); }
+
+/* ── List header ── */
+.notif-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-5);
+  background: var(--bg-soft);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+
+/* ── Notif item ── */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-color-soft);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  position: relative;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: var(--bg-soft); }
+.notif-item.unread { background: rgba(46,125,50,0.03); }
+.notif-item.unread::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--primary-green);
+  border-radius: 0 2px 2px 0;
+}
+
+.notif-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.notif-body { flex: 1; min-width: 0; }
+.notif-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+.notif-item.unread .notif-title { font-weight: 700; }
+.notif-desc {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+.notif-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+.notif-time { font-size: var(--font-size-xs); color: var(--text-muted); white-space: nowrap; }
+.notif-source-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.notif-unread-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--primary-green);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* ── Footer ── */
+.notif-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-soft);
+  border-top: 1px solid var(--border-color-soft);
+}
+.notif-count-text { font-size: var(--font-size-xs); color: var(--text-muted); }
+
+/* ── Summary pills (top) ── */
+.notif-summary-bar {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+.notif-summary-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: white;
+  border: 1px solid var(--border-color-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  flex: 1;
+  min-width: 140px;
+}
+.notif-pill-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.notif-pill-val { font-size: var(--font-size-xl); font-weight: 800; color: var(--text-primary); line-height: 1; }
+.notif-pill-lbl { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }

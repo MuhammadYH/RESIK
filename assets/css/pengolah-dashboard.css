@@ -1,0 +1,111 @@
+/* pengolah-dashboard.css — Dashboard page styles for role: Pengolah */
+
+/* ── Dashboard Grid ── */
+.pengolah-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+.pengolah-dashboard-grid-full {
+  grid-column: 1 / -1;
+}
+@media (max-width: 900px) {
+  .pengolah-dashboard-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Stat Grid ── */
+.pengolah-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 1200px) { .pengolah-stat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .pengolah-stat-grid { grid-template-columns: 1fr; } }
+
+/* ── Ringkasan produksi item ── */
+.produksi-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.produksi-item:last-child { border-bottom: none; }
+.produksi-item .p-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.produksi-item .p-info { flex: 1; min-width: 0; }
+.produksi-item .p-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.produksi-item .p-sub {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.produksi-item .p-val {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ── Alur Produksi Steps ── */
+.alur-produksi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.alur-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  position: relative;
+}
+.alur-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  width: 2px;
+  height: calc(100% + var(--space-3) - 8px);
+  background: var(--border-color-soft);
+}
+.alur-step-num {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--primary-green-soft);
+  color: var(--primary-green);
+  font-weight: 800;
+  font-size: var(--font-size-sm);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid rgba(46,125,50,0.15);
+}
+.alur-step-num.done {
+  background: var(--primary-green);
+  color: white;
+  border-color: var(--primary-green);
+}
+.alur-step-num.active {
+  background: var(--accent-orange-soft);
+  color: var(--accent-orange);
+  border-color: rgba(245,124,0,0.25);
+}
+.alur-step-body { flex: 1; }
+.alur-step-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.alur-step-sub {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}

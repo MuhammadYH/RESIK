@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="required-role" content="buyer"/>
+  <title>Pesanan Saya — POROS</title>
+
+  <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-components.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-navbar.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-components.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-navbar.css"/>
+  <style>
+    /* ── Pesanan-specific ── */
+    .pesanan-header-row {
+      display: flex; align-items: center; gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .pesanan-header-row .search-bar { flex: 1; min-width: 200px; max-width: 340px; }
+
+    /* Order card */
+    .order-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: box-shadow .15s;
+    }
+    .order-card:hover { box-shadow: var(--shadow-md); }
+    .order-card-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center; gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .order-id { font-size: var(--text-sm); font-weight: 700; color: var(--gray-800); }
+    .order-date { font-size: var(--text-xs); color: var(--gray-500); margin-left: var(--space-2); }
+    .order-card-header .badge { margin-left: auto; }
+
+    .order-items { padding: var(--space-4) var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+    .order-item { display: flex; align-items: flex-start; gap: var(--space-3); }
+    .order-item-img {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-md);
+      background: var(--gray-100);
+      object-fit: cover;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray-400);
+      font-size: 20px;
+    }
+    .order-item-info { flex: 1; min-width: 0; }
+    .order-item-name { font-size: var(--text-sm); font-weight: 600; color: var(--gray-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .order-item-meta { font-size: var(--text-xs); color: var(--gray-500); margin-top: 2px; }
+    .order-item-price { font-size: var(--text-sm); font-weight: 700; color: var(--primary-green); white-space: nowrap; }
+
+    .order-card-footer {
+      padding: var(--space-4) var(--space-5);
+      border-top: 1px solid var(--gray-100);
+      display: flex; align-items: center; gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .order-total-label { font-size: var(--text-xs); color: var(--gray-500); }
+    .order-total-val { font-size: var(--text-md); font-weight: 700; color: var(--gray-800); }
+    .order-card-footer .btn { margin-left: auto; }
+
+    /* Tracking timeline */
+    .tracking-modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 500;
+      align-items: center; justify-content: center;
+    }
+    .tracking-modal-overlay.open { display: flex; }
+    .tracking-modal {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      width: 100%; max-width: 480px;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modal-in .2s ease;
+    }
+    @keyframes modal-in { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+    .tracking-modal-header {
+      padding: var(--space-5) var(--space-6);
+      border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center;
+    }
+    .tracking-modal-header h3 { font-size: var(--text-lg); font-weight: 700; flex: 1; }
+    .tracking-modal-close {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray-500); cursor: pointer;
+      transition: background .15s;
+      border: none; background: none;
+    }
+    .tracking-modal-close:hover { background: var(--gray-100); color: var(--gray-800); }
+    .tracking-modal-body { padding: var(--space-6); }
+
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item { display: flex; gap: var(--space-4); position: relative; }
+    .timeline-item:not(:last-child)::before {
+      content:''; position: absolute;
+      left: 15px; top: 28px;
+      width: 2px; height: calc(100% - 8px);
+      background: var(--gray-200);
+    }
+    .timeline-item.done::before { background: var(--primary-green); }
+    .timeline-dot {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--gray-200); color: var(--gray-400);
+      position: relative; z-index: 1;
+    }
+    .timeline-item.done .timeline-dot { background: var(--primary-green); color: white; }
+    .timeline-item.current .timeline-dot {
+      background: var(--primary-green-bg); color: var(--primary-green);
+      box-shadow: 0 0 0 4px rgba(46,125,50,.15);
+    }
+    .timeline-content { flex: 1; padding-bottom: var(--space-6); }
+    .timeline-title { font-size: var(--text-sm); font-weight: 600; color: var(--gray-800); }
+    .timeline-item:not(.done):not(.current) .timeline-title { color: var(--gray-400); }
+    .timeline-time { font-size: var(--text-xs); color: var(--gray-500); margin-top: 2px; }
+    .timeline-desc { font-size: var(--text-xs); color: var(--gray-600); margin-top: var(--space-1); }
+
+    /* List container */
+    .orders-list { display: flex; flex-direction: column; gap: var(--space-4); }
+
+    /* Pagination */
+    .pesanan-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: var(--space-3);
+      padding: var(--space-4) 0;
+    }
+    .pesanan-count { font-size: var(--text-sm); color: var(--gray-500); }
+    .pagination { display: flex; gap: var(--space-1); }
+    .page-btn {
+      width: 32px; height: 32px; border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--text-sm); font-weight: 500;
+      color: var(--gray-600); border: 1px solid var(--gray-200);
+      cursor: pointer; background: var(--white);
+      transition: all .15s;
+    }
+    .page-btn:hover { background: var(--gray-50); }
+    .page-btn.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
+
+    @media (max-width: 600px) {
+      .order-card-header { flex-direction: column; align-items: flex-start; }
+      .order-card-header .badge { margin-left: 0; }
+      .order-card-footer { flex-direction: column; align-items: flex-start; }
+      .order-card-footer .btn { margin-left: 0; width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body data-navbar-title="Pesanan Saya">
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+        <nav class="sidebar-nav">
+      <!-- Marketplace -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-marketplace.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </span>
+        Marketplace
+      </a>
+
+      <!-- Keranjang -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-keranjang.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </span>
+        Keranjang
+        <span class="sidebar-cart-count" id="sidebarCartCount">0</span>
+      </a>
+
+      <!-- Pesanan Saya -->
+      <a class="sidebar-nav-item active" href="/buyer/buyer-pesanan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </span>
+        Pesanan Saya
+      </a>
+
+      <!-- Wishlist -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-wishlist.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </span>
+        Wishlist
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Notifikasi -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-notifikasi.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </span>
+        Notifikasi
+        <span class="nav-badge">2</span>
+      </a>
+
+      <!-- Pengaturan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-pengaturan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </span>
+        Pengaturan
+      </a>
+
+      <!-- Bantuan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-bantuan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </span>
+        Bantuan
+      </a>
+    </nav>
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-2);display:flex;align-items:center;justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22c1.25-1.25 2.5-2.5 3.5-4 1.8-2.7 2.5-6 2.5-9 0 0 3 1 5 4 1.5 2.3 1.5 5 1.5 5s1.5-1 2-3c.8-3 0-6 0-6s3 2 4 5c.7 2 .5 4.5-.5 6.5C18.5 23 14 24 10 22"/><path d="M2 22c2-2 4-5 4-9"/></svg></div>
+      <h4>Dukung Lingkungan Lebih Hijau</h4>
+      <p>Setiap pembelian produk organik POROS turut mendukung pengelolaan sampah berkelanjutan.</p>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name" data-user-name>Budi Santoso</div>
+        <div class="user-email" data-user-email>budi@email.com</div>
+      </div>
+      <svg class="user-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+        <header class="admin-topbar" id="adminTopbar"></header>
+
+    <div class="admin-content">
+
+      <!-- Tabs + Search -->
+      <div class="buyer-card">
+        <div class="buyer-card-header">
+          <div class="buyer-tabs" style="margin-bottom:0; border-bottom:none; flex:1;">
+            <button class="buyer-tab active" data-tab="semua">Semua</button>
+            <button class="buyer-tab" data-tab="diproses">Diproses</button>
+            <button class="buyer-tab" data-tab="dikirim">Dikirim</button>
+            <button class="buyer-tab" data-tab="selesai">Selesai</button>
+            <button class="buyer-tab" data-tab="dibatalkan">Dibatalkan</button>
+          </div>
+          <div class="search-bar" style="max-width:240px;">
+            <span class="search-bar-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="orderSearch" placeholder="Cari pesanan..."/>
+          </div>
+        </div>
+        <div style="padding: var(--space-5) var(--space-6);">
+          <div class="orders-list" id="ordersList"></div>
+          <div class="pesanan-footer">
+            <span class="pesanan-count" id="ordersCount">Menampilkan 1 - 5 dari 12 pesanan</span>
+            <div class="pagination" id="ordersPagination"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-shell -->
+
+<!-- Tracking Modal -->
+<div class="tracking-modal-overlay" id="trackingModalOverlay">
+  <div class="tracking-modal">
+    <div class="tracking-modal-header">
+      <h3 id="trackingModalTitle">Lacak Pesanan</h3>
+      <button class="tracking-modal-close" id="trackingModalClose">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="tracking-modal-body">
+      <div style="margin-bottom: var(--space-5); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-md);">
+        <div style="font-size:var(--text-xs); color:var(--gray-500); margin-bottom:4px;">No. Resi</div>
+        <div style="font-size:var(--text-sm); font-weight:700; color:var(--gray-800);" id="trackingResi">JNE123456789ID</div>
+      </div>
+      <div class="timeline" id="trackingTimeline"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/session.js"></script>
+<script src="/assets/js/role-guard.js"></script>
+<script src="/assets/js/buyer-sidebar.js"></script>
+<script>
+(function () {
+  const ORDERS = [
+    { id:'PRS-2025-001', date:'27 Mei 2025 · 10:23', status:'dikirim', statusLabel:'Dikirim', statusClass:'badge-blue', items:[{icon:'🌿', name:'Kompos Premium Organik', qty:'2 kg', price:'Rp 32.000'},{icon:'🪴', name:'Pupuk Cair Bioaktif', qty:'1 botol', price:'Rp 28.000'}], total:'Rp 60.000', resi:'JNE123456789ID', tracking:[{title:'Pesanan Dibuat',time:'27 Mei · 10:23',desc:'Pesanan Anda telah berhasil dibuat.',done:true},{title:'Pembayaran Dikonfirmasi',time:'27 Mei · 11:05',desc:'Pembayaran telah diterima dan dikonfirmasi.',done:true},{title:'Pesanan Diproses',time:'27 Mei · 13:00',desc:'Pesanan sedang disiapkan oleh penjual.',done:true},{title:'Dalam Pengiriman',time:'27 Mei · 15:30',desc:'Paket dalam perjalanan ke alamat Anda.',current:true},{title:'Pesanan Tiba',time:'-',desc:'',done:false}] },
+    { id:'PRS-2025-002', date:'25 Mei 2025 · 08:15', status:'diproses', statusLabel:'Diproses', statusClass:'badge-amber', items:[{icon:'🌾', name:'Biochar Tanah Subur', qty:'5 kg', price:'Rp 75.000'}], total:'Rp 75.000', resi:null, tracking:[{title:'Pesanan Dibuat',time:'25 Mei · 08:15',desc:'',done:true},{title:'Pembayaran Dikonfirmasi',time:'25 Mei · 09:00',desc:'',done:true},{title:'Pesanan Diproses',time:'25 Mei · 10:00',desc:'',current:true},{title:'Dalam Pengiriman',time:'-',desc:'',done:false},{title:'Pesanan Tiba',time:'-',desc:'',done:false}] },
+    { id:'PRS-2025-003', date:'20 Mei 2025 · 14:45', status:'selesai', statusLabel:'Selesai', statusClass:'badge-green', items:[{icon:'♻️', name:'Vermikompos Cacing Tanah', qty:'3 kg', price:'Rp 45.000'},{icon:'🌱', name:'Media Tanam Steril', qty:'2 pack', price:'Rp 36.000'}], total:'Rp 81.000', resi:'SICEPAT9988001', tracking:[{title:'Pesanan Dibuat',done:true,time:'20 Mei · 14:45',desc:''},{title:'Pembayaran Dikonfirmasi',done:true,time:'20 Mei · 15:10',desc:''},{title:'Pesanan Diproses',done:true,time:'20 Mei · 17:00',desc:''},{title:'Dalam Pengiriman',done:true,time:'21 Mei · 09:00',desc:''},{title:'Pesanan Tiba',done:true,time:'22 Mei · 14:22',desc:'Paket telah diterima.'}] },
+    { id:'PRS-2025-004', date:'15 Mei 2025 · 09:00', status:'dibatalkan', statusLabel:'Dibatalkan', statusClass:'badge-red', items:[{icon:'🍂', name:'Mulsa Organik', qty:'1 karung', price:'Rp 55.000'}], total:'Rp 55.000', resi:null, tracking:[] },
+    { id:'PRS-2025-005', date:'10 Mei 2025 · 16:30', status:'selesai', statusLabel:'Selesai', statusClass:'badge-green', items:[{icon:'🌿', name:'Kompos Premium Organik', qty:'10 kg', price:'Rp 160.000'}], total:'Rp 160.000', resi:'JNE007123456ID', tracking:[{title:'Pesanan Dibuat',done:true,time:'10 Mei · 16:30',desc:''},{title:'Pembayaran Dikonfirmasi',done:true,time:'10 Mei · 17:00',desc:''},{title:'Pesanan Diproses',done:true,time:'11 Mei · 09:00',desc:''},{title:'Dalam Pengiriman',done:true,time:'11 Mei · 13:00',desc:''},{title:'Pesanan Tiba',done:true,time:'13 Mei · 11:45',desc:'Paket telah diterima.'}] },
+  ];
+
+  let activeTab = 'semua';
+  let searchQ = '';
+
+  function filtered() {
+    return ORDERS.filter(o => {
+      const matchTab = activeTab === 'semua' || o.status === activeTab;
+      const matchSearch = !searchQ || o.id.toLowerCase().includes(searchQ) || o.items.some(i => i.name.toLowerCase().includes(searchQ));
+      return matchTab && matchSearch;
+    });
+  }
+
+  function renderOrders() {
+    const list = filtered();
+    const container = document.getElementById('ordersList');
+    const count = document.getElementById('ordersCount');
+    count.textContent = `Menampilkan 1 - ${list.length} dari ${list.length} pesanan`;
+
+    if (!list.length) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><h3>Belum ada pesanan</h3><p>Pesanan yang sesuai filter tidak ditemukan.</p></div>`;
+      return;
+    }
+
+    container.innerHTML = list.map(o => `
+      <div class="order-card">
+        <div class="order-card-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="order-id">${o.id}</span>
+          <span class="order-date">${o.date}</span>
+          <span class="badge ${o.statusClass}">${o.statusLabel}</span>
+        </div>
+        <div class="order-items">
+          ${o.items.map(i => `
+            <div class="order-item">
+              <div class="order-item-img">${i.icon}</div>
+              <div class="order-item-info">
+                <div class="order-item-name">${i.name}</div>
+                <div class="order-item-meta">${i.qty}</div>
+              </div>
+              <div class="order-item-price">${i.price}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="order-card-footer">
+          <div>
+            <div class="order-total-label">Total Pembayaran</div>
+            <div class="order-total-val">${o.total}</div>
+          </div>
+          <div style="display:flex; gap:var(--space-2); margin-left:auto; flex-wrap:wrap;">
+            ${o.status === 'selesai' ? `<button class="btn btn-outline btn-sm">Beli Lagi</button><button class="btn btn-outline btn-sm">Beri Ulasan</button>` : ''}
+            ${o.status === 'dikirim' ? `<button class="btn btn-primary btn-sm" onclick="openTracking('${o.id}')">Lacak Pesanan</button>` : ''}
+            ${o.status === 'diproses' ? `<button class="btn btn-outline btn-sm" onclick="openTracking('${o.id}')">Lihat Status</button>` : ''}
+            ${o.status === 'dibatalkan' ? `<button class="btn btn-outline btn-sm">Beli Lagi</button>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.openTracking = function(orderId) {
+    const o = ORDERS.find(x => x.id === orderId);
+    if (!o) return;
+    document.getElementById('trackingModalTitle').textContent = 'Lacak Pesanan · ' + o.id;
+    document.getElementById('trackingResi').textContent = o.resi || 'Belum tersedia';
+    const tl = document.getElementById('trackingTimeline');
+    tl.innerHTML = o.tracking.map(t => `
+      <div class="timeline-item ${t.done ? 'done' : ''} ${t.current ? 'current' : ''}">
+        <div class="timeline-dot">
+          ${t.done ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>` : t.current ? `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>` : `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="opacity:.3"><circle cx="12" cy="12" r="6"/></svg>`}
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">${t.title}</div>
+          ${t.time && t.time !== '-' ? `<div class="timeline-time">${t.time}</div>` : ''}
+          ${t.desc ? `<div class="timeline-desc">${t.desc}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('trackingModalOverlay').classList.add('open');
+  };
+
+  document.getElementById('trackingModalClose').addEventListener('click', () => {
+    document.getElementById('trackingModalOverlay').classList.remove('open');
+  });
+  document.getElementById('trackingModalOverlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+  });
+
+  // Tabs
+  document.querySelectorAll('.buyer-tab[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.buyer-tab[data-tab]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTab = btn.dataset.tab;
+      renderOrders();
+    });
+  });
+
+  // Search
+  document.getElementById('orderSearch').addEventListener('input', e => {
+    searchQ = e.target.value.toLowerCase().trim();
+    renderOrders();
+  });
+
+  renderOrders();
+})();
+</script>
+  <script src="/assets/js/buyer-navbar.js"></script>
+</body>
+</html>

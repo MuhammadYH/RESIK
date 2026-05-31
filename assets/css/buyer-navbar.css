@@ -1,0 +1,83 @@
+/* =========================================
+   POROS Buyer — Topbar / Navbar Component
+   ========================================= */
+.buyer-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-6);
+  height: var(--topbar-height);
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  position: sticky;
+  top: 0; z-index: 100;
+}
+
+.topbar-hamburger {
+  display: none;
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  align-items: center; justify-content: center;
+  color: var(--gray-600);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s;
+  border: none; background: none;
+}
+.topbar-hamburger:hover { background: var(--gray-100); }
+
+.topbar-title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--gray-800);
+  flex: 1;
+}
+
+.topbar-actions {
+  display: flex; align-items: center; gap: var(--space-2);
+}
+.topbar-icon-btn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  position: relative;
+  border: none; background: none;
+}
+.topbar-icon-btn:hover { background: var(--gray-100); color: var(--gray-800); }
+.topbar-notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px;
+  background: var(--accent-red);
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.topbar-avatar {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-full);
+  background: var(--primary-green-bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: box-shadow .15s;
+}
+.topbar-avatar:hover { box-shadow: 0 0 0 2px var(--primary-green); }
+
+/* Cart badge */
+.topbar-cart-badge {
+  position: absolute; top: 4px; right: 4px;
+  background: var(--primary-green);
+  color: white;
+  font-size: 9px; font-weight: 700;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white;
+}
+
+@media (max-width: 768px) {
+  .topbar-hamburger { display: flex; }
+  .buyer-topbar { padding: 0 var(--space-4); }
+}

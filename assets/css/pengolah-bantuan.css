@@ -1,0 +1,194 @@
+/* pengolah-bantuan.css — Help page styles for role: Pengolah */
+
+/* ── Search banner ── */
+.bantuan-hero {
+  background: linear-gradient(135deg, var(--primary-green) 0%, #1B5E20 100%);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-6);
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+.bantuan-hero h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: white;
+  margin-bottom: var(--space-2);
+}
+.bantuan-hero p {
+  font-size: var(--font-size-sm);
+  color: rgba(255,255,255,0.8);
+  margin-bottom: var(--space-5);
+}
+.bantuan-search-wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+.bantuan-search-wrap input {
+  width: 100%;
+  padding: var(--space-3) var(--space-5) var(--space-3) calc(var(--space-5) + 20px + var(--space-2));
+  border-radius: var(--radius-full);
+  border: none;
+  font-size: var(--font-size-sm);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  outline: none;
+}
+.bantuan-search-icon {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+/* ── Category Grid ── */
+.bantuan-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 900px) { .bantuan-category-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .bantuan-category-grid { grid-template-columns: 1fr; } }
+
+.bantuan-cat-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  box-shadow: var(--shadow-card);
+}
+.bantuan-cat-card:hover {
+  border-color: var(--primary-green);
+  box-shadow: 0 4px 16px rgba(46,125,50,0.12);
+  transform: translateY(-1px);
+}
+.bantuan-cat-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+}
+.bantuan-cat-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.bantuan-cat-count {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+/* ── Main layout ── */
+.bantuan-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--space-6);
+}
+@media (max-width: 1100px) { .bantuan-main-grid { grid-template-columns: 1fr; } }
+
+/* ── FAQ Accordion ── */
+.faq-list {}
+.faq-item {
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color var(--transition-fast);
+  user-select: none;
+}
+.faq-question:hover { color: var(--primary-green); }
+.faq-chevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+}
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+.faq-answer {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  padding-bottom: var(--space-4);
+  display: none;
+}
+.faq-item.open .faq-answer { display: block; }
+
+/* ── SOP List ── */
+.sop-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.sop-item:last-child { border-bottom: none; }
+.sop-num {
+  width: 28px; height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--primary-green-soft);
+  color: var(--primary-green);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.sop-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.sop-desc {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.sop-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--primary-green);
+  margin-top: var(--space-2);
+  text-decoration: none;
+}
+.sop-link:hover { text-decoration: underline; }
+
+/* ── Contact card ── */
+.kontak-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--border-color-soft);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  transition: background var(--transition-fast);
+}
+.kontak-item:last-child { margin-bottom: 0; }
+.kontak-item:hover { background: var(--bg-soft); }
+.kontak-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.kontak-label { font-size: var(--font-size-xs); color: var(--text-muted); }
+.kontak-val { font-size: var(--font-size-sm); font-weight: 600; color: var(--text-primary); }

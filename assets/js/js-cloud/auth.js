@@ -66,30 +66,9 @@
    * Logout: hapus sesi lalu redirect.
    * @param {string} redirect - URL tujuan (default: /login.html)
    */
-  async function logout(redirect = '/login.html') {
-    // Sign out dari Supabase jika tersedia
-    if (typeof supabase !== 'undefined') {
-      try { await supabase.auth.signOut(); } catch (_) {}
-    } else if (typeof getSupabase === 'function') {
-      try { const sb = await getSupabase(); await sb.auth.signOut(); } catch (_) {}
-    }
+  function logout(redirect = '/login.html') {
     clearSession();
-    try { sessionStorage.removeItem('resik_post_login'); } catch (_) {}
     window.location.replace(redirect);
-  }
-
-  /**
-   * Redirect ke /redirect.html setelah login berhasil.
-   * Gunakan ini sebagai pengganti window.location langsung.
-   * @param {string|null} nextUrl - deep-link opsional (absolute path)
-   */
-  function redirectAfterLogin(nextUrl) {
-    try { sessionStorage.setItem('resik_post_login', '1'); } catch (_) {}
-    let target = '/redirect.html';
-    if (nextUrl && nextUrl.startsWith('/')) {
-      target += '?next=' + encodeURIComponent(nextUrl);
-    }
-    window.location.replace(target);
   }
 
   /**
@@ -104,34 +83,6 @@
     }
   }
 
-  /* ---------- Supabase auth state listener ---------- */
-  // Auto-kick ke login jika token expired saat berada di halaman role
-  (function _initAuthListener() {
-    function _attachListener(sb) {
-      if (!sb || typeof sb.auth?.onAuthStateChange !== 'function') return;
-      sb.auth.onAuthStateChange(function (event, session) {
-        if (event === 'SIGNED_OUT' || (event === 'TOKEN_REFRESHED' && !session)) {
-          const roleFolders = ['/admin/', '/provider/', '/pengolah/', '/buyer/'];
-          const isRolePage = roleFolders.some(function (f) {
-            return window.location.pathname.startsWith(f);
-          });
-          if (isRolePage) window.location.replace('/login.html');
-        }
-      });
-    }
-    // Coba attach saat DOM siap
-    if (typeof supabase !== 'undefined') {
-      _attachListener(supabase);
-    } else {
-      document.addEventListener('DOMContentLoaded', function () {
-        if (typeof supabase !== 'undefined') _attachListener(supabase);
-        else if (typeof getSupabase === 'function') {
-          getSupabase().then(_attachListener).catch(function () {});
-        }
-      });
-    }
-  })();
-
   /* ---------- Expose globally ---------- */
 
   const PorosAuth = {
@@ -142,7 +93,6 @@
     clearSession,
     logout,
     requireAuth,
-    redirectAfterLogin,
   };
 
   // Dukung kedua nama: Auth (lama) dan PorosAuth (baru)

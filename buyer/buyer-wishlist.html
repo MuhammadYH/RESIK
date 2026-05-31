@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="required-role" content="buyer"/>
+  <title>Wishlist — POROS</title>
+  <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-components.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-navbar.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-components.css"/>
+  <link rel="stylesheet" href="/assets/css/buyer-navbar.css"/>
+  <style>
+    .favorit-toolbar{display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;padding:var(--space-5) var(--space-6);border-bottom:1px solid var(--gray-100);}
+    .favorit-toolbar .search-bar{flex:1;min-width:180px;max-width:300px;}
+    .favorit-toolbar-right{display:flex;align-items:center;gap:var(--space-2);margin-left:auto;}
+    .view-toggle{display:flex;border:1px solid var(--gray-200);border-radius:var(--radius-md);overflow:hidden;}
+    .view-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--gray-500);cursor:pointer;transition:background .15s,color .15s;border:none;background:none;}
+    .view-btn.active{background:var(--primary-green-bg);color:var(--primary-green);}
+    .view-btn:hover:not(.active){background:var(--gray-100);}
+    .favorit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-4);padding:var(--space-5) var(--space-6);}
+    .product-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);overflow:hidden;transition:box-shadow .2s,transform .2s;cursor:pointer;position:relative;}
+    .product-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
+    .product-card-img{width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#F0FDF4,#DCFCE7);display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;}
+    .product-card-fav-btn{position:absolute;top:var(--space-2);right:var(--space-2);width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--accent-red);cursor:pointer;transition:transform .15s;border:none;box-shadow:var(--shadow-xs);}
+    .product-card-fav-btn:hover{transform:scale(1.1);}
+    .product-card-body{padding:var(--space-3);}
+    .product-card-name{font-size:var(--text-sm);font-weight:600;color:var(--gray-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+    .product-card-pondok{font-size:var(--text-xs);color:var(--gray-500);margin-bottom:var(--space-2);}
+    .product-card-price{font-size:var(--text-md);font-weight:700;color:var(--primary-green);}
+    .product-card-rating{font-size:var(--text-xs);color:var(--gray-500);display:flex;align-items:center;gap:3px;margin-top:2px;}
+    .product-card-actions{padding:0 var(--space-3) var(--space-3);display:flex;gap:var(--space-2);}
+    .product-card-actions .btn{flex:1;font-size:var(--text-xs);justify-content:center;}
+    .favorit-list{display:flex;flex-direction:column;gap:0;}
+    .product-list-item{display:flex;align-items:center;gap:var(--space-4);padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--gray-100);transition:background .15s;}
+    .product-list-item:last-child{border-bottom:none;}
+    .product-list-item:hover{background:var(--gray-50);}
+    .list-item-img{width:60px;height:60px;border-radius:var(--radius-md);background:linear-gradient(135deg,#F0FDF4,#DCFCE7);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+    .list-item-info{flex:1;min-width:0;}
+    .list-item-name{font-size:var(--text-sm);font-weight:600;color:var(--gray-800);}
+    .list-item-meta{font-size:var(--text-xs);color:var(--gray-500);margin-top:2px;}
+    .list-item-price{font-size:var(--text-md);font-weight:700;color:var(--primary-green);white-space:nowrap;}
+    .list-item-actions{display:flex;gap:var(--space-2);flex-shrink:0;}
+    .favorit-footer{padding:var(--space-4) var(--space-6);border-top:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-3);}
+    .favorit-count{font-size:var(--text-sm);color:var(--gray-500);}
+    .view-hidden{display:none!important;}
+    @media(max-width:600px){.favorit-grid{grid-template-columns:repeat(2,1fr);gap:var(--space-3);padding:var(--space-4);}.favorit-toolbar{padding:var(--space-4);}.product-list-item{flex-wrap:wrap;}.list-item-actions{width:100%;justify-content:flex-end;}}
+  </style>
+</head>
+<body data-navbar-title="Wishlist">
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="admin-shell">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo"><img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/></div>
+        <nav class="sidebar-nav">
+      <!-- Marketplace -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-marketplace.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </span>
+        Marketplace
+      </a>
+
+      <!-- Keranjang -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-keranjang.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </span>
+        Keranjang
+        <span class="sidebar-cart-count" id="sidebarCartCount">0</span>
+      </a>
+
+      <!-- Pesanan Saya -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-pesanan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </span>
+        Pesanan Saya
+      </a>
+
+      <!-- Wishlist -->
+      <a class="sidebar-nav-item active" href="/buyer/buyer-wishlist.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </span>
+        Wishlist
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Notifikasi -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-notifikasi.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </span>
+        Notifikasi
+        <span class="nav-badge">2</span>
+      </a>
+
+      <!-- Pengaturan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-pengaturan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </span>
+        Pengaturan
+      </a>
+
+      <!-- Bantuan -->
+      <a class="sidebar-nav-item" href="/buyer/buyer-bantuan.html">
+        <span class="nav-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </span>
+        Bantuan
+      </a>
+    </nav>
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-2);display:flex;align-items:center;justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      <h4>Simpan Produk Wishlistmu</h4>
+      <p>Tandai produk kesukaan agar mudah ditemukan dan dibeli kapan saja.</p>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="user-info"><div class="user-name" data-user-name>Budi Santoso</div><div class="user-email" data-user-email>budi@email.com</div></div>
+      <svg class="user-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+        <header class="admin-topbar" id="adminTopbar"></header>
+
+    <div class="admin-content">
+      <div class="buyer-card" style="padding:0;">
+        <div class="favorit-toolbar">
+          <div class="search-bar">
+            <span class="search-bar-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="favSearch" placeholder="Cari produk favorit..."/>
+          </div>
+          <div class="favorit-toolbar-right">
+            <select class="form-select" id="favSort" style="width:auto;padding:6px 12px;font-size:var(--text-sm);">
+              <option value="recent">Terbaru Disimpan</option>
+              <option value="price-asc">Harga Termurah</option>
+              <option value="price-desc">Harga Termahal</option>
+              <option value="rating">Rating Tertinggi</option>
+            </select>
+            <div class="view-toggle">
+              <button class="view-btn active" id="btnGrid" title="Grid"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></button>
+              <button class="view-btn" id="btnList" title="List"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="favorit-grid" id="favGrid"></div>
+        <div class="favorit-list view-hidden" id="favList"></div>
+        <div class="favorit-footer">
+          <span class="favorit-count" id="favCount">6 produk tersimpan</span>
+          <button class="btn btn-outline btn-sm" id="btnClearAll"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg> Hapus Semua</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/session.js"></script>
+<script src="/assets/js/role-guard.js"></script>
+<script src="/assets/js/buyer-sidebar.js"></script>
+<script>
+(function(){
+  let PRODUCTS=[
+    {id:1,icon:'🌿',name:'Kompos Premium Organik',pondok:'Darul Ulum',price:16000,priceLabel:'Rp 16.000/kg',rating:4.8,reviews:124,savedAt:new Date('2025-05-27')},
+    {id:2,icon:'🪴',name:'Pupuk Cair Bioaktif',pondok:'Al Hikmah',price:28000,priceLabel:'Rp 28.000/botol',rating:4.6,reviews:87,savedAt:new Date('2025-05-25')},
+    {id:3,icon:'🌾',name:'Biochar Tanah Subur',pondok:'Nurul Huda',price:15000,priceLabel:'Rp 15.000/kg',rating:4.9,reviews:56,savedAt:new Date('2025-05-20')},
+    {id:4,icon:'♻️',name:'Vermikompos Cacing Tanah',pondok:'Darul Ulum',price:15000,priceLabel:'Rp 15.000/kg',rating:4.7,reviews:93,savedAt:new Date('2025-05-18')},
+    {id:5,icon:'🌱',name:'Media Tanam Steril',pondok:'Al Falah',price:18000,priceLabel:'Rp 18.000/pack',rating:4.5,reviews:41,savedAt:new Date('2025-05-15')},
+    {id:6,icon:'🍂',name:'Mulsa Organik',pondok:'Al Hikmah',price:55000,priceLabel:'Rp 55.000/karung',rating:4.4,reviews:29,savedAt:new Date('2025-05-10')},
+  ];
+  let searchQ='';
+  function stars(r){return'★'.repeat(Math.round(r))+'☆'.repeat(5-Math.round(r));}
+  function getFiltered(){
+    let list=PRODUCTS.filter(p=>!searchQ||p.name.toLowerCase().includes(searchQ)||p.pondok.toLowerCase().includes(searchQ));
+    const sort=document.getElementById('favSort').value;
+    if(sort==='price-asc')list.sort((a,b)=>a.price-b.price);
+    else if(sort==='price-desc')list.sort((a,b)=>b.price-a.price);
+    else if(sort==='rating')list.sort((a,b)=>b.rating-a.rating);
+    else list.sort((a,b)=>b.savedAt-a.savedAt);
+    return list;
+  }
+  function render(){
+    const list=getFiltered();
+    document.getElementById('favCount').textContent=PRODUCTS.length+' produk tersimpan';
+    const empty=`<div class="empty-state" style="padding:var(--space-12) var(--space-6);"><div class="empty-state-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><h3>Belum ada produk wishlist</h3><p>Tandai produk yang kamu suka untuk ditampilkan di sini.</p><a href="/buyer/buyer-marketplace.html" class="btn btn-primary" style="margin-top:var(--space-3);">Jelajahi Produk</a></div>`;
+    if(!list.length){document.getElementById('favGrid').innerHTML=empty;document.getElementById('favList').innerHTML=empty;return;}
+    document.getElementById('favGrid').innerHTML=list.map(p=>`
+      <div class="product-card">
+        <div class="product-card-img">${p.icon}
+          <button class="product-card-fav-btn" onclick="removeFav(${p.id})" title="Hapus favorit"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-name">${p.name}</div>
+          <div class="product-card-pondok">${p.pondok}</div>
+          <div class="product-card-price">${p.priceLabel}</div>
+          <div class="product-card-rating"><span style="color:#F59E0B;">${stars(p.rating)}</span> ${p.rating} (${p.reviews})</div>
+        </div>
+        <div class="product-card-actions">
+          <button class="btn btn-outline btn-sm">Detail</button>
+          <button class="btn btn-primary btn-sm">+ Keranjang</button>
+        </div>
+      </div>`).join('');
+    document.getElementById('favList').innerHTML=list.map(p=>`
+      <div class="product-list-item">
+        <div class="list-item-img">${p.icon}</div>
+        <div class="list-item-info"><div class="list-item-name">${p.name}</div><div class="list-item-meta">${p.pondok} · <span style="color:#F59E0B;">${stars(p.rating)}</span> ${p.rating} (${p.reviews})</div></div>
+        <div class="list-item-price">${p.priceLabel}</div>
+        <div class="list-item-actions">
+          <button class="btn btn-primary btn-sm">+ Keranjang</button>
+          <button class="btn btn-icon btn-outline btn-sm" onclick="removeFav(${p.id})" style="color:var(--accent-red);border-color:#FECACA;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+        </div>
+      </div>`).join('');
+  }
+  window.removeFav=function(id){PRODUCTS=PRODUCTS.filter(p=>p.id!==id);render();};
+  document.getElementById('btnGrid').addEventListener('click',()=>{document.getElementById('btnGrid').classList.add('active');document.getElementById('btnList').classList.remove('active');document.getElementById('favGrid').classList.remove('view-hidden');document.getElementById('favList').classList.add('view-hidden');});
+  document.getElementById('btnList').addEventListener('click',()=>{document.getElementById('btnList').classList.add('active');document.getElementById('btnGrid').classList.remove('active');document.getElementById('favList').classList.remove('view-hidden');document.getElementById('favGrid').classList.add('view-hidden');});
+  document.getElementById('favSearch').addEventListener('input',e=>{searchQ=e.target.value.toLowerCase().trim();render();});
+  document.getElementById('favSort').addEventListener('change',render);
+  document.getElementById('btnClearAll').addEventListener('click',()=>{if(confirm('Hapus semua produk dari favorit?')){PRODUCTS=[];render();}});
+  render();
+})();
+</script>
+  <script src="/assets/js/buyer-navbar.js"></script>
+</body>
+</html>

@@ -418,7 +418,7 @@ window.RESIK_UI = {
                 <div class="pd-name">${name}</div>
                 <div class="pd-email">${user.email || ''}</div>
               </div>
-              <a href="/redirect.html" class="pd-menu-item">
+              <a href="dashboard.html" class="pd-menu-item">
                 <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 Dashboard
               </a>
@@ -520,7 +520,7 @@ window.RESIK_UI = {
               <div style="font-weight:700;font-size:.88rem;color:#0e1b14;font-family:'DM Sans',sans-serif;">${name}</div>
               <div style="font-size:.75rem;color:#5d7268;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${user.email || ''}</div>
             </div>
-            <a href="/redirect.html" style="${ROW_STYLE}">
+            <a href="dashboard.html" style="${ROW_STYLE}">
               <svg viewBox="0 0 24 24" style="${SVG_STYLE}"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
               Dashboard
             </a>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESIK Waste Provider Controller</title>
+
+<style>
+body{
+    background:#111;
+    color:#00ff66;
+    font-family:Consolas, monospace;
+    padding:20px;
+}
+
+h1{
+    margin-bottom:20px;
+}
+
+.panel{
+    border:1px solid #00ff66;
+    padding:15px;
+    margin-bottom:20px;
+}
+
+input,select,textarea{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    margin-bottom:10px;
+    background:#000;
+    color:#00ff66;
+    border:1px solid #00ff66;
+    font-family:Consolas, monospace;
+}
+
+button{
+    background:#000;
+    color:#00ff66;
+    border:1px solid #00ff66;
+    padding:8px 12px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#00ff66;
+    color:#000;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+th,td{
+    border:1px solid #00ff66;
+    padding:8px;
+    text-align:left;
+}
+
+.status-incoming{
+    color:#ffff00;
+}
+
+.status-processing{
+    color:#00bfff;
+}
+
+.status-completed{
+    color:#00ff66;
+}
+
+.small-btn{
+    margin-right:5px;
+    margin-bottom:5px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.card{
+    border:1px solid #00ff66;
+    padding:15px;
+}
+
+.card h2{
+    margin:0;
+}
+
+#log{
+    height:120px;
+    overflow:auto;
+    border:1px solid #00ff66;
+    padding:10px;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+<body>
+
+<h1>RESIK WASTE PROVIDER CONTROLLER</h1>
+
+<div class="panel stats">
+    <div class="card">
+        <div>INCOMING</div>
+        <h2 id="incomingCount">0</h2>
+    </div>
+
+    <div class="card">
+        <div>PROCESSING</div>
+        <h2 id="processingCount">0</h2>
+    </div>
+
+    <div class="card">
+        <div>COMPLETED</div>
+        <h2 id="completedCount">0</h2>
+    </div>
+</div>
+
+<div class="panel">
+    <h3>TAMBAH DATA</h3>
+
+    <label>Source Role ID</label>
+    <input id="sourceRoleId" placeholder="PRV001">
+
+    <label>Target Role ID</label>
+    <input id="targetRoleId" placeholder="PRC001">
+
+    <label>Bin ID</label>
+    <input id="binId" placeholder="BIN001">
+
+    <label>Berat (kg)</label>
+    <input id="weightKg" type="number" step="0.01">
+
+    <label>Status</label>
+    <select id="status">
+        <option value="incoming">incoming</option>
+        <option value="processing">processing</option>
+        <option value="completed">completed</option>
+    </select>
+
+    <label>Catatan</label>
+    <textarea id="notes"></textarea>
+
+    <button onclick="createRecord()">
+        SIMPAN
+    </button>
+</div>
+
+<div class="panel">
+    <h3>DATA WASTE PROVIDER</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Source</th>
+                <th>Target</th>
+                <th>Bin</th>
+                <th>Berat</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<div class="panel">
+    <h3>LOG</h3>
+    <div id="log"></div>
+</div>
+
+<script>
+
+/* ==========================================
+   CONFIG
+========================================== */
+
+const SUPABASE_URL =
+'https://vcxwphzxavolrbsafroa.supabase.co';
+
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjeHdwaHp4YXZvbHJic2Fmcm9hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNzM4NjQsImV4cCI6MjA5NDg0OTg2NH0.OOW5l0QgcNRPp5Q4qBIaK6uotvTdo91zt2uV5ON6rx0';
+
+const sb = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+/* ==========================================
+   LOG
+========================================== */
+
+function log(msg){
+
+    const el=document.getElementById('log');
+
+    el.innerHTML=
+        `[${new Date().toLocaleTimeString()}] ${msg}<br>`
+        + el.innerHTML;
+}
+
+/* ==========================================
+   CREATE
+========================================== */
+
+async function createRecord(){
+
+    try{
+
+        const payload={
+            source_role_id:
+                document.getElementById('sourceRoleId').value,
+
+            target_role_id:
+                document.getElementById('targetRoleId').value,
+
+            bin_id:
+                document.getElementById('binId').value,
+
+            weight_kg:
+                parseFloat(
+                    document.getElementById('weightKg').value
+                ) || 0,
+
+            status:
+                document.getElementById('status').value,
+
+            notes:
+                document.getElementById('notes').value
+        };
+
+        // ==========================
+        // CEK BIN SUDAH ADA ATAU BELUM
+        // ==========================
+
+        const { data: existing, error: checkError } =
+            await sb
+                .from('waste_provider')
+                .select('id')
+                .eq('bin_id', payload.bin_id)
+                .maybeSingle();
+
+        if (checkError) throw checkError;
+
+        // ==========================
+        // UPDATE JIKA SUDAH ADA
+        // ==========================
+
+        if(existing){
+
+            const { error:updateError } =
+                await sb
+                    .from('waste_provider')
+                    .update({
+                        source_role_id: payload.source_role_id,
+                        target_role_id: payload.target_role_id,
+                        weight_kg: payload.weight_kg,
+                        status: payload.status,
+                        notes: payload.notes,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', existing.id);
+
+            if(updateError) throw updateError;
+
+            log(`UPDATE BIN ${payload.bin_id}`);
+
+            alert(
+                `BIN ${payload.bin_id} sudah ada.\nData berhasil diperbarui.`
+            );
+
+        }
+
+        // ==========================
+        // INSERT JIKA BELUM ADA
+        // ==========================
+
+        else{
+
+            const { error:insertError } =
+                await sb
+                    .from('waste_provider')
+                    .insert(payload);
+
+            if(insertError) throw insertError;
+
+            log(`INSERT BIN ${payload.bin_id}`);
+
+            alert(
+                `BIN ${payload.bin_id} berhasil ditambahkan.`
+            );
+
+        }
+
+    }catch(err){
+
+        console.error(err);
+        alert(err.message);
+
+    }
+
+}
+
+/* ==========================================
+   READ
+========================================== */
+
+async function loadData(){
+
+    const {data,error}=await sb
+        .from('waste_provider')
+        .select('*')
+        .order('id',{ascending:false});
+
+    if(error){
+
+        console.error(error);
+        return;
+
+    }
+
+    renderTable(data);
+    renderStats(data);
+
+}
+
+/* ==========================================
+   STATS
+========================================== */
+
+function renderStats(rows){
+
+    const incoming=
+        rows.filter(
+            r=>r.status==='incoming'
+        ).length;
+
+    const processing=
+        rows.filter(
+            r=>r.status==='processing'
+        ).length;
+
+    const completed=
+        rows.filter(
+            r=>r.status==='completed'
+        ).length;
+
+    incomingCount.textContent=incoming;
+    processingCount.textContent=processing;
+    completedCount.textContent=completed;
+
+}
+
+/* ==========================================
+   TABLE
+========================================== */
+
+function renderTable(rows){
+
+    tableBody.innerHTML='';
+
+    rows.forEach(row=>{
+
+        const tr=document.createElement('tr');
+
+        tr.innerHTML=`
+        <td>${row.id}</td>
+        <td>${row.source_role_id || ''}</td>
+        <td>${row.target_role_id || ''}</td>
+        <td>${row.bin_id || ''}</td>
+        <td>${row.weight_kg || 0}</td>
+        <td class="status-${row.status}">
+            ${row.status}
+        </td>
+        <td>
+            ${new Date(
+                row.created_at
+            ).toLocaleString()}
+        </td>
+
+        <td>
+
+            <button
+            class="small-btn"
+            onclick="updateStatus(${row.id},'incoming')">
+            Incoming
+            </button>
+
+            <button
+            class="small-btn"
+            onclick="updateStatus(${row.id},'processing')">
+            Processing
+            </button>
+
+            <button
+            class="small-btn"
+            onclick="updateStatus(${row.id},'completed')">
+            Completed
+            </button>
+
+            <button
+            class="small-btn"
+            onclick="deleteRecord(${row.id})">
+            Delete
+            </button>
+
+        </td>
+        `;
+
+        tableBody.appendChild(tr);
+
+    });
+
+}
+
+/* ==========================================
+   UPDATE
+========================================== */
+
+async function updateStatus(id,status){
+
+    const {error}=await sb
+        .from('waste_provider')
+        .update({
+            status:status,
+            updated_at:new Date().toISOString()
+        })
+        .eq('id',id);
+
+    if(error){
+
+        alert(error.message);
+        return;
+
+    }
+
+    log(`STATUS ${id} -> ${status}`);
+
+}
+
+/* ==========================================
+   DELETE
+========================================== */
+
+async function deleteRecord(id){
+
+    if(
+        !confirm(
+            `Hapus data ${id}?`
+        )
+    ) return;
+
+    const {error}=await sb
+        .from('waste_provider')
+        .delete()
+        .eq('id',id);
+
+    if(error){
+
+        alert(error.message);
+        return;
+
+    }
+
+    log(`DELETE ${id}`);
+
+}
+
+/* ==========================================
+   REALTIME
+========================================== */
+
+sb.channel('waste-provider-realtime')
+.on(
+    'postgres_changes',
+    {
+        event:'*',
+        schema:'public',
+        table:'waste_provider'
+    },
+    payload=>{
+
+        console.log(payload);
+
+        log(
+            'REALTIME UPDATE'
+        );
+
+        loadData();
+
+    }
+)
+.subscribe();
+
+/* ==========================================
+   INIT
+========================================== */
+
+loadData();
+
+</script>
+
+</body>
+</html>

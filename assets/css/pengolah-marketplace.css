@@ -1,0 +1,141 @@
+/* pengolah-marketplace.css — Marketplace page styles for role: Pengolah */
+
+/* ── Stat Grid ── */
+.mkt-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 1200px) { .mkt-stat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .mkt-stat-grid { grid-template-columns: 1fr; } }
+
+/* ── Main grid ── */
+.mkt-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--space-6);
+}
+@media (max-width: 1100px) { .mkt-main-grid { grid-template-columns: 1fr; } }
+
+/* ── Product List (table-style, not ecommerce grid) ── */
+.produk-icon-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 220px;
+}
+.produk-thumb {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: var(--primary-green-soft);
+  color: var(--primary-green);
+}
+.produk-name  { font-weight: 600; font-size: var(--font-size-sm); }
+.produk-sku   { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+
+/* ── Order row ── */
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.order-item:last-child { border-bottom: none; }
+.order-item .o-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--accent-blue-soft);
+  color: var(--accent-blue);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.order-item .o-info { flex: 1; min-width: 0; }
+.order-item .o-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.order-item .o-sub {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.order-item .o-val {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ── Pendapatan summary strip ── */
+.pendapatan-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 700px) { .pendapatan-strip { grid-template-columns: 1fr; } }
+
+.pendapatan-item {
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+.pendapatan-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.pendapatan-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+.pendapatan-val {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.pendapatan-sub {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ── Pelanggan mini list ── */
+.pelanggan-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-color-soft);
+}
+.pelanggan-item:last-child { border-bottom: none; }
+.pelanggan-item .pel-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.pelanggan-item .pel-type {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.pelanggan-item .pel-total {
+  margin-left: auto;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--primary-green);
+}

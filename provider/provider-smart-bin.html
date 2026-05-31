@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Bin — POROS Provider</title>
+
+  <!-- Shared design system (reused from admin) -->
+  <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-layout.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-components.css"/>
+  <link rel="stylesheet" href="/assets/css/admin-navbar.css"/>
+
+  <!-- Provider-specific styles -->
+  <link rel="stylesheet" href="/assets/css/provider-smart-bin.css"/>
+</head>
+<body data-navbar-title="Smart Bin">
+
+<!-- Supabase client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/js/supabase-client.js"></script>
+
+<!-- Auth & session guards -->
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/session.js"></script>
+<script src="/assets/js/role-check.js"></script>
+<script src="/assets/js/role-guard.js" data-role="provider"></script>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="admin-shell">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" data-page="provider-dashboard.html" href="/provider/provider-dashboard.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+        Dashboard
+      </a>
+      <a class="sidebar-nav-item active" data-page="provider-smart-bin.html" href="/provider/provider-smart-bin.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span>
+        Smart Bin
+      </a>
+      <a class="sidebar-nav-item" data-page="provider-kontribusi.html" href="/provider/provider-kontribusi.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5.5"/><line x1="12" y1="12" x2="12" y2="2"/><line x1="12" y1="12" x2="20.66" y2="7"/></svg></span>
+        Kontribusi
+      </a>
+      <a class="sidebar-nav-item" data-page="provider-riwayat.html" href="/provider/provider-riwayat.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        Riwayat
+      </a>
+      <div class="sidebar-divider">
+        <svg width="120" height="12" viewBox="0 0 120 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;opacity:0.35;">
+          <path d="M2 6 C10 1, 18 11, 26 6 C34 1, 42 11, 50 6 C58 1, 66 11, 74 6 C82 1, 90 11, 98 6 C106 1, 114 11, 118 6" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <a class="sidebar-nav-item" data-page="provider-notifikasi.html" href="/provider/provider-notifikasi.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        Notifikasi
+        <span class="nav-badge sidebar-notif-badge">3</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="provider-pengaturan.html" href="/provider/provider-pengaturan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        Pengaturan
+      </a>
+      <a class="sidebar-nav-item" data-page="provider-bantuan.html" href="/provider/provider-bantuan.html">
+        <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        Bantuan
+      </a>
+    </nav>
+
+    <div class="sidebar-promo">
+      <div style="margin-bottom:var(--space-3); display:flex; align-items:center; justify-content:center;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22c1.25-1.25 2.5-2.5 3.5-4 1.8-2.7 2.5-6 2.5-9 0 0 3 1 5 4 1.5 2.3 1.5 5 1.5 5s1.5-1 2-3c.8-3 0-6 0-6s3 2 4 5c.7 2 .5 4.5-.5 6.5C18.5 23 14 24 10 22"/><path d="M2 22c2-2 4-5 4-9"/></svg>
+      </div>
+      <h4>Setor Sampah, Raih Manfaat</h4>
+      <p>Pantau kapasitas bin Anda secara realtime dan jadwalkan pengangkutan tepat waktu.</p>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <div class="user-name" id="sidebarUserName"></div>
+        <div class="user-email" id="sidebarUserEmail"></div>
+      </div>
+      <svg class="user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="admin-main">
+    <header class="admin-topbar"></header>
+
+    <div class="admin-content">
+
+      <!-- ── Alert Kapasitas (diisi oleh JS) ── -->
+      <div id="alertSection" style="margin-bottom:var(--space-5);"></div>
+
+      <!-- ── Stat Cards ── -->
+      <div class="sb-stat-grid">
+
+        <!-- Total Bin -->
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Total Bin</div>
+            <div class="stat-card-value" id="statTotalBin">—</div>
+            <div class="stat-card-sub">Terdaftar</div>
+          </div>
+          <div class="stat-card-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </div>
+          <svg class="stat-card-chart" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,35 16,25 32,28 48,15 64,18 80,5" fill="none" stroke="var(--primary-green)" stroke-width="2"/></svg>
+        </div>
+
+        <!-- Bin Online -->
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Bin Online</div>
+            <div class="stat-card-value" id="statBinOnline">—</div>
+            <div class="stat-card-sub" id="statBinOnlineSub"></div>
+          </div>
+          <div class="stat-card-icon blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <svg class="stat-card-chart" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,30 20,20 40,22 60,10 80,8" fill="none" stroke="var(--accent-blue)" stroke-width="2"/></svg>
+        </div>
+
+        <!-- Perlu Dikosongkan -->
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Perlu Dikosongkan</div>
+            <div class="stat-card-value" id="statPerluKosong">—</div>
+            <div class="stat-card-sub" id="statPerluKosongSub"></div>
+          </div>
+          <div class="stat-card-icon orange">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+        </div>
+
+        <!-- Rata-rata Kapasitas -->
+        <div class="stat-card">
+          <div class="stat-card-content">
+            <div class="stat-card-label">Rata-rata Kapasitas</div>
+            <div class="stat-card-value" id="statRataKapasitas">—</div>
+            <div class="stat-card-sub"></div>
+          </div>
+          <div class="stat-card-icon green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+          </div>
+          <svg class="stat-card-chart" width="80" height="40" viewBox="0 0 80 40"><polyline points="0,38 16,30 32,32 48,20 64,22 80,12" fill="none" stroke="var(--primary-green)" stroke-width="2"/></svg>
+        </div>
+
+      </div><!-- /sb-stat-grid -->
+
+      <!-- ── Filter bar ── -->
+      <div class="filter-bar">
+        <div class="topbar-search filter-search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; color:var(--text-muted);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Cari bin…" id="binSearchInput"/>
+        </div>
+        <select class="filter-select" id="statusFilter">
+          <option value="">Semua Status</option>
+          <option value="aman">Aman</option>
+          <option value="hampir">Hampir Penuh</option>
+          <option value="penuh">Penuh</option>
+          <option value="offline">Offline</option>
+        </select>
+        <select class="filter-select" id="lokasiFilter">
+          <option value="">Semua Lokasi</option>
+          <option value="outdoor">Outdoor</option>
+          <option value="indoor">Indoor</option>
+        </select>
+        <button class="btn btn-primary btn-sm" style="flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Tambah Bin
+        </button>
+      </div>
+
+      <!-- ── Table Card (full width) ── -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Daftar Smart Bin</span>
+          <span class="badge badge-gray" id="binCountBadge">— bin</span>
+        </div>
+        <div class="sb-table-wrap">
+          <table class="admin-table" id="binTable">
+            <thead>
+              <tr>
+                <th>Nama Bin</th>
+                <th>Status</th>
+                <th class="capacity-cell">Kapasitas</th>
+                <th>Berat</th>
+                <th>Lokasi</th>
+                <th>IoT Signal</th>
+                <th>Update Terakhir</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Diisi oleh provider-smart-bin.js -->
+              <tr>
+                <td colspan="8" style="text-align:center; color:var(--text-muted); padding:var(--space-8);">
+                  <span style="display:inline-flex; align-items:center; gap:8px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    Memuat data smart bin…
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /card table -->
+
+      <!-- ── Analytics + Peta (2 kolom) ── -->
+      <div style="display:grid; grid-template-columns:1fr 1fr 1.6fr; gap:var(--space-5); margin-top:var(--space-5);">
+
+        <!-- Distribusi Status (Donut) -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Distribusi Status</span></div>
+          <div class="donut-wrap">
+            <svg width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0;">
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#E8F5E9" stroke-width="16"/>
+              <text x="45" y="50" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text-primary)">—</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#2E7D32;"></div><span class="legend-label">Aman</span><span class="legend-value" id="donutAmn">—</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#F57C00;"></div><span class="legend-label">Hampir</span><span class="legend-value" id="donutHmp">—</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#C62828;"></div><span class="legend-label">Penuh</span><span class="legend-value" id="donutPnl">—</span></div>
+              <div class="legend-item"><div class="legend-dot" style="background:#9CA3AF;"></div><span class="legend-label">Offline</span><span class="legend-value" id="donutOfl">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Setoran Mingguan (bar chart) -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Setoran Minggu Ini</span></div>
+          <div class="chart-bars">
+            <div class="chart-bar-col"><div class="chart-bar" style="height:30px;"></div><span class="chart-bar-label">Sen</span></div>
+            <div class="chart-bar-col"><div class="chart-bar" style="height:55px;"></div><span class="chart-bar-label">Sel</span></div>
+            <div class="chart-bar-col"><div class="chart-bar active" style="height:70px;"></div><span class="chart-bar-label">Rab</span></div>
+            <div class="chart-bar-col"><div class="chart-bar" style="height:45px;"></div><span class="chart-bar-label">Kam</span></div>
+            <div class="chart-bar-col"><div class="chart-bar" style="height:60px;"></div><span class="chart-bar-label">Jum</span></div>
+            <div class="chart-bar-col"><div class="chart-bar" style="height:25px;"></div><span class="chart-bar-label">Sab</span></div>
+            <div class="chart-bar-col"><div class="chart-bar" style="height:15px;"></div><span class="chart-bar-label">Min</span></div>
+          </div>
+        </div>
+
+        <!-- Peta Bin -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Lokasi Bin</span>
+            <span class="badge badge-success" id="mapOnlineBadge">— Online</span>
+          </div>
+          <div class="map-placeholder">
+            <svg class="map-bg" viewBox="0 0 340 300" xmlns="http://www.w3.org/2000/svg">
+              <rect width="340" height="300" fill="#EEF2EE"/>
+              <line x1="0" y1="100" x2="340" y2="100" stroke="#D4E6D4" stroke-width="12"/>
+              <line x1="0" y1="200" x2="340" y2="200" stroke="#D4E6D4" stroke-width="8"/>
+              <line x1="100" y1="0" x2="100" y2="300" stroke="#D4E6D4" stroke-width="12"/>
+              <line x1="230" y1="0" x2="230" y2="300" stroke="#D4E6D4" stroke-width="8"/>
+              <rect x="110" y="110" width="110" height="80" rx="4" fill="#C8E6C9" opacity="0.5"/>
+              <rect x="110" y="5" width="110" height="85" rx="4" fill="#DCEDC8" opacity="0.6"/>
+              <rect x="5" y="5" width="85" height="85" rx="4" fill="#DCEDC8" opacity="0.5"/>
+              <rect x="240" y="110" width="90" height="80" rx="4" fill="#DCEDC8" opacity="0.4"/>
+              <rect x="5" y="210" width="85" height="80" rx="4" fill="#C8E6C9" opacity="0.4"/>
+            </svg>
+            <!-- Map Pins — diisi oleh JS -->
+            <div class="map-legend">
+              <div class="map-legend-item"><div class="map-legend-dot" style="background:#2E7D32;"></div>Aman</div>
+              <div class="map-legend-item"><div class="map-legend-dot" style="background:#F57C00;"></div>Hampir</div>
+              <div class="map-legend-item"><div class="map-legend-dot" style="background:#C62828;"></div>Penuh</div>
+              <div class="map-legend-item"><div class="map-legend-dot" style="background:#9CA3AF;"></div>Offline</div>
+            </div>
+            <div class="map-controls">
+              <div class="map-ctrl-btn">+</div>
+              <div class="map-ctrl-btn">−</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /analytics + peta grid -->
+
+    </div><!-- /admin-content -->
+  </main>
+</div><!-- /admin-shell -->
+
+<script src="/assets/js/provider-sidebar.js"></script>
+<script src="/assets/js/provider-navbar.js"></script>
+
+<!-- Logika Smart Bin (Supabase) -->
+<script src="/assets/js/provider-smart-bin.js"></script>
+
+</body>
+</html>

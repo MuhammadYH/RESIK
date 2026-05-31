@@ -1,0 +1,146 @@
+/* pengolah-operasional.css — Operational page styles for role: Pengolah */
+
+/* ── Stat Grid ── */
+.ops-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 1200px) { .ops-stat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .ops-stat-grid { grid-template-columns: 1fr; } }
+
+/* ── Main grid ── */
+.ops-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-6);
+}
+@media (max-width: 1100px) { .ops-main-grid { grid-template-columns: 1fr; } }
+
+/* ── Pasokan Limbah row ── */
+.pasokan-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color-soft);
+  margin-bottom: var(--space-3);
+  transition: background var(--transition-fast);
+}
+.pasokan-item:hover { background: var(--bg-soft); }
+.pasokan-item:last-child { margin-bottom: 0; }
+
+.pasokan-avatar {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.pasokan-info { flex: 1; min-width: 0; }
+.pasokan-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pasokan-meta { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+.pasokan-weight {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ── Proses Produksi Kanban ── */
+.proses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 900px) { .proses-grid { grid-template-columns: 1fr; } }
+
+.proses-col-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--border-color);
+}
+.proses-col-label {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  flex: 1;
+}
+.proses-count {
+  background: var(--bg-soft);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 1px 8px;
+}
+
+.proses-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  cursor: default;
+  transition: box-shadow var(--transition-fast);
+}
+.proses-card:hover { box-shadow: var(--shadow-card); }
+.proses-card:last-child { margin-bottom: 0; }
+.proses-card-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+.proses-card-meta {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* ── Stok Hasil Olahan Table ── */
+.stok-icon-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 200px;
+}
+.stok-avatar {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.stok-name  { font-weight: 600; font-size: var(--font-size-sm); }
+.stok-sub   { font-size: var(--font-size-xs); color: var(--text-muted); margin-top: 2px; }
+
+/* Stok level indicator */
+.stok-bar-cell { min-width: 130px; }
+.stok-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.stok-bar-wrap .progress-bar { flex: 1; height: 8px; }
+.stok-bar-pct {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  min-width: 36px;
+  text-align: right;
+}
