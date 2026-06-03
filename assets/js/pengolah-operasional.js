@@ -1,7 +1,7 @@
 /**
  * pengolah-operasional.js
  * ─────────────────────────────────────────────────────────────────
- * Halaman Operasional — POROS Pengolah
+ * Halaman Operasional — RESIK Pengolah
  *
  * Tanggung jawab:
  *  1. Ambil roleId (target_role_id) dari getUserContext()

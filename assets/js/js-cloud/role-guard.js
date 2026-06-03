@@ -1,5 +1,5 @@
 /* =========================================
-   POROS — role-guard.js
+   RESIK — role-guard.js
    Enforces role-based access control.
    ========================================= */
 (function () {
@@ -24,8 +24,8 @@
     if (!user) {
       // Not logged in — for demo, create a mock buyer session
       const mockUser = { name: 'Budi Santoso', email: 'budi@email.com', role: 'buyer' };
-      sessionStorage.setItem('poros_user', JSON.stringify(mockUser));
-      sessionStorage.setItem('poros_token', 'mock-token-buyer');
+      sessionStorage.setItem('RESIK_user', JSON.stringify(mockUser));
+      sessionStorage.setItem('RESIK_token', 'mock-token-buyer');
       return;
     }
 

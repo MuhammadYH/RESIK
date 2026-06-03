@@ -63,7 +63,7 @@ def transform(html, old_filename):
         html = html.replace(f'href="{old}"', f'href="{new}"')
 
     # 2. Logo asset
-    html = html.replace('src="assets/LOGO_POROS.png"', 'src="/assets/LOGO_POROS.png"')
+    html = html.replace('src="assets/LOGO_RESIK.png"', 'src="/assets/LOGO_RESIK.png"')
 
     # 3. Nav hrefs & data-page
     for old_f, new_f in PAGE_MAP.items():

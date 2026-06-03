@@ -102,7 +102,7 @@ const RESIK_SIDEBAR = (() => {
           </svg>
         </div>
         <h4>Kelola Sampah Organik Lebih Cerdas dan Berdampak</h4>
-        <p>Bersama POROS, kelola sampah organik secara efisien, transparan, dan memberikan manfaat nyata bagi masyarakat.</p>
+        <p>Bersama RESIK, kelola sampah organik secara efisien, transparan, dan memberikan manfaat nyata bagi masyarakat.</p>
       </div>`,
     provider: '',
     pengolah: '',
@@ -138,7 +138,7 @@ const RESIK_SIDEBAR = (() => {
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <aside class="admin-sidebar" id="adminSidebar">
   <div class="sidebar-logo">
-    <img src="/assets/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+    <img src="/assets/LOGO_RESIK.png" alt="RESIK" class="sidebar-logo-img"/>
   </div>
   <nav class="sidebar-nav">
     ${navHTML}

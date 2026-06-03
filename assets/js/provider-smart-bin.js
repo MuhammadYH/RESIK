@@ -23,7 +23,7 @@
      Konstanta
   ───────────────────────────────────────── */
 
-  const OFFLINE_THRESHOLD_HOURS = 8;
+  const OFFLINE_THRESHOLD_HOURS = 24;
   const FULL_THRESHOLD = 80;    // fill_percent >= 80 → perlu dikosongkan
 
   /* ─────────────────────────────────────────

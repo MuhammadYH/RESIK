@@ -1,5 +1,5 @@
 /* =========================================
-   POROS Buyer — buyer-sidebar.js
+   RESIK Buyer — buyer-sidebar.js
    Handles sidebar toggle, active state, overlay.
    ========================================= */
 (function () {

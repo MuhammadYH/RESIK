@@ -6,7 +6,7 @@
     const topbar = document.querySelector('.admin-topbar');
     if (!topbar) return;
 
-    const pageTitle = document.body.dataset.navbarTitle || 'POROS';
+    const pageTitle = document.body.dataset.navbarTitle || 'RESIK';
 
     topbar.classList.add('navbar-managed');
     topbar.innerHTML = `

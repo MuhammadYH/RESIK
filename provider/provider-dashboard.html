@@ -2,8 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8"/>
+  <link rel="icon" href="/assets/icons/resik-favicon.ico" type="image/x-icon"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard — POROS Provider</title>
+  <title>Dashboard — RESIK Provider</title>
 
   <!-- Shared design system (reused from admin) -->
   <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
@@ -13,6 +14,179 @@
 
   <!-- Provider-specific styles -->
   <link rel="stylesheet" href="/assets/css/provider-dashboard.css"/>
+
+  <!-- ── Responsive Overrides ── -->
+  <style>
+    /* ── Banner Hero ── */
+    .banner-card > div {
+      flex-wrap: wrap;
+    }
+    .banner-card > div > div:last-child {
+      text-align: left;
+    }
+
+    /* ── Stat Cards: 2 kolom di tablet, 1 kolom di mobile ── */
+    @media (max-width: 900px) {
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 520px) {
+      .grid-4 {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Banner hero: teks + angka stack vertikal */
+      .banner-card > div {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .banner-card > div > div:last-child {
+        text-align: left;
+      }
+      .banner-card > div > div:last-child [data-count] {
+        font-size: 2rem !important;
+      }
+    }
+
+    /* ── Dashboard 2-col grid → 1 kolom ── */
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* ── Ringkasan Bulan Ini: 2×2 di tablet, 1 kolom di mobile ── */
+    @media (max-width: 900px) {
+      .dashboard-grid-full .card > div[style*="repeat(4, 1fr)"],
+      div[style*="repeat(4, 1fr)"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 520px) {
+      div[style*="repeat(4, 1fr)"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* ── Quick Insight: 1 kolom di mobile ── */
+    @media (max-width: 900px) {
+      div[style*="repeat(3, 1fr)"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* ── CTA Banner (Smart Bin Terdaftar): wrap di mobile ── */
+    @media (max-width: 600px) {
+      .dashboard-grid-full > div[style*="primary-gradient"] {
+        flex-direction: column !important;
+        text-align: center;
+        padding: var(--space-6) var(--space-5) !important;
+      }
+      .dashboard-grid-full > div[style*="primary-gradient"] a.btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 4px;
+      }
+    }
+
+    /* ── Aktivitas item: teks tidak overflow ── */
+    .aktivitas-item {
+      flex-wrap: wrap;
+    }
+    .aktivitas-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .aktivitas-title,
+    .aktivitas-sub {
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    /* ── Stat card value ukuran fleksibel ── */
+    .stat-card-value {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+    }
+
+    /* ── ≤471px: padding & spacing dikecilkan ── */
+    @media (max-width: 471px) {
+      /* Content area padding */
+      .admin-content {
+        padding: var(--space-3) var(--space-3) !important;
+      }
+
+      /* Banner card */
+      .banner-card {
+        padding: var(--space-4) var(--space-4) !important;
+        border-radius: var(--radius-lg) !important;
+        margin-bottom: var(--space-4) !important;
+      }
+      .banner-card h2 {
+        font-size: 1.2rem !important;
+      }
+      .banner-card > div > div:last-child [data-count] {
+        font-size: 1.6rem !important;
+      }
+
+      /* Stat cards */
+      .stat-card {
+        padding: var(--space-3) var(--space-4) !important;
+      }
+
+      /* Card padding */
+      .card {
+        padding: var(--space-4) !important;
+        border-radius: var(--radius-lg) !important;
+        margin-bottom: var(--space-3) !important;
+      }
+
+      /* Card header */
+      .card-header {
+        margin-bottom: var(--space-3) !important;
+      }
+
+      /* Aktivitas item */
+      .aktivitas-item {
+        padding: var(--space-3) 0 !important;
+        gap: var(--space-2) !important;
+      }
+      .aktivitas-icon {
+        width: 32px !important;
+        height: 32px !important;
+        flex-shrink: 0;
+      }
+      .aktivitas-time {
+        font-size: 10px !important;
+        white-space: nowrap;
+      }
+
+      /* Ringkasan & Quick Insight inner items */
+      div[style*="repeat(4, 1fr)"] > div,
+      div[style*="repeat(3, 1fr)"] > div {
+        padding: var(--space-3) !important;
+        gap: var(--space-2) !important;
+      }
+
+      /* CTA Banner */
+      .dashboard-grid-full > div[style*="primary-gradient"] {
+        padding: var(--space-5) var(--space-4) !important;
+        gap: var(--space-3) !important;
+      }
+      .dashboard-grid-full > div[style*="primary-gradient"] > div:first-child {
+        width: 52px !important;
+        height: 52px !important;
+      }
+      #dashCtaBinCount {
+        font-size: 1.1rem !important;
+      }
+
+      /* mb-6 spacing dikecilkan */
+      .mb-6 {
+        margin-bottom: var(--space-4) !important;
+      }
+    }
+  </style>
 </head>
 <body data-navbar-title="Dashboard">
 
@@ -33,7 +207,7 @@
   <!-- ── SIDEBAR ── -->
   <aside class="admin-sidebar" id="adminSidebar">
     <div class="sidebar-logo">
-      <img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+      <img src="/assets/img/LOGO_RESIK.png" alt="RESIK" class="sidebar-logo-img"/>
     </div>
 
     <nav class="sidebar-nav">
@@ -79,7 +253,7 @@
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22c1.25-1.25 2.5-2.5 3.5-4 1.8-2.7 2.5-6 2.5-9 0 0 3 1 5 4 1.5 2.3 1.5 5 1.5 5s1.5-1 2-3c.8-3 0-6 0-6s3 2 4 5c.7 2 .5 4.5-.5 6.5C18.5 23 14 24 10 22"/><path d="M2 22c2-2 4-5 4-9"/></svg>
       </div>
       <h4>Setor Sampah, Raih Manfaat</h4>
-      <p>Catat setiap setoran limbah organik Anda dan pantau kontribusi nyata bagi lingkungan bersama POROS.</p>
+      <p>Catat setiap setoran limbah organik Anda dan pantau kontribusi nyata bagi lingkungan bersama RESIK.</p>
     </div>
 
     <!-- User info -->
@@ -108,7 +282,7 @@
       <div class="banner-card mb-6">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:var(--space-4);">
           <div>
-            <p style="font-size:var(--font-size-sm); color:rgba(255,255,255,0.7); margin-bottom:4px;">Dashboard Provider — POROS</p>
+            <p style="font-size:var(--font-size-sm); color:rgba(255,255,255,0.7); margin-bottom:4px;">Dashboard Provider — RESIK</p>
             <h2 style="font-size:var(--font-size-2xl); font-weight:800; color:white; margin-bottom:var(--space-3);">Selamat Datang Kembali 👋</h2>
             <p style="font-size:var(--font-size-sm); color:rgba(255,255,255,0.85);">
               <svg style="display:inline;vertical-align:middle;margin-right:4px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>

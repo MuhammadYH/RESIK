@@ -7,7 +7,7 @@
  * Dispatch event 'navbar:ready' setelah inject.
  *
  * Baca judul dari: <body data-navbar-title="Dashboard">
- * Fallback: dari <title>, stripping " — POROS *" suffix.
+ * Fallback: dari <title>, stripping " — RESIK *" suffix.
  */
 
 const RESIK_NAVBAR = (() => {
@@ -19,7 +19,7 @@ const RESIK_NAVBAR = (() => {
     const fromBody = document.body?.dataset?.navbarTitle;
     if (fromBody) return fromBody;
     const t = document.title || '';
-    return t.replace(/\s*[—–-]\s*POROS\s*\w*\s*$/i, '').trim() || 'Dashboard';
+    return t.replace(/\s*[—–-]\s*RESIK\s*\w*\s*$/i, '').trim() || 'Dashboard';
   }
 
   // ── Build HTML ───────────────────────────────────────────────────────────

@@ -25,11 +25,11 @@
     });
 
     // Populate session user info
-    if (window.PorosSession) {
+    if (window.RESIKSession) {
       const nameEl  = document.querySelector('.sidebar-user .user-name');
       const emailEl = document.querySelector('.sidebar-user .user-email');
-      if (nameEl)  nameEl.textContent  = PorosSession.getName();
-      if (emailEl) emailEl.textContent = PorosSession.getEmail();
+      if (nameEl)  nameEl.textContent  = RESIKSession.getName();
+      if (emailEl) emailEl.textContent = RESIKSession.getEmail();
     }
   });
 })();

@@ -2,8 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8"/>
+  <link rel="icon" href="/assets/icons/resik-favicon.ico" type="image/x-icon"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Bin — POROS Provider</title>
+  <title>Smart Bin — RESIK Provider</title>
 
   <!-- Shared design system (reused from admin) -->
   <link rel="stylesheet" href="/assets/css/admin-shared.css"/>
@@ -13,6 +14,113 @@
 
   <!-- Provider-specific styles -->
   <link rel="stylesheet" href="/assets/css/provider-smart-bin.css"/>
+
+  <!-- ── Responsive Overrides ── -->
+  <style>
+    /* ── Stat Cards: 2 kolom di tablet, 1 di mobile ── */
+    @media (max-width: 900px) {
+      .sb-stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 520px) {
+      .sb-stat-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .stat-card-chart {
+        display: none;
+      }
+    }
+
+    /* ── Filter bar: wrap ke bawah di mobile ── */
+    .filter-bar {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .filter-search {
+      flex: 1 1 180px;
+      min-width: 140px;
+    }
+    .filter-select {
+      flex: 1 1 120px;
+      min-width: 100px;
+    }
+    @media (max-width: 520px) {
+      .filter-bar > button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* ── Table: scroll horizontal di mobile ── */
+    .sb-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .admin-table {
+      min-width: 600px;
+    }
+    /* Sembunyikan kolom kurang penting di mobile */
+    @media (max-width: 600px) {
+      .admin-table th.capacity-cell,
+      .admin-table td.capacity-cell {
+        display: none;
+      }
+    }
+
+    /* ── Analytics grid: 1-3 kolom responsif ── */
+    /* Desktop: 1fr 1fr 1.6fr (sudah di inline style) */
+    /* Tablet: 2 kolom, peta full-width */
+    @media (max-width: 900px) {
+      div[style*="grid-template-columns:1fr 1fr 1.6fr"],
+      div[style*="grid-template-columns: 1fr 1fr 1.6fr"] {
+        grid-template-columns: 1fr 1fr !important;
+      }
+      /* Peta jadi full width (kolom ke-3) */
+      div[style*="grid-template-columns:1fr 1fr 1.6fr"] > .card:last-child,
+      div[style*="grid-template-columns: 1fr 1fr 1.6fr"] > .card:last-child {
+        grid-column: 1 / -1;
+      }
+    }
+    /* Mobile: semua 1 kolom */
+    @media (max-width: 600px) {
+      div[style*="grid-template-columns:1fr 1fr 1.6fr"],
+      div[style*="grid-template-columns: 1fr 1fr 1.6fr"] {
+        grid-template-columns: 1fr !important;
+      }
+      div[style*="grid-template-columns:1fr 1fr 1.6fr"] > .card:last-child,
+      div[style*="grid-template-columns: 1fr 1fr 1.6fr"] > .card:last-child {
+        grid-column: auto;
+      }
+    }
+
+    /* ── Donut wrap: center di mobile ── */
+    @media (max-width: 480px) {
+      .donut-wrap {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .donut-legend {
+        width: 100%;
+      }
+    }
+
+    /* ── Chart bars: pastikan tidak overflow ── */
+    .chart-bars {
+      overflow: hidden;
+    }
+
+    /* ── Map placeholder: tinggi adaptif ── */
+    .map-placeholder {
+      min-height: 160px;
+    }
+
+    /* ── Stat card value clamp ── */
+    .stat-card-value {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+    }
+  </style>
 </head>
 <body data-navbar-title="Smart Bin">
 
@@ -33,7 +141,7 @@
   <!-- ── SIDEBAR ── -->
   <aside class="admin-sidebar" id="adminSidebar">
     <div class="sidebar-logo">
-      <img src="/assets/img/LOGO_POROS.png" alt="POROS" class="sidebar-logo-img"/>
+      <img src="/assets/img/LOGO_RESIK.png" alt="RESIK" class="sidebar-logo-img"/>
     </div>
 
     <nav class="sidebar-nav">

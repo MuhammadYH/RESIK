@@ -1,14 +1,14 @@
 /* =========================================
-   POROS — auth.js
+   RESIK — auth.js
    Handles authentication state management.
    Gabungan: modul lengkap + auto-guard halaman terproteksi.
    ========================================= */
 (function () {
   'use strict';
 
-  const TOKEN_KEY   = 'poros_token';
-  const USER_KEY    = 'poros_user';
-  const SESSION_KEY = 'poros_session';
+  const TOKEN_KEY   = 'RESIK_token';
+  const USER_KEY    = 'RESIK_user';
+  const SESSION_KEY = 'RESIK_session';
 
   /* ---------- Internal helpers ---------- */
 
@@ -85,7 +85,7 @@
 
   /* ---------- Expose globally ---------- */
 
-  const PorosAuth = {
+  const RESIKAuth = {
     getToken,
     getUser,
     isAuthenticated,
@@ -95,8 +95,8 @@
     requireAuth,
   };
 
-  // Dukung kedua nama: Auth (lama) dan PorosAuth (baru)
-  window.Auth     = PorosAuth;
-  window.PorosAuth = PorosAuth;
+  // Dukung kedua nama: Auth (lama) dan RESIKAuth (baru)
+  window.Auth     = RESIKAuth;
+  window.RESIKAuth = RESIKAuth;
 
 })();

@@ -1,7 +1,7 @@
 /**
  * pengolah-dashboard.js
  * ─────────────────────────────────────────────────────────────────
- * Dashboard Pengolah — POROS
+ * Dashboard Pengolah — RESIK
  *
  * Tanggung jawab:
  *  1. Ambil roleId (processor_id) dari getUserContext()

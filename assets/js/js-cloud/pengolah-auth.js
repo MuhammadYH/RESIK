@@ -3,7 +3,7 @@
  * Location: /assets/js/pengolah-auth.js
  *
  * Standalone Supabase-only auth guard untuk area Pengolah.
- * Menggantikan: role-guard.js, session.js, PorosSession, Auth.getUser(), poros_token
+ * Menggantikan: role-guard.js, session.js, RESIKSession, Auth.getUser(), RESIK_token
  *
  * Alur:
  *   1. Ambil session dari Supabase via getSupabase().
